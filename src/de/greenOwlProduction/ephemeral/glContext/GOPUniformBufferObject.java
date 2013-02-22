@@ -1,5 +1,10 @@
 package de.greenOwlProduction.ephemeral.glContext;
 
+/*
+ * Copyright 2013, Sebastian Kreisel. All rights reserved.
+ * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+ */
+
 import de.greenOwlProduction.ephemeral.glContext.uniform.GOPUniformObject;
 
 import java.util.List;

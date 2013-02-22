@@ -1,10 +1,14 @@
 package de.greenOwlProduction.ephemeral.math;
 
+/*
+ * Copyright 2013, Sebastian Kreisel. All rights reserved.
+ * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+ */
+
 import de.greenOwlProduction.ephemeral.glContext.GOPRenderUtils;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
-
 
 public class GOPMat4f implements GOPMatf {
 

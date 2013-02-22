@@ -1,10 +1,15 @@
 package de.greenOwlProduction.ephemeral;
 
+/*
+ * Copyright 2013, Sebastian Kreisel. All rights reserved.
+ * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+ */
+
 import java.util.List;
 
 import de.greenOwlProduction.ephemeral.glContext.GOPRenderContext;
 import de.greenOwlProduction.ephemeral.glContext.GOPVertexArrayObject;
-
+import de.greenOwlProduction.ephemeral.test.TestSurface;
 
 public class Ephemeral {
 

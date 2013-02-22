@@ -1,5 +1,10 @@
 package de.greenOwlProduction.ephemeral.math;
 
+/*
+ * Copyright 2013, Sebastian Kreisel. All rights reserved.
+ * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+ */
+
 public class GOPVec1f implements GOPVecf {
 
 	protected float x;
