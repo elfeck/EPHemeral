@@ -1,19 +1,19 @@
-package de.greenOwlProduction.ephemeral.math;
+package com.elfeck.ephemeral.math;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-public class GOPVec1f implements GOPVecf {
+public class EPHVec1f implements EPHVecf {
 
 	protected float x;
 
-	public GOPVec1f(float x) {
+	public EPHVec1f(float x) {
 		this.x = x;
 	}
 
-	public GOPVec1f() {
+	public EPHVec1f() {
 		x = 0;
 	}
 

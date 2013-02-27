@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral;
+package com.elfeck.ephemeral;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -7,28 +7,29 @@ package de.greenOwlProduction.ephemeral;
 
 import java.util.List;
 
-import de.greenOwlProduction.ephemeral.glContext.GOPRenderContext;
-import de.greenOwlProduction.ephemeral.glContext.GOPVertexArrayObject;
-import de.greenOwlProduction.ephemeral.test.TestSurface;
+import com.elfeck.ephemeral.glContext.EPHRenderContext;
+import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 
-public class Ephemeral {
+
+
+public class EPHemeral {
 
 	public static void main(String[] args) {
-		new Ephemeral();
+		new EPHemeral();
 	}
 
 	public static final int WIDTH = 480, HEIGHT = 320;
-	public static final String VERSION = "0.0.01";
+	public static final String VERSION = "0.0.00";
 
-	private GOPSurface surface;
-	private GOPRenderContext renderContext;
-	private GOPRunnableContext mainContext;
+	private EPHSurface surface;
+	private EPHRenderContext renderContext;
+	private EPHRunnableContext mainContext;
 	private Thread mainThread;
 
-	public Ephemeral() {
-		renderContext = new GOPRenderContext(this);
-		mainThread = new Thread(mainContext = new GOPRunnableContext(this, 1));
-		surface = new TestSurface();
+	public EPHemeral() {
+		renderContext = new EPHRenderContext(this);
+		mainThread = new Thread(mainContext = new EPHRunnableContext(this, 1));
+		surface = null;
 
 		mainThread.start();
 	}
@@ -41,7 +42,7 @@ public class Ephemeral {
 		renderContext.render();
 	}
 
-	public List<GOPVertexArrayObject> getVaos() {
+	public List<EPHVertexArrayObject> getVaos() {
 		return surface.getVaos();
 	}
 

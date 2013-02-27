@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext.uniform;
+package com.elfeck.ephemeral.glContext.uniform;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -6,22 +6,23 @@ package de.greenOwlProduction.ephemeral.glContext.uniform;
  */
 
 import static org.lwjgl.opengl.GL20.*;
-import de.greenOwlProduction.ephemeral.math.GOPVecf;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.elfeck.ephemeral.math.EPHVecf;
 
-public class GOPUniformVecf implements GOPUniformObject {
+
+public class EPHUniformVecf implements EPHUniformObject {
 
 	private int index;
 	private String name;
-	private Map<Integer, GOPVecf> entries;
+	private Map<Integer, EPHVecf> entries;
 
-	public GOPUniformVecf(String name) {
+	public EPHUniformVecf(String name) {
 		index = -1;
 		this.name = name;
-		entries = new HashMap<Integer, GOPVecf>();
+		entries = new HashMap<Integer, EPHVecf>();
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class GOPUniformVecf implements GOPUniformObject {
 		entries.remove(key);
 	}
 
-	public void addEntry(int key, GOPVecf vector) {
+	public void addEntry(int key, EPHVecf vector) {
 		entries.put(key, vector);
 	}
 

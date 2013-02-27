@@ -1,22 +1,22 @@
-package de.greenOwlProduction.ephemeral.math;
+package com.elfeck.ephemeral.math;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-public class GOPVec4f implements GOPVecf {
+public class EPHVec4f implements EPHVecf {
 
 	protected float x, y, z, w;
 
-	public GOPVec4f(float x, float y, float z, float w) {
+	public EPHVec4f(float x, float y, float z, float w) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.w = w;
 	}
 
-	public GOPVec4f() {
+	public EPHVec4f() {
 		x = 0;
 		y = 0;
 		z = 0;
@@ -62,7 +62,7 @@ public class GOPVec4f implements GOPVecf {
 		return new float[] { x, y, z, w };
 	}
 
-	public GOPVec4f addVec4f(GOPVec4f vec) {
+	public EPHVec4f addVec4f(EPHVec4f vec) {
 		x += vec.x;
 		y += vec.y;
 		z += vec.z;
@@ -70,7 +70,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f addVec4f(float vx, float vy, float vz, float vw) {
+	public EPHVec4f addVec4f(float vx, float vy, float vz, float vw) {
 		x += vx;
 		y += vy;
 		z += vz;
@@ -78,7 +78,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f subVec4f(GOPVec4f vec) {
+	public EPHVec4f subVec4f(EPHVec4f vec) {
 		x -= vec.x;
 		y -= vec.y;
 		z -= vec.z;
@@ -86,7 +86,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f subVec4f(float vx, float vy, float vz, float vw) {
+	public EPHVec4f subVec4f(float vx, float vy, float vz, float vw) {
 		x -= vx;
 		y -= vy;
 		z -= vz;
@@ -94,7 +94,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f mulVec4f(GOPVec4f vec) {
+	public EPHVec4f mulVec4f(EPHVec4f vec) {
 		x *= vec.x;
 		y *= vec.y;
 		z *= vec.z;
@@ -102,7 +102,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f mulVec4f(float vx, float vy, float vz, float vw) {
+	public EPHVec4f mulVec4f(float vx, float vy, float vz, float vw) {
 		x *= vx;
 		y *= vy;
 		z *= vz;
@@ -110,7 +110,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f mulScalar(float scalar) {
+	public EPHVec4f mulScalar(float scalar) {
 		x *= scalar;
 		y *= scalar;
 		z *= scalar;
@@ -118,7 +118,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public float dot(GOPVec4f vec) {
+	public float dot(EPHVec4f vec) {
 		return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
 	}
 
@@ -130,7 +130,7 @@ public class GOPVec4f implements GOPVecf {
 		return (float) Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	public GOPVec4f normalize() {
+	public EPHVec4f normalize() {
 		float oldLength = length();
 		x /= oldLength;
 		y /= oldLength;
@@ -139,7 +139,7 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f negate() {
+	public EPHVec4f negate() {
 		x = -x;
 		y = -y;
 		z = -z;
@@ -147,11 +147,11 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f toLength(float newLength) {
+	public EPHVec4f toLength(float newLength) {
 		return this.normalize().mulScalar(newLength);
 	}
 
-	public float angle(GOPVec4f vec) {
+	public float angle(EPHVec4f vec) {
 		return (float) Math.acos(dot(vec) / (length() * vec.length()));
 	}
 
@@ -159,7 +159,7 @@ public class GOPVec4f implements GOPVecf {
 		return (float) Math.acos(dot(vx, vy, vz, vw) / length() * length(vx, vy, vz, vw));
 	}
 
-	public float distance(GOPVec4f vec) {
+	public float distance(EPHVec4f vec) {
 		return length(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
 	}
 
@@ -167,7 +167,7 @@ public class GOPVec4f implements GOPVecf {
 		return length(x - vx, y - vy, z - vz, w - vw);
 	}
 
-	public float distance(GOPVec4f vec1, GOPVec4f vec2) {
+	public float distance(EPHVec4f vec1, EPHVec4f vec2) {
 		return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) * (vec2.x / vec2.length()),
 				(vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y / vec2.length()),
 				(vec1.z - z) - ((vec1.z - z) * (vec2.z / vec2.length())) * (vec2.z / vec2.length()),
@@ -181,12 +181,12 @@ public class GOPVec4f implements GOPVecf {
 				(a4 - w) - ((a4 - w) * (b4 / length(b1, b2, b3, b4))) * (b4 / length(b1, b2, b3, b4)));
 	}
 
-	public GOPVec3f stripW() {
-		return new GOPVec3f(x, y, z);
+	public EPHVec3f stripW() {
+		return new EPHVec3f(x, y, z);
 	}
 
-	public GOPVec2f stripZW() {
-		return new GOPVec2f(x, y);
+	public EPHVec2f stripZW() {
+		return new EPHVec2f(x, y);
 	}
 
 	public float getX() {
@@ -205,27 +205,27 @@ public class GOPVec4f implements GOPVecf {
 		return w;
 	}
 
-	public GOPVec4f setX(float x) {
+	public EPHVec4f setX(float x) {
 		this.x = x;
 		return this;
 	}
 
-	public GOPVec4f setY(float y) {
+	public EPHVec4f setY(float y) {
 		this.y = y;
 		return this;
 	}
 
-	public GOPVec4f setZ(float z) {
+	public EPHVec4f setZ(float z) {
 		this.z = z;
 		return this;
 	}
 
-	public GOPVec4f setW(float w) {
+	public EPHVec4f setW(float w) {
 		this.w = w;
 		return this;
 	}
 
-	public GOPVec4f setXYZW(float x, float y, float z, float w) {
+	public EPHVec4f setXYZW(float x, float y, float z, float w) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -233,32 +233,32 @@ public class GOPVec4f implements GOPVecf {
 		return this;
 	}
 
-	public GOPVec4f copy() {
-		return new GOPVec4f(x, y, z, w);
+	public EPHVec4f copy() {
+		return new EPHVec4f(x, y, z, w);
 	}
 
 	public String toString() {
 		return "(" + x + "  " + y + "  " + z + "  " + w + ")";
 	}
 
-	public static GOPVec4f addVec4f(GOPVec4f v1, GOPVec4f v2) {
-		return new GOPVec4f(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
+	public static EPHVec4f addVec4f(EPHVec4f v1, EPHVec4f v2) {
+		return new EPHVec4f(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
 	}
 
-	public static GOPVec4f subVec4f(GOPVec4f v1, GOPVec4f v2) {
-		return new GOPVec4f(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
+	public static EPHVec4f subVec4f(EPHVec4f v1, EPHVec4f v2) {
+		return new EPHVec4f(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
 	}
 
-	public static GOPVec4f mulVec4f(GOPVec4f v1, GOPVec4f v2) {
-		return new GOPVec4f(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
+	public static EPHVec4f mulVec4f(EPHVec4f v1, EPHVec4f v2) {
+		return new EPHVec4f(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
 	}
 
-	public static GOPVec4f mulScalar(GOPVec4f vec, float scalar) {
-		return new GOPVec4f(vec.x * scalar, vec.y * scalar, vec.z * scalar, vec.w * scalar);
+	public static EPHVec4f mulScalar(EPHVec4f vec, float scalar) {
+		return new EPHVec4f(vec.x * scalar, vec.y * scalar, vec.z * scalar, vec.w * scalar);
 	}
 
-	public static GOPVec4f normalize(GOPVec4f vec) {
-		return new GOPVec4f(vec.x, vec.y, vec.z, vec.w).normalize();
+	public static EPHVec4f normalize(EPHVec4f vec) {
+		return new EPHVec4f(vec.x, vec.y, vec.z, vec.w).normalize();
 	}
 
 	public static float length(float vx, float vy, float vz, float vw) {

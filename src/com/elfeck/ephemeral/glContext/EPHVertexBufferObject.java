@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext;
+package com.elfeck.ephemeral.glContext;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -13,21 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GOPVertexBufferObject {
+public class EPHVertexBufferObject {
 
 	private int handle;
 	private FloatBuffer vertexBuffer;
 	private List<Float> vertexValues;
-	private List<GOPVertexAttribute> vertexAttributes;
+	private List<EPHVertexAttribute> vertexAttributes;
 
-	protected GOPVertexBufferObject(List<Float> vertexValues, List<GOPVertexAttribute> vertexAttributes) {
+	protected EPHVertexBufferObject(List<Float> vertexValues, List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
-		vertexBuffer = GOPRenderUtils.listToBufferf(vertexValues);
+		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		this.vertexValues = vertexValues;
 		this.vertexAttributes = vertexAttributes;
 	}
 
-	protected GOPVertexBufferObject(List<GOPVertexAttribute> vertexAttributes) {
+	protected EPHVertexBufferObject(List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
 		vertexBuffer = null;
 		vertexValues = new ArrayList<Float>();
@@ -36,7 +36,7 @@ public class GOPVertexBufferObject {
 
 	private int computeStride() {
 		int stride = 0;
-		for (GOPVertexAttribute va : vertexAttributes) {
+		for (EPHVertexAttribute va : vertexAttributes) {
 			stride += va.size;
 		}
 		return stride;
@@ -51,7 +51,7 @@ public class GOPVertexBufferObject {
 
 	protected void glBind() {
 		glBindBuffer(GL_ARRAY_BUFFER, handle);
-		for (GOPVertexAttribute currentAttrib : vertexAttributes) {
+		for (EPHVertexAttribute currentAttrib : vertexAttributes) {
 			glEnableVertexAttribArray(currentAttrib.index);
 			glVertexAttribPointer(currentAttrib.index, currentAttrib.size, currentAttrib.type, currentAttrib.normalized, currentAttrib.stride, currentAttrib.offset);
 		}
@@ -63,7 +63,7 @@ public class GOPVertexBufferObject {
 
 	protected int addData(List<Float> newVertexValues) {
 		vertexValues.addAll(newVertexValues);
-		vertexBuffer = GOPRenderUtils.listToBufferf(vertexValues);
+		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		return (vertexValues.size() - newVertexValues.size()) / computeStride();
 	}
 
@@ -71,7 +71,7 @@ public class GOPVertexBufferObject {
 		for (int i = reference[1]; i >= reference[0]; i--) {
 			vertexValues.remove(i);
 		}
-		vertexBuffer = GOPRenderUtils.listToBufferf(vertexValues);
+		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		return (reference[1] - reference[0] + 1) / computeStride();
 	}
 

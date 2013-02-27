@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext.uniform;
+package com.elfeck.ephemeral.glContext.uniform;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -6,28 +6,29 @@ package de.greenOwlProduction.ephemeral.glContext.uniform;
  */
 
 import static org.lwjgl.opengl.GL20.*;
-import de.greenOwlProduction.ephemeral.math.GOPMatf;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.elfeck.ephemeral.math.EPHMatf;
 
-public class GOPUniformMatf implements GOPUniformObject {
+
+public class EPHUniformMatf implements EPHUniformObject {
 
 	private int index;
 	private String name;
-	private Map<Integer, GOPMatf> entries;
+	private Map<Integer, EPHMatf> entries;
 
-	public GOPUniformMatf(String name) {
+	public EPHUniformMatf(String name) {
 		index = -1;
 		this.name = name;
-		entries = new HashMap<Integer, GOPMatf>();
+		entries = new HashMap<Integer, EPHMatf>();
 	}
 
 	@Override
 	public void useUniform(int programHandle, int key) {
 		if (index < 0) index = glGetUniformLocation(programHandle, name);
-		GOPMatf matrix = entries.get(key);
+		EPHMatf matrix = entries.get(key);
 		if (matrix != null) {
 			switch (matrix.getDimension()) {
 				case 2:
@@ -55,7 +56,7 @@ public class GOPUniformMatf implements GOPUniformObject {
 		entries.remove(key);
 	}
 
-	public void addEntry(int key, GOPMatf matrix) {
+	public void addEntry(int key, EPHMatf matrix) {
 		entries.put(key, matrix);
 	}
 

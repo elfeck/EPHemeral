@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext;
+package com.elfeck.ephemeral.glContext;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 
 
-public class GOPRenderUtils {
+public class EPHRenderUtils {
 
 	public static final int MODE_STATIC_DRAW = GL_STATIC_DRAW;
 	public static final int MODE_DYNAMIC_DRAW = GL_DYNAMIC_DRAW;
@@ -25,7 +25,7 @@ public class GOPRenderUtils {
 
 	public static final int TYPE_TRIANGLES = GL_TRIANGLES;
 
-	private GOPRenderUtils() {
+	private EPHRenderUtils() {
 
 	}
 

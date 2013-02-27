@@ -1,26 +1,27 @@
-package de.greenOwlProduction.ephemeral.math;
+package com.elfeck.ephemeral.math;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-import de.greenOwlProduction.ephemeral.glContext.GOPRenderUtils;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 
-public class GOPMat4f implements GOPMatf {
+import com.elfeck.ephemeral.glContext.EPHRenderUtils;
+
+public class EPHMat4f implements EPHMatf {
 
 	public final int dimension;
 	protected float[][] matrix;
 
-	public GOPMat4f(float[][] matrix) {
+	public EPHMat4f(float[][] matrix) {
 		dimension = 4;
 		this.matrix = matrix;
 	}
 
-	public GOPMat4f() {
+	public EPHMat4f() {
 		dimension = 4;
 		matrix = new float[dimension][dimension];
 	}
@@ -32,7 +33,7 @@ public class GOPMat4f implements GOPMatf {
 
 	@Override
 	public FloatBuffer toBuffer() {
-		return GOPRenderUtils.array2DtoBufferf(matrix);
+		return EPHRenderUtils.array2DtoBufferf(matrix);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class GOPMat4f implements GOPMatf {
 		return indexInRange(i1) && indexInRange(i2);
 	}
 
-	public GOPMat4f addMat4f(GOPMat4f mat) {
+	public EPHMat4f addMat4f(EPHMat4f mat) {
 		if (valid() && mat.valid()) {
 			for (int c = 0; c < dimension; c++) {
 				for (int l = 0; l < dimension; l++) {
@@ -86,7 +87,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f subMat4f(GOPMat4f mat) {
+	public EPHMat4f subMat4f(EPHMat4f mat) {
 		if (valid() && mat.valid()) {
 			for (int c = 0; c < dimension; c++) {
 				for (int l = 0; l < dimension; l++) {
@@ -99,7 +100,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f mulScalar(float scalar) {
+	public EPHMat4f mulScalar(float scalar) {
 		if (valid()) {
 			for (int c = 0; c < dimension; c++) {
 				for (int l = 0; l < dimension; l++) {
@@ -112,7 +113,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f mulMat4(GOPMat4f mat) {
+	public EPHMat4f mulMat4(EPHMat4f mat) {
 		if (valid() && mat.valid()) {
 			float[] currentLine = new float[4];
 			for (int l = 0; l < dimension; l++) {
@@ -130,9 +131,9 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPVec4f mulVec4(GOPVec4f vec) {
+	public EPHVec4f mulVec4(EPHVec4f vec) {
 		if (valid()) {
-			GOPVec4f vector = new GOPVec4f();
+			EPHVec4f vector = new EPHVec4f();
 			for (int l = 0; l < dimension; l++) {
 				for (int c = 0; c < dimension; c++) {
 					vector.setN(l, vector.getN(l) + matrix[c][l] * vec.getN(c));
@@ -144,7 +145,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f negate() {
+	public EPHMat4f negate() {
 		if (valid()) {
 			for (int c = 0; c < dimension; c++) {
 				for (int l = 0; l < dimension; l++) {
@@ -183,14 +184,14 @@ public class GOPMat4f implements GOPMatf {
 		return matrix;
 	}
 
-	public GOPMat4f setMatrix(float[][] matrix) {
+	public EPHMat4f setMatrix(float[][] matrix) {
 		this.matrix = matrix;
 		if (valid()) return this;
 		System.err.println("Matrix or argument not valid");
 		return null;
 	}
 
-	public GOPMat4f setColumn(int c, float[] values) {
+	public EPHMat4f setColumn(int c, float[] values) {
 		if (valid() && indexInRange(c) && values.length == dimension) {
 			matrix[c] = values;
 			return this;
@@ -199,7 +200,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f copyToCL(int c, int l, float value) {
+	public EPHMat4f copyToCL(int c, int l, float value) {
 		if (valid() && indicesInRange(c, l)) {
 			matrix[c][l] = value;
 			return this;
@@ -208,7 +209,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f copyToColumn(int c, float[] values) {
+	public EPHMat4f copyToColumn(int c, float[] values) {
 		if (valid() && indexInRange(c) && values.length == dimension) {
 			for (int l = 0; l < dimension; l++) {
 				matrix[c][l] = values[l];
@@ -219,7 +220,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f copyToLine(int l, float[] values) {
+	public EPHMat4f copyToLine(int l, float[] values) {
 		if (valid() && indexInRange(l) && values.length == dimension) {
 			for (int c = 0; c < dimension; c++) {
 				matrix[c][l] = values[c];
@@ -230,7 +231,7 @@ public class GOPMat4f implements GOPMatf {
 		return null;
 	}
 
-	public GOPMat4f copyToMatrix(float[][] values) {
+	public EPHMat4f copyToMatrix(float[][] values) {
 		if (valid() && valid(values)) {
 			for (int c = 0; c < dimension; c++) {
 				for (int l = 0; l < dimension; l++) {
@@ -247,8 +248,8 @@ public class GOPMat4f implements GOPMatf {
 		return valid();
 	}
 
-	public GOPMat4f copy() {
-		return new GOPMat4f().copyToMatrix(matrix);
+	public EPHMat4f copy() {
+		return new EPHMat4f().copyToMatrix(matrix);
 	}
 
 	public String toString() {

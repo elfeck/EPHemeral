@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext;
+package com.elfeck.ephemeral.glContext;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -12,19 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GOPIndexBufferObject {
+public class EPHIndexBufferObject {
 
 	private int handle;
 	private IntBuffer indexBuffer;
 	private List<Integer> indices;
 
-	protected GOPIndexBufferObject(List<Integer> indices) {
+	protected EPHIndexBufferObject(List<Integer> indices) {
 		handle = -1;
-		indexBuffer = GOPRenderUtils.listToBufferi(indices);
+		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 		this.indices = indices;
 	}
 
-	protected GOPIndexBufferObject() {
+	protected EPHIndexBufferObject() {
 		handle = -1;
 		indexBuffer = null;
 		indices = new ArrayList<Integer>();
@@ -49,7 +49,7 @@ public class GOPIndexBufferObject {
 		for (int i = 0; i < newIndices.size(); i++) {
 			indices.add(newIndices.get(i) + offset);
 		}
-		indexBuffer = GOPRenderUtils.listToBufferi(indices);
+		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 	}
 
 	protected void removeData(int[] reference, int offset) {
@@ -60,7 +60,7 @@ public class GOPIndexBufferObject {
 			indices.add(i, indices.get(i) - offset);
 			indices.remove(i + 1);
 		}
-		indexBuffer = GOPRenderUtils.listToBufferi(indices);
+		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 	}
 
 	protected int getCurrentIndex() {

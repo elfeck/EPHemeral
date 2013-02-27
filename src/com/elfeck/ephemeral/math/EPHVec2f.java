@@ -1,20 +1,20 @@
-package de.greenOwlProduction.ephemeral.math;
+package com.elfeck.ephemeral.math;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-public class GOPVec2f implements GOPVecf {
+public class EPHVec2f implements EPHVecf {
 
 	protected float x, y;
 
-	public GOPVec2f(float x, float y) {
+	public EPHVec2f(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public GOPVec2f() {
+	public EPHVec2f() {
 		x = 0;
 		y = 0;
 	}
@@ -48,49 +48,49 @@ public class GOPVec2f implements GOPVecf {
 		return new float[] { x, y };
 	}
 
-	public GOPVec2f addVec2f(GOPVec2f vec) {
+	public EPHVec2f addVec2f(EPHVec2f vec) {
 		x += vec.x;
 		y += vec.y;
 		return this;
 	}
 
-	public GOPVec2f addVec2f(float vx, float vy) {
+	public EPHVec2f addVec2f(float vx, float vy) {
 		x += vx;
 		y += vy;
 		return this;
 	}
 
-	public GOPVec2f subVec2f(GOPVec2f vec) {
+	public EPHVec2f subVec2f(EPHVec2f vec) {
 		x -= vec.x;
 		y -= vec.y;
 		return this;
 	}
 
-	public GOPVec2f subVec2f(float vx, float vy) {
+	public EPHVec2f subVec2f(float vx, float vy) {
 		x -= vx;
 		y -= vy;
 		return this;
 	}
 
-	public GOPVec2f mulVec2f(GOPVec2f vec) {
+	public EPHVec2f mulVec2f(EPHVec2f vec) {
 		x *= vec.x;
 		y *= vec.y;
 		return this;
 	}
 
-	public GOPVec2f mulVec2f(float vx, float vy) {
+	public EPHVec2f mulVec2f(float vx, float vy) {
 		x *= vx;
 		y *= vy;
 		return this;
 	}
 
-	public GOPVec2f mulScalar(float scalar) {
+	public EPHVec2f mulScalar(float scalar) {
 		x *= scalar;
 		y *= scalar;
 		return this;
 	}
 
-	public float dot(GOPVec2f vec) {
+	public float dot(EPHVec2f vec) {
 		return x * vec.x + y * vec.y;
 	}
 
@@ -102,24 +102,24 @@ public class GOPVec2f implements GOPVecf {
 		return (float) Math.hypot(x, y);
 	}
 
-	public GOPVec2f normalize() {
+	public EPHVec2f normalize() {
 		float oldLength = length();
 		x /= oldLength;
 		y /= oldLength;
 		return this;
 	}
 
-	public GOPVec2f negate() {
+	public EPHVec2f negate() {
 		x = -x;
 		y = -y;
 		return this;
 	}
 
-	public GOPVec2f toLength(float newLength) {
+	public EPHVec2f toLength(float newLength) {
 		return this.normalize().mulScalar(newLength);
 	}
 
-	public float angle(GOPVec2f vec) {
+	public float angle(EPHVec2f vec) {
 		return (float) Math.acos(dot(vec) / (length() * vec.length()));
 	}
 
@@ -127,7 +127,7 @@ public class GOPVec2f implements GOPVecf {
 		return (float) Math.acos(dot(vx, vy) / length() * length(vx, vy));
 	}
 
-	public float distance(GOPVec2f vec) {
+	public float distance(EPHVec2f vec) {
 		return length(x - vec.x, y - vec.y);
 	}
 
@@ -135,7 +135,7 @@ public class GOPVec2f implements GOPVecf {
 		return length(x - vx, y - vy);
 	}
 
-	public float distance(GOPVec2f vec1, GOPVec2f vec2) {
+	public float distance(EPHVec2f vec1, EPHVec2f vec2) {
 		return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) * (vec2.x / vec2.length()),
 				(vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y / vec2.length()));
 	}
@@ -153,48 +153,48 @@ public class GOPVec2f implements GOPVecf {
 		return y;
 	}
 
-	public GOPVec2f setX(float x) {
+	public EPHVec2f setX(float x) {
 		this.x = x;
 		return this;
 	}
 
-	public GOPVec2f setY(float y) {
+	public EPHVec2f setY(float y) {
 		this.y = y;
 		return this;
 	}
 
-	public GOPVec2f setXY(float x, float y) {
+	public EPHVec2f setXY(float x, float y) {
 		this.x = x;
 		this.y = y;
 		return this;
 	}
 
-	public GOPVec2f copy() {
-		return new GOPVec2f(x, y);
+	public EPHVec2f copy() {
+		return new EPHVec2f(x, y);
 	}
 
 	public String toString() {
 		return "(" + x + "  " + y + ")";
 	}
 
-	public static GOPVec2f addVec2f(GOPVec2f v1, GOPVec2f v2) {
-		return new GOPVec2f(v1.x + v2.x, v1.y + v2.y);
+	public static EPHVec2f addVec2f(EPHVec2f v1, EPHVec2f v2) {
+		return new EPHVec2f(v1.x + v2.x, v1.y + v2.y);
 	}
 
-	public static GOPVec2f subVec2f(GOPVec2f v1, GOPVec2f v2) {
-		return new GOPVec2f(v1.x - v2.x, v1.y - v2.y);
+	public static EPHVec2f subVec2f(EPHVec2f v1, EPHVec2f v2) {
+		return new EPHVec2f(v1.x - v2.x, v1.y - v2.y);
 	}
 
-	public static GOPVec2f mulVec2f(GOPVec2f v1, GOPVec2f v2) {
-		return new GOPVec2f(v1.x * v2.x, v1.y * v2.y);
+	public static EPHVec2f mulVec2f(EPHVec2f v1, EPHVec2f v2) {
+		return new EPHVec2f(v1.x * v2.x, v1.y * v2.y);
 	}
 
-	public static GOPVec2f mulScalar(GOPVec2f vec, float scalar) {
-		return new GOPVec2f(vec.x * scalar, vec.y * scalar);
+	public static EPHVec2f mulScalar(EPHVec2f vec, float scalar) {
+		return new EPHVec2f(vec.x * scalar, vec.y * scalar);
 	}
 
-	public static GOPVec2f normalize(GOPVec2f vec) {
-		return new GOPVec2f(vec.x, vec.y).normalize();
+	public static EPHVec2f normalize(EPHVec2f vec) {
+		return new EPHVec2f(vec.x, vec.y).normalize();
 	}
 
 	public static float length(float vx, float vy) {

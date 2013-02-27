@@ -1,19 +1,19 @@
-package de.greenOwlProduction.ephemeral;
+package com.elfeck.ephemeral;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-public class GOPRunnableContext implements Runnable {
+public class EPHRunnableContext implements Runnable {
 
 	private boolean running;
 	private long delta;
 	private int printDelay, printDelayPassed, fpsSum, loopsPassed;
-	private Ephemeral main;
+	private EPHemeral main;
 	protected int sleepTime;
 
-	public GOPRunnableContext(Ephemeral main, int sleepTime) {
+	public EPHRunnableContext(EPHemeral main, int sleepTime) {
 		running = true;
 		delta = 0;
 		this.main = main;

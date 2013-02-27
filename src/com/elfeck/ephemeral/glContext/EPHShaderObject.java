@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext;
+package com.elfeck.ephemeral.glContext;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -14,13 +14,13 @@ import java.io.IOException;
 import java.util.Map;
 
 
-public class GOPShaderObject {
+public class EPHShaderObject {
 
 	private int vertexSHandle, fragmentSHandle, programHandle;
 	private String vertPath, fragPath;
 	private Map<Integer, String> attribMap;
 
-	protected GOPShaderObject(String vertPath, String fragPath, Map<Integer, String> attribMap) {
+	protected EPHShaderObject(String vertPath, String fragPath, Map<Integer, String> attribMap) {
 		vertexSHandle = -1;
 		fragmentSHandle = -1;
 		programHandle = -1;

@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.math;
+package com.elfeck.ephemeral.math;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -8,7 +8,7 @@ package de.greenOwlProduction.ephemeral.math;
 import java.nio.FloatBuffer;
 
 
-public interface GOPMatf {
+public interface EPHMatf {
 
 	public int getDimension();
 

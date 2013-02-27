@@ -1,4 +1,4 @@
-package de.greenOwlProduction.ephemeral.glContext;
+package com.elfeck.ephemeral.glContext;
 
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
@@ -8,25 +8,26 @@ package de.greenOwlProduction.ephemeral.glContext;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.*;
-import de.greenOwlProduction.ephemeral.glContext.uniform.GOPUniformObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformObject;
 
-public class GOPVertexArrayObject {
+
+public class EPHVertexArrayObject {
 
 	private boolean dead, updated;
 	private int mode, size, usage, handle, currentKey;
 	private List<int[][]> entries;
-	private GOPVertexBufferObject vbo;
-	private GOPIndexBufferObject ibo;
-	private GOPUniformBufferObject ubo;
-	private GOPShaderObject program;
+	private EPHVertexBufferObject vbo;
+	private EPHIndexBufferObject ibo;
+	private EPHUniformBufferObject ubo;
+	private EPHShaderObject program;
 
-	public GOPVertexArrayObject(int mode, int usage, List<GOPVertexAttribute> vertexAttributes, List<GOPUniformObject> uniforms, String vertSPath, String fragSPath) {
+	public EPHVertexArrayObject(int mode, int usage, List<EPHVertexAttribute> vertexAttributes, List<EPHUniformObject> uniforms, String vertSPath, String fragSPath) {
 		dead = false;
 		updated = false;
 		this.mode = mode;
@@ -35,14 +36,14 @@ public class GOPVertexArrayObject {
 		handle = -1;
 		currentKey = 0;
 		entries = new ArrayList<int[][]>();
-		vbo = new GOPVertexBufferObject(vertexAttributes);
-		ibo = new GOPIndexBufferObject();
-		ubo = new GOPUniformBufferObject(uniforms);
-		program = new GOPShaderObject(vertSPath, fragSPath, vertexAttributesToMap(vertexAttributes));
+		vbo = new EPHVertexBufferObject(vertexAttributes);
+		ibo = new EPHIndexBufferObject();
+		ubo = new EPHUniformBufferObject(uniforms);
+		program = new EPHShaderObject(vertSPath, fragSPath, vertexAttributesToMap(vertexAttributes));
 	}
 
-	public GOPVertexArrayObject(List<GOPVertexAttribute> vertexAttributes, List<GOPUniformObject> uniforms, String vertSPath, String fragSPath) {
-		this(GOPRenderUtils.TYPE_TRIANGLES, GOPRenderUtils.MODE_STATIC_DRAW, vertexAttributes, uniforms, vertSPath, fragSPath);
+	public EPHVertexArrayObject(List<EPHVertexAttribute> vertexAttributes, List<EPHUniformObject> uniforms, String vertSPath, String fragSPath) {
+		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, vertexAttributes, uniforms, vertSPath, fragSPath);
 	}
 
 	private void glInit() {
@@ -60,9 +61,9 @@ public class GOPVertexArrayObject {
 		updated = true;
 	}
 
-	private Map<Integer, String> vertexAttributesToMap(List<GOPVertexAttribute> vertexAttributes) {
+	private Map<Integer, String> vertexAttributesToMap(List<EPHVertexAttribute> vertexAttributes) {
 		Map<Integer, String> names = new HashMap<Integer, String>();
-		for (GOPVertexAttribute va : vertexAttributes) {
+		for (EPHVertexAttribute va : vertexAttributes) {
 			names.put(va.index, va.name);
 		}
 		return names;
