@@ -1,8 +1,14 @@
 package com.elfeck.ephemeral.test;
 
+/*
+* Copyright 2013, Sebastian Kreisel. All rights reserved.
+* If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+*/
+
 import java.util.ArrayList;
 import java.util.List;
 
+import com.elfeck.ephemeral.glContext.EPHVaoEntry;
 import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 import com.elfeck.ephemeral.glContext.EPHVertexAttribute;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformMatf;
@@ -13,9 +19,8 @@ import com.elfeck.ephemeral.math.EPHVecf;
 
 public class EPHVaoContainer {
 	
-	private int[][] vaoReference;
+	private EPHVaoEntry vaoReference;
 	private EPHVertexArrayObject vao;
-	private String vertSPath, fragSPath;
 	
 	private List<Float> vertexValues;
 	private List<Integer> indices;
@@ -25,8 +30,6 @@ public class EPHVaoContainer {
 	public EPHVaoContainer() {
 		vaoReference = null;
 		vao = null;
-		vertSPath = null;
-		fragSPath = null;
 		
 		vertexValues = new ArrayList<Float>();
 		indices = new ArrayList<Integer>();
@@ -35,25 +38,29 @@ public class EPHVaoContainer {
 	}
 	
 	public void submitVaoData() {
-		vaoReference = vao.addData(vertexValues, indices);
+		vaoReference = vao.addData(vertexValues, indices, "test");
 	}
 	
 	public void createVao() {
-		vao = new EPHVertexArrayObject(attributes, uniforms, vertSPath, fragSPath);
+		vao = new EPHVertexArrayObject(attributes, uniforms);
 	}
 	
 	public void registerUniformVecf(String name, EPHVecf vec) {
 		for(EPHUniformObject uo : uniforms) {
 			if(uo.getName().equals(name) && uo instanceof EPHUniformVecf) {
-				((EPHUniformVecf) uo).addEntry(vaoReference[2][0], vec);
+				((EPHUniformVecf) uo).addEntry(vaoReference.getUniformKey(), vec);
 			}
 		}
 	}
 	
 	public void registerUniformMatf(String name, EPHMatf mat) {
 		for(EPHUniformObject uo : uniforms) {
-			if(uo.getName().equals(name) && uo instanceof EPHUniformMatf) ((EPHUniformMatf) uo).addEntry(vaoReference[2][0], mat);
+			if(uo.getName().equals(name) && uo instanceof EPHUniformMatf) ((EPHUniformMatf) uo).addEntry(vaoReference.getUniformKey(), mat);
 		}
+	}
+	
+	public void delete() {
+		vao.removeData(vaoReference);
 	}
 	
 	public void setVertexData(List<Float> vertexValues) {
@@ -110,11 +117,6 @@ public class EPHVaoContainer {
 	
 	public void addUniformMatf(String name) {
 		uniforms.add(new EPHUniformMatf(name));
-	}
-	
-	public void setShaderSource(String vertSPath, String fragSPath) {
-		this.vertSPath = vertSPath;
-		this.fragSPath = fragSPath;
 	}
 	
 	public EPHVertexArrayObject getVao() {

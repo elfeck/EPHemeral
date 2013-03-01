@@ -1,5 +1,10 @@
 package com.elfeck.ephemeral.test;
 
+/*
+* Copyright 2013, Sebastian Kreisel. All rights reserved.
+* If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+*/
+
 import com.elfeck.ephemeral.EPHEntity;
 import com.elfeck.ephemeral.EPHSurface;
 import com.elfeck.ephemeral.math.EPHMat4f;
@@ -25,7 +30,7 @@ public class EPHTriangle implements EPHEntity {
 		initVao();
 		surface.addVao(vao.getVao());
 	}
-	
+
 	@Override
 	public void doLogic(long delta) {
 		offset.addVec2f(0.0001f, 0.0001f);
@@ -37,7 +42,6 @@ public class EPHTriangle implements EPHEntity {
 	}
 	
 	private void initVao() {
-		vao.setShaderSource("shader/test/test_vert.glsl", "shader/test/test_frag.glsl");
 		vao.addVertexAttribute(0, 4, 4 * 4 * 2, 4 * 4 * 0, "pos_model");
 		vao.addVertexAttribute(1, 4, 4 * 4 * 2, 4 * 4 * 1, "col_model");
 		vao.addUniformMatf("mvp_matrix");

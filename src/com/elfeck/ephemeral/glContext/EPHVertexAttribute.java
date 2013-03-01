@@ -7,9 +7,9 @@ package com.elfeck.ephemeral.glContext;
 
 public class EPHVertexAttribute {
 
-	protected int index, size, type, stride, offset;
-	protected boolean normalized;
-	protected String name;
+	protected final int index, size, type, stride, offset;
+	protected final boolean normalized;
+	protected final String name;
 
 	public EPHVertexAttribute(int index, int size, int type, int stride, int offset, boolean normalized, String name) {
 		this.index = index;

@@ -26,7 +26,7 @@ public class EPHRenderContext {
 		this.main = main;
 	}
 
-	private void initContext() {
+	private void glInitContext() {
 		DisplayMode displayMode = new DisplayMode(main.getWidth(), main.getHeight());
 		PixelFormat pixelFormat = new PixelFormat().withSamples(8);
 		try {
@@ -40,10 +40,11 @@ public class EPHRenderContext {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_MULTISAMPLE);
+		EPHVertexArrayObject.initShaderProgramPool();
 		initialized = true;
 	}
 
-	private boolean handleCloseRequest() {
+	private boolean glHandleCloseRequest() {
 		if (Display.isCloseRequested()) {
 			main.destroy();
 			return true;
@@ -51,34 +52,34 @@ public class EPHRenderContext {
 		return false;
 	}
 
-	private void clearDisplay() {
+	private void glClearDisplay() {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	private void draw() {
+	private void glDraw() {
 		for (int i = 0; i < main.getVaos().size(); i++) {
 			EPHVertexArrayObject currentVao = main.getVaos().get(i);
 			if (currentVao.isDead()) {
 				main.getVaos().remove(i--);
 				continue;
 			}
-			currentVao.render();
+			currentVao.glRender();
 		}
 	}
 
-	public void render() {
-		if (!initialized) initContext();
-		if (handleCloseRequest()) return;
-		clearDisplay();
-		draw();
+	public void glRender() {
+		if (!initialized) glInitContext();
+		if (glHandleCloseRequest()) return;
+		glClearDisplay();
+		glDraw();
 		Display.update();
 		Display.sync(200);
 		main.updateVaos();
 	}
 
-	public void destroy() {
+	public void glDestroy() {
 		if (!initialized) return;
-		main.destroyVaos();
+		main.glDestroyVaos();
 		Display.destroy();
 	}
 

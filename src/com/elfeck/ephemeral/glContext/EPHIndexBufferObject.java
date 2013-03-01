@@ -51,12 +51,12 @@ public class EPHIndexBufferObject {
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 	}
-
-	protected void removeData(int[] reference, int offset) {
-		for (int i = reference[1]; i >= reference[0]; i--) {
+	
+	protected void removeData(int lowerBound, int upperBound, int offset) {
+		for(int i = upperBound; i >= lowerBound; i--) {
 			indices.remove(i);
 		}
-		for (int i = reference[0]; i < indices.size(); i++) {
+		for(int i = lowerBound; i < indices.size(); i++) {
 			indices.add(i, indices.get(i) - offset);
 			indices.remove(i + 1);
 		}

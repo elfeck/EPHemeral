@@ -19,9 +19,9 @@ public class EPHUniformBufferObject {
 		this.uniforms = uniforms;
 	}
 
-	protected void useUniforms(int programHandle, int key) {
+	protected void glUseUniforms(int programHandle, int key) {
 		for (EPHUniformObject uo : uniforms) {
-			uo.useUniform(programHandle, key);
+			uo.glUseUniform(programHandle, key);
 		}
 	}
 

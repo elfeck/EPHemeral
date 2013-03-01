@@ -35,7 +35,7 @@ public class EPHemeral {
 	}
 
 	protected void reqRender() {
-		renderContext.render();
+		renderContext.glRender();
 	}
 	
 	public void start() {
@@ -46,12 +46,13 @@ public class EPHemeral {
 		surface.updateVaos();
 	}
 
-	public void destroyVaos() {
+	public void glDestroyVaos() {
 		surface.destroyVaos();
+		EPHVertexArrayObject.glDisposeShaderPrograms();
 	}
 
 	public void destroy() {
-		renderContext.destroy();
+		renderContext.glDestroy();
 		mainContext.destroy();
 	}
 	

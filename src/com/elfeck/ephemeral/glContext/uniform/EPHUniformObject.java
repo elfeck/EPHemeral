@@ -7,7 +7,7 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 public interface EPHUniformObject {
 
-	public void useUniform(int programHandle, int key);
+	public void glUseUniform(int programHandle, int key);
 	public void reset();
 	public void removeEntry(int key);
 	

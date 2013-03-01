@@ -66,17 +66,21 @@ public class EPHVertexBufferObject {
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		return (vertexValues.size() - newVertexValues.size()) / computeStride();
 	}
-
-	protected int removeData(int[] reference) {
-		for (int i = reference[1]; i >= reference[0]; i--) {
+	
+	protected int removeData(int lowerBound, int upperBound) {
+		for(int i = upperBound; i >= lowerBound; i--) {
 			vertexValues.remove(i);
 		}
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
-		return (reference[1] - reference[0] + 1) / computeStride();
+		return (upperBound - lowerBound + 1) / computeStride();
 	}
 
 	protected int getCurrentIndex() {
 		return vertexValues.size();
+	}
+	
+	protected List<EPHVertexAttribute> getVertexAttributes() {
+		return vertexAttributes;
 	}
 
 }

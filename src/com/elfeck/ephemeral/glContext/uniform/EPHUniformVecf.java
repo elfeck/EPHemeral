@@ -26,7 +26,7 @@ public class EPHUniformVecf implements EPHUniformObject {
 	}
 
 	@Override
-	public void useUniform(int programHandle, int key) {
+	public void glUseUniform(int programHandle, int key) {
 		if (index < 0) index = glGetUniformLocation(programHandle, name);
 		float[] vector = entries.get(key).toArray();
 		if (vector != null) {

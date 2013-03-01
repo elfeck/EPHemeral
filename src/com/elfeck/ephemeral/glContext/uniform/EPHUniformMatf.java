@@ -26,7 +26,7 @@ public class EPHUniformMatf implements EPHUniformObject {
 	}
 
 	@Override
-	public void useUniform(int programHandle, int key) {
+	public void glUseUniform(int programHandle, int key) {
 		if (index < 0) index = glGetUniformLocation(programHandle, name);
 		EPHMatf matrix = entries.get(key);
 		if (matrix != null) {

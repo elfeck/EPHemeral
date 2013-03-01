@@ -19,15 +19,16 @@ import com.elfeck.ephemeral.glContext.uniform.EPHUniformObject;
 
 public class EPHVertexArrayObject {
 
+	private static EPHShaderProgramPool shaderPrograms;
+
 	private boolean dead, updated;
 	private int mode, size, usage, handle, currentKey;
-	private List<int[][]> entries;
+	private List<EPHVaoEntry> entries;
 	private EPHVertexBufferObject vbo;
 	private EPHIndexBufferObject ibo;
 	private EPHUniformBufferObject ubo;
-	private EPHShaderObject program;
-
-	public EPHVertexArrayObject(int mode, int usage, List<EPHVertexAttribute> vertexAttributes, List<EPHUniformObject> uniforms, String vertSPath, String fragSPath) {
+	
+	public EPHVertexArrayObject(int mode, int usage, List<EPHVertexAttribute> vertexAttributes, List<EPHUniformObject> uniforms) {
 		dead = false;
 		updated = false;
 		this.mode = mode;
@@ -35,22 +36,19 @@ public class EPHVertexArrayObject {
 		this.usage = usage;
 		handle = -1;
 		currentKey = 0;
-		entries = new ArrayList<int[][]>();
+		entries = new ArrayList<EPHVaoEntry>();
 		vbo = new EPHVertexBufferObject(vertexAttributes);
 		ibo = new EPHIndexBufferObject();
 		ubo = new EPHUniformBufferObject(uniforms);
-		program = new EPHShaderObject(vertSPath, fragSPath, vertexAttributesToMap(vertexAttributes));
 	}
 
-	public EPHVertexArrayObject(List<EPHVertexAttribute> vertexAttributes, List<EPHUniformObject> uniforms, String vertSPath, String fragSPath) {
-		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, vertexAttributes, uniforms, vertSPath, fragSPath);
+	public EPHVertexArrayObject(List<EPHVertexAttribute> vertexAttributes, List<EPHUniformObject> uniforms) {
+		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, vertexAttributes, uniforms);
 	}
 
 	private void glInit() {
-		if (handle < 0) {
-			program.glInit();
-			handle = glGenVertexArrays();
-		}
+		if (handle < 0) handle = glGenVertexArrays();
+		if(!shaderPrograms.isInitialized()) shaderPrograms.glInit();
 		vbo.glInit(usage);
 		ibo.glInit(usage);
 
@@ -69,53 +67,59 @@ public class EPHVertexArrayObject {
 		return names;
 	}
 
-	public void render() {
+	public void glRender() {
 		if (handle < 0 || !updated) glInit();
 		if (size > 0) {
 			glBindVertexArray(handle);
-			program.glBind();
-			for (int[][] ref : entries) {
-				ubo.useUniforms(program.getProgramHandle(), ref[2][0]);
-				glDrawElements(mode, ref[1][1] - ref[1][0] + 1, GL_UNSIGNED_INT, ref[1][0] * 4);
+			EPHShaderProgram currentProgram = null;
+			EPHVaoEntry current, next;
+			boolean bindRequ = true;
+			for(int i = 0; i < entries.size(); i++) {
+				current = entries.get(i);
+				next = i < entries.size() - 1 ? entries.get(i + 1) : null;
+				currentProgram = shaderPrograms.getShaderProgram(current.programKey);
+				if(!currentProgram.isLinked()) currentProgram.glAttachAndLinkProgram(vertexAttributesToMap(vbo.getVertexAttributes()));
+				if(bindRequ) currentProgram.glBind();
+				ubo.glUseUniforms(currentProgram.getProgramHandle(), current.uniformKey);
+				glDrawElements(mode, current.iboUpperBound - current.iboLowerBound + 1, GL_UNSIGNED_INT, current.iboLowerBound * 4);
+				bindRequ = next == null ? true : current.programKey.equals(next.programKey) ? false : true;
+				if(bindRequ) currentProgram.glUnbind();
 			}
-			program.glUnbind();
 			glBindVertexArray(0);
 		}
 	}
+	
 	public void glDispose() {
 		vbo.glDispose();
 		ibo.glDispose();
-		program.glDispose();
 		glDeleteBuffers(handle);
 	}
 
-	public int[][] addData(List<Float> vertexValues, List<Integer> indices) {
-		int[][] references = {
-								{ vbo.getCurrentIndex(), vbo.getCurrentIndex() + vertexValues.size() - 1 },
-								{ ibo.getCurrentIndex(), ibo.getCurrentIndex() + indices.size() - 1 },
-								{ currentKey++ }
-		};
+	public EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, String programKey) {
+		EPHVaoEntry entry = new EPHVaoEntry(vbo.getCurrentIndex(), vbo.getCurrentIndex() + vertexValues.size() - 1,
+				ibo.getCurrentIndex(), ibo.getCurrentIndex() + indices.size() - 1,
+				currentKey++, programKey);
 		ibo.addData(indices, vbo.addData(vertexValues));
 		size += indices.size();
-		entries.add(references);
+		entries.add(entry);
 		updated = false;
-		return references;
+		return entry;
 	}
-
-	public void removeData(int[][] references) {
-		ibo.removeData(references[1], vbo.removeData(references[0]));
-		ubo.removeUniformEntry(references[2][0]);
-		size -= (references[1][1] - references[1][0]) + 1;
-		int deletedVertexValues = references[0][1] - references[0][0] + 1;
-		int deletedIndices = references[1][1] - references[1][0] + 1;
-		for (int i = entries.indexOf(references) + 1; i < entries.size(); i++) {
-			int[][] currentRef = entries.get(i);
-			currentRef[0][0] -= deletedVertexValues;
-			currentRef[0][1] -= deletedVertexValues;
-			currentRef[1][0] -= deletedIndices;
-			currentRef[1][1] -= deletedIndices;
+	
+	public void removeData(EPHVaoEntry entry) {
+		ibo.removeData(entry.iboLowerBound, entry.iboUpperBound, vbo.removeData(entry.vboLowerBound, entry.vboUpperBound));
+		ubo.removeUniformEntry(entry.uniformKey);
+		size -= entry.iboUpperBound - entry.iboLowerBound + 1;
+		int deletedVertexValues = entry.vboUpperBound - entry.vboLowerBound + 1;
+		int deletedIndices = entry.iboUpperBound - entry.iboLowerBound + 1;
+		for(int i = entries.indexOf(entry) + 1; i < entries.size(); i++) {
+			EPHVaoEntry currentEntry = entries.get(i);
+			currentEntry.vboLowerBound -= deletedVertexValues;
+			currentEntry.vboUpperBound -= deletedVertexValues;
+			currentEntry.iboLowerBound -= deletedIndices;
+			currentEntry.iboUpperBound -= deletedIndices;
 		}
-		entries.remove(references);
+		entries.remove(entry);
 		updated = false;
 	}
 
@@ -125,6 +129,14 @@ public class EPHVertexArrayObject {
 
 	public void setDead(boolean dead) {
 		this.dead = dead;
+	}
+	
+	protected static void initShaderProgramPool() {
+		shaderPrograms = new EPHShaderProgramPool();
+	}
+	
+	public static void glDisposeShaderPrograms() {
+		shaderPrograms.glDisposeShaderPrograms();
 	}
 
 }
