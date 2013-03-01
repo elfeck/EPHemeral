@@ -27,7 +27,7 @@ public class EPHRenderContext {
 	}
 
 	private void initContext() {
-		DisplayMode displayMode = new DisplayMode(EPHemeral.WIDTH, EPHemeral.HEIGHT);
+		DisplayMode displayMode = new DisplayMode(main.getWidth(), main.getHeight());
 		PixelFormat pixelFormat = new PixelFormat().withSamples(8);
 		try {
 			Display.setDisplayMode(displayMode);

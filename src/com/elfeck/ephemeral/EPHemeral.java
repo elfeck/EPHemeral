@@ -14,24 +14,20 @@ import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 
 public class EPHemeral {
 
-	public static void main(String[] args) {
-		new EPHemeral();
-	}
-
-	public static final int WIDTH = 480, HEIGHT = 320;
 	public static final String VERSION = "0.0.00";
 
+	private int width, height;
 	private EPHSurface surface;
 	private EPHRenderContext renderContext;
 	private EPHRunnableContext mainContext;
 	private Thread mainThread;
 
-	public EPHemeral() {
+	public EPHemeral(int width, int height) {
+		this.width = width;
+		this.height = height;
 		renderContext = new EPHRenderContext(this);
 		mainThread = new Thread(mainContext = new EPHRunnableContext(this, 1));
 		surface = null;
-
-		mainThread.start();
 	}
 
 	protected void reqLogic(long delta) {
@@ -41,9 +37,9 @@ public class EPHemeral {
 	protected void reqRender() {
 		renderContext.render();
 	}
-
-	public List<EPHVertexArrayObject> getVaos() {
-		return surface.getVaos();
+	
+	public void start() {
+		mainThread.start();
 	}
 
 	public void updateVaos() {
@@ -57,6 +53,26 @@ public class EPHemeral {
 	public void destroy() {
 		renderContext.destroy();
 		mainContext.destroy();
+	}
+	
+	public List<EPHVertexArrayObject> getVaos() {
+		return surface.getVaos();
+	}
+	
+	public void setSurface(EPHSurface surface) {
+		this.surface = surface;
+	}
+	
+	public EPHSurface getSurface() {
+		return surface;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 
 }

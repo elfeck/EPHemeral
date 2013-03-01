@@ -59,6 +59,11 @@ public class EPHUniformVecf implements EPHUniformObject {
 		entries.remove(key);
 	}
 
+	@Override
+	public String getName() {
+		return name;
+	}
+	
 	public void addEntry(int key, EPHVecf vector) {
 		entries.put(key, vector);
 	}
