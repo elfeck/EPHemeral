@@ -19,11 +19,13 @@ import com.elfeck.ephemeral.EPHemeral;
 public class EPHRenderContext {
 
 	private boolean initialized;
+	private String shaderParentPath;
 	private EPHemeral main;
 
-	public EPHRenderContext(EPHemeral main) {
-		initialized = false;
+	public EPHRenderContext(EPHemeral main, String shaderParentPath) {
 		this.main = main;
+		this.shaderParentPath = shaderParentPath;
+		initialized = false;
 	}
 
 	private void glInitContext() {
@@ -40,7 +42,7 @@ public class EPHRenderContext {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_MULTISAMPLE);
-		EPHVertexArrayObject.initShaderProgramPool();
+		EPHVertexArrayObject.initShaderProgramPool(shaderParentPath);
 		initialized = true;
 	}
 

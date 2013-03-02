@@ -6,12 +6,12 @@ package com.elfeck.ephemeral.glContext;
  */
 
 public class EPHVaoEntry {
-	
+
 	protected int vboLowerBound, vboUpperBound;
 	protected int iboLowerBound, iboUpperBound;
 	protected int uniformKey;
 	protected String programKey;
-	
+
 	public EPHVaoEntry() {
 		vboLowerBound = -1;
 		vboUpperBound = -1;
@@ -20,7 +20,7 @@ public class EPHVaoEntry {
 		uniformKey = -1;
 		programKey = null;
 	}
-	
+
 	public EPHVaoEntry(int vboL, int vboU, int iboL, int iboU, int uniform, String program) {
 		vboLowerBound = vboL;
 		vboUpperBound = vboU;
@@ -29,13 +29,17 @@ public class EPHVaoEntry {
 		uniformKey = uniform;
 		programKey = program;
 	}
-	
+
 	public int getUniformKey() {
 		return uniformKey;
 	}
-	
+
 	public String getProgramKey() {
 		return programKey;
+	}
+
+	public void setProgram(String key) {
+		programKey = key;
 	}
 
 }

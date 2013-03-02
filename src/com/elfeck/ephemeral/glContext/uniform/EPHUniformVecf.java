@@ -63,7 +63,7 @@ public class EPHUniformVecf implements EPHUniformObject {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void addEntry(int key, EPHVecf vector) {
 		entries.put(key, vector);
 	}

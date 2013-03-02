@@ -55,6 +55,11 @@ public class EPHVec3f implements EPHVecf {
 		return new float[] { x, y, z };
 	}
 
+	@Override
+	public int getDimension() {
+		return 3;
+	}
+
 	public EPHVec3f addVec3f(EPHVec3f vec) {
 		x += vec.x;
 		y += vec.y;

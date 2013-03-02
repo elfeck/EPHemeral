@@ -7,6 +7,7 @@ package com.elfeck.ephemeral.math;
 
 public interface EPHVecf {
 
+	public int getDimension();
 	public float getN(int index);
 	public void setN(int index, float value);
 

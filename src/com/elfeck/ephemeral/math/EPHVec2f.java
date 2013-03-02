@@ -48,6 +48,11 @@ public class EPHVec2f implements EPHVecf {
 		return new float[] { x, y };
 	}
 
+	@Override
+	public int getDimension() {
+		return 2;
+	}
+
 	public EPHVec2f addVec2f(EPHVec2f vec) {
 		x += vec.x;
 		y += vec.y;

@@ -7,7 +7,8 @@ package com.elfeck.ephemeral.glContext;
 
 public class EPHVertexAttribute {
 
-	protected final int index, size, type, stride, offset;
+	private int stride, offset;
+	protected final int index, size, type;
 	protected final boolean normalized;
 	protected final String name;
 
@@ -23,6 +24,26 @@ public class EPHVertexAttribute {
 
 	public EPHVertexAttribute(int index, int size, int stride, int offset, String name) {
 		this(index, size, EPHRenderUtils.TYPE_FLOAT, stride, offset, false, name);
+	}
+
+	public int getStride() {
+		return stride;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setStride(int stride) {
+		this.stride = stride;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 
 }

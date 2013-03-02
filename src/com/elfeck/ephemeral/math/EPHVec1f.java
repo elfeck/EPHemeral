@@ -34,4 +34,9 @@ public class EPHVec1f implements EPHVecf {
 		return new float[] { x };
 	}
 
+	@Override
+	public int getDimension() {
+		return 1;
+	}
+
 }

@@ -53,7 +53,8 @@ public class EPHVertexBufferObject {
 		glBindBuffer(GL_ARRAY_BUFFER, handle);
 		for (EPHVertexAttribute currentAttrib : vertexAttributes) {
 			glEnableVertexAttribArray(currentAttrib.index);
-			glVertexAttribPointer(currentAttrib.index, currentAttrib.size, currentAttrib.type, currentAttrib.normalized, currentAttrib.stride, currentAttrib.offset);
+			glVertexAttribPointer(currentAttrib.index, currentAttrib.size, currentAttrib.type, currentAttrib.normalized,
+					currentAttrib.getStride(), currentAttrib.getOffset());
 		}
 	}
 
@@ -66,9 +67,9 @@ public class EPHVertexBufferObject {
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		return (vertexValues.size() - newVertexValues.size()) / computeStride();
 	}
-	
+
 	protected int removeData(int lowerBound, int upperBound) {
-		for(int i = upperBound; i >= lowerBound; i--) {
+		for (int i = upperBound; i >= lowerBound; i--) {
 			vertexValues.remove(i);
 		}
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
@@ -78,7 +79,7 @@ public class EPHVertexBufferObject {
 	protected int getCurrentIndex() {
 		return vertexValues.size();
 	}
-	
+
 	protected List<EPHVertexAttribute> getVertexAttributes() {
 		return vertexAttributes;
 	}

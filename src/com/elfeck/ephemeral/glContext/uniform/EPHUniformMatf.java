@@ -55,7 +55,7 @@ public class EPHUniformMatf implements EPHUniformObject {
 	public void removeEntry(int key) {
 		entries.remove(key);
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;

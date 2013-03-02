@@ -23,6 +23,13 @@ public class EPHVec4f implements EPHVecf {
 		w = 0;
 	}
 
+	public EPHVec4f(EPHVec2f vec, int z, int w) {
+		x = vec.x;
+		y = vec.y;
+		this.z = z;
+		this.w = w;
+	}
+
 	@Override
 	public float getN(int index) {
 		switch (index) {
@@ -60,6 +67,11 @@ public class EPHVec4f implements EPHVecf {
 	@Override
 	public float[] toArray() {
 		return new float[] { x, y, z, w };
+	}
+
+	@Override
+	public int getDimension() {
+		return 4;
 	}
 
 	public EPHVec4f addVec4f(EPHVec4f vec) {
@@ -264,4 +276,5 @@ public class EPHVec4f implements EPHVecf {
 	public static float length(float vx, float vy, float vz, float vw) {
 		return (float) Math.sqrt(vx * vx + vy * vy + vz * vz + vw * vw);
 	}
+
 }
