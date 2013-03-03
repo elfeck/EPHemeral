@@ -13,6 +13,7 @@ public class EPHConvexPolygon extends EPHPolygon {
 
 	@Override
 	protected void tessellate() {
+		triangles = new EPHTriangle[vertices.length - 2];
 		for (int i = 1; i < vertices.length - 1; i++) {
 			triangles[i - 1] = new EPHTriangle(new EPHVertex[] { vertices[0], vertices[i], vertices[i + 1] });
 		}

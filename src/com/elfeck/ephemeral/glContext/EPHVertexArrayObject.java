@@ -17,9 +17,11 @@ import java.util.Map;
 
 public class EPHVertexArrayObject {
 
-	private static EPHShaderProgramPool shaderPrograms;
+	private static EPHShaderProgramPool shaderProgramPool;
+	private static boolean shaderPoolInitialized = false;
 
 	private boolean dead, updated;
+
 	private int mode, size, usage, handle, uniformKey;
 	private List<EPHVaoEntry> entries;
 	private EPHVertexBufferObject vbo;
@@ -44,7 +46,6 @@ public class EPHVertexArrayObject {
 
 	private void glInit() {
 		if (handle < 0) handle = glGenVertexArrays();
-		if (!shaderPrograms.isInitialized()) shaderPrograms.glInit();
 		vbo.glInit(usage);
 		ibo.glInit(usage);
 
@@ -73,10 +74,10 @@ public class EPHVertexArrayObject {
 			for (int i = 0; i < entries.size(); i++) {
 				current = entries.get(i);
 				next = i < entries.size() - 1 ? entries.get(i + 1) : null;
-				currentProgram = shaderPrograms.getShaderProgram(current.programKey);
+				currentProgram = shaderProgramPool.getShaderProgram(current.programKey);
 				if (!currentProgram.isLinked()) currentProgram.glAttachAndLinkProgram(vertexAttributesToMap(vbo.getVertexAttributes()));
-				currentProgram.glUseUniforms(current.uniformKey);
 				if (bindRequ) currentProgram.glBind();
+				currentProgram.glUseUniforms(current.uniformKey);
 				glDrawElements(mode, current.iboUpperBound - current.iboLowerBound + 1, GL_UNSIGNED_INT, current.iboLowerBound * 4);
 				bindRequ = next == null ? true : current.programKey.equals(next.programKey) ? false : true;
 				if (bindRequ) currentProgram.glUnbind();
@@ -92,9 +93,18 @@ public class EPHVertexArrayObject {
 	}
 
 	public EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, String programKey) {
+		synchronized (EPHRenderContext.initMonitor) {
+			if (!shaderPoolInitialized) {
+				try {
+					EPHRenderContext.initMonitor.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		EPHVaoEntry entry = new EPHVaoEntry(vbo.getCurrentIndex(), vbo.getCurrentIndex() + vertexValues.size() - 1,
 				ibo.getCurrentIndex(), ibo.getCurrentIndex() + indices.size() - 1,
-				uniformKey++, programKey);
+				uniformKey++, programKey, shaderProgramPool.getShaderProgram(programKey).getUniformTemplateBffer());
 		ibo.addData(indices, vbo.addData(vertexValues));
 		size += indices.size();
 		entries.add(entry);
@@ -126,12 +136,14 @@ public class EPHVertexArrayObject {
 		this.dead = dead;
 	}
 
-	protected static void initShaderProgramPool(String parentPath) {
-		shaderPrograms = new EPHShaderProgramPool(parentPath);
+	protected static void glInitShaderProgramPool(String parentPath) {
+		shaderProgramPool = new EPHShaderProgramPool(parentPath);
+		shaderProgramPool.glInit();
+		shaderPoolInitialized = true;
 	}
 
 	public static void glDisposeShaderPrograms() {
-		shaderPrograms.glDisposeShaderPrograms();
+		shaderProgramPool.glDisposeShaderPrograms();
 	}
 
 }

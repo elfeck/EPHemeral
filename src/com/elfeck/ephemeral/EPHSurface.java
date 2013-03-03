@@ -11,7 +11,6 @@ import java.util.List;
 import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 
 
-
 public abstract class EPHSurface {
 
 	private List<EPHEntity> entities, newEntities;

@@ -17,9 +17,9 @@ public class EPHShaderProgram {
 	private int vertexSHandle, fragmentSHandle;
 	private int programHandle;
 	private String vertSrc, fragSrc;
-	private EPHUniformObjectTemplate utb;
+	private EPHUniformTemplateBuffer utb;
 
-	protected EPHShaderProgram(String vertSrc, String fragSrc, EPHUniformObjectTemplate utb) {
+	protected EPHShaderProgram(String vertSrc, String fragSrc, EPHUniformTemplateBuffer utb) {
 		this.vertSrc = vertSrc;
 		this.fragSrc = fragSrc;
 		this.utb = utb;
@@ -99,6 +99,10 @@ public class EPHShaderProgram {
 
 	protected int getProgramHandle() {
 		return programHandle;
+	}
+
+	protected EPHUniformTemplateBuffer getUniformTemplateBffer() {
+		return utb;
 	}
 
 }

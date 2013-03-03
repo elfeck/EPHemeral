@@ -36,6 +36,12 @@ public abstract class EPHPolygon {
 		tessellate();
 	}
 
+	public EPHPolygon(String programKey, EPHVertex[] vertices, Map<String, EPHVecf> vecUniforms, Map<String, EPHMatf> matUniforms) {
+		this(programKey, vertices);
+		vecUniforms.putAll(vecUniforms);
+		matUniforms.putAll(matUniforms);
+	}
+
 	private List<Float> assembleVertexValues() {
 		List<Float> vertexValues = new ArrayList<Float>();
 		for (int i = 0; i < vertices.length; i++) {
@@ -53,11 +59,17 @@ public abstract class EPHPolygon {
 	}
 
 	public void addDataToVao(EPHVertexArrayObject vao) {
-		// TODO: register uniforms
 		vaoRef = vao.addData(assembleVertexValues(), assembleIndices(), programKey);
+		for (String key : vecUniforms.keySet()) {
+			vaoRef.registerVecUniformEntry(key, vecUniforms.get(key));
+		}
+		for (String key : matUniforms.keySet()) {
+			vaoRef.registerMatUniformEntry(key, matUniforms.get(key));
+		}
 	}
 
 	public void removeDataFromVao(EPHVertexArrayObject vao) {
+		vaoRef.deleteUniformEntries();
 		vao.removeData(vaoRef);
 	}
 

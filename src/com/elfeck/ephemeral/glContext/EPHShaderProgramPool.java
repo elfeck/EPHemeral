@@ -18,11 +18,9 @@ import com.elfeck.ephemeral.glContext.uniform.EPHUniformVecf;
 
 public class EPHShaderProgramPool {
 
-	private boolean initialized;
 	private Map<String, EPHShaderProgram> programs;
 
 	public EPHShaderProgramPool(String parentPath) {
-		initialized = false;
 		programs = new HashMap<String, EPHShaderProgram>();
 		initShaderProgramPool(parentPath);
 	}
@@ -74,9 +72,9 @@ public class EPHShaderProgramPool {
 		return result;
 	}
 
-	private EPHUniformObjectTemplate uniformStringToUtb(String uniformString) {
+	private EPHUniformTemplateBuffer uniformStringToUtb(String uniformString) {
 		String[] uniforms = uniformString.split("%");
-		EPHUniformObjectTemplate utb = new EPHUniformObjectTemplate();
+		EPHUniformTemplateBuffer utb = new EPHUniformTemplateBuffer();
 		for (String s : uniforms) {
 			String[] cut = s.split("#");
 			if (cut[0].equals("float") || cut[0].startsWith("vec")) utb.addUniformTemplate(new EPHUniformVecf(cut[1]));
@@ -104,11 +102,6 @@ public class EPHShaderProgramPool {
 		for (String key : programs.keySet()) {
 			programs.get(key).glCompileShaderSrc();
 		}
-		initialized = true;
-	}
-
-	protected boolean isInitialized() {
-		return initialized;
 	}
 
 	protected EPHShaderProgram getShaderProgram(String key) {

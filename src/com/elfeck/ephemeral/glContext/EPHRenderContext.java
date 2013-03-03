@@ -18,6 +18,8 @@ import com.elfeck.ephemeral.EPHemeral;
 
 public class EPHRenderContext {
 
+	protected static final Object initMonitor = new Object();
+
 	private boolean initialized;
 	private String shaderParentPath;
 	private EPHemeral main;
@@ -42,8 +44,11 @@ public class EPHRenderContext {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_MULTISAMPLE);
-		EPHVertexArrayObject.initShaderProgramPool(shaderParentPath);
+		EPHVertexArrayObject.glInitShaderProgramPool(shaderParentPath);
 		initialized = true;
+		synchronized (initMonitor) {
+			initMonitor.notify();
+		}
 	}
 
 	private boolean glHandleCloseRequest() {

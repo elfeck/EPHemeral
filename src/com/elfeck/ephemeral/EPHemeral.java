@@ -18,31 +18,33 @@ public class EPHemeral {
 	private int width, height;
 	private EPHSurface surface;
 	private EPHRenderContext renderContext;
-	private EPHRunnableContext mainContext;
-	private Thread mainThread;
-
-	public EPHemeral(int width, int height) {
-		this(width, height, "shader/");
-	}
+	private EPHRunnableContext renderJob, logicJob;
+	private Thread renderThread, logicThread;
 
 	public EPHemeral(int width, int height, String shaderParentPath) {
 		this.width = width;
 		this.height = height;
 		renderContext = new EPHRenderContext(this, shaderParentPath);
-		mainThread = new Thread(mainContext = new EPHRunnableContext(this, 1));
+		renderThread = new Thread(renderJob = new EPHRenderJob(this, 1));
+		logicThread = new Thread(logicJob = new EPHLogicJob(this, 1));
 		surface = null;
 	}
 
+	public EPHemeral(int width, int height) {
+		this(width, height, "shader/");
+	}
+
 	protected void reqLogic(long delta) {
-		surface.execLogic(delta);
+		if (surface != null) surface.execLogic(delta);
 	}
 
 	protected void reqRender() {
-		renderContext.glRender();
+		if (surface != null) renderContext.glRender();
 	}
 
 	public void start() {
-		mainThread.start();
+		renderThread.start();
+		logicThread.start();
 	}
 
 	public void updateVaos() {
@@ -56,7 +58,8 @@ public class EPHemeral {
 
 	public void destroy() {
 		renderContext.glDestroy();
-		mainContext.destroy();
+		renderJob.destroy();
+		logicJob.destroy();
 	}
 
 	public List<EPHVertexArrayObject> getVaos() {

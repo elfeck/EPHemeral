@@ -5,18 +5,18 @@ package com.elfeck.ephemeral;
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-public class EPHRunnableContext implements Runnable {
+public abstract class EPHRunnableContext implements Runnable {
 
 	private boolean running;
-	private long delta;
 	private int printDelay, printDelayPassed, fpsSum, loopsPassed;
-	private EPHemeral main;
+	protected boolean printing;
+	protected long delta;
 	protected int sleepTime;
 
-	public EPHRunnableContext(EPHemeral main, int sleepTime) {
+	public EPHRunnableContext(int sleepTime) {
 		running = true;
+		printing = true;
 		delta = 0;
-		this.main = main;
 		printDelay = 300;
 		printDelayPassed = 0;
 		this.sleepTime = sleepTime;
@@ -33,7 +33,7 @@ public class EPHRunnableContext implements Runnable {
 				e.printStackTrace();
 			}
 			delta = System.nanoTime() - start;
-			print(delta);
+			if (printing) print(delta);
 		}
 		System.exit(0);
 	}
@@ -53,10 +53,7 @@ public class EPHRunnableContext implements Runnable {
 		}
 	}
 
-	protected void execute() {
-		main.reqLogic(delta);
-		main.reqRender();
-	}
+	protected abstract void execute();
 
 	public void destroy() {
 		running = false;

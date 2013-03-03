@@ -15,7 +15,7 @@ public class EPHVertex {
 	private EPHVecf[] data;
 	private int index;
 
-	protected EPHVertex(int index, EPHVecf[] data) {
+	public EPHVertex(int index, EPHVecf[] data) {
 		this.data = data;
 		this.index = index;
 	}
