@@ -8,18 +8,17 @@ package com.elfeck.ephemeral;
 public abstract class EPHRunnableContext implements Runnable {
 
 	private boolean running;
-	private int printDelay, printDelayPassed, fpsSum, loopsPassed;
-	protected boolean printing;
+	private int sleepTime, fpsSum, loopsPassed;
+	private int printDelayPassed, printDelay, warningThreshold;
 	protected long delta;
-	protected int sleepTime;
 
 	public EPHRunnableContext(int sleepTime) {
-		running = true;
-		printing = true;
-		delta = 0;
-		printDelay = 300;
-		printDelayPassed = 0;
 		this.sleepTime = sleepTime;
+		running = true;
+		delta = 0;
+		printDelay = -1;
+		printDelayPassed = 0;
+		warningThreshold = -1;
 	}
 
 	@Override
@@ -33,16 +32,18 @@ public abstract class EPHRunnableContext implements Runnable {
 				e.printStackTrace();
 			}
 			delta = System.nanoTime() - start;
-			if (printing) print(delta);
+			if (printDelay > 0) print(delta);
 		}
 		System.exit(0);
 	}
 
 	private void print(long delta) {
 		long fps = (long) (1e9 / delta);
-		if (fps < 150) System.err.println(fps);
+		if (fps < warningThreshold && warningThreshold > 0) {
+			System.err.println(getPrefix() + fps);
+		}
 		if (printDelayPassed > printDelay) {
-			System.out.println(Math.round(fpsSum / loopsPassed));
+			System.out.println(getPrefix() + Math.round(fpsSum / loopsPassed));
 			fpsSum = 0;
 			loopsPassed = 0;
 			printDelayPassed = 0;
@@ -54,9 +55,15 @@ public abstract class EPHRunnableContext implements Runnable {
 	}
 
 	protected abstract void execute();
+	protected abstract String getPrefix();
 
 	public void destroy() {
 		running = false;
+	}
+
+	public void setConsoleDebug(int printDelay, int warningThreshold) {
+		this.printDelay = printDelay;
+		this.warningThreshold = warningThreshold;
 	}
 
 }

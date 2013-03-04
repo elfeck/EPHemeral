@@ -21,11 +21,13 @@ public class EPHRenderContext {
 	protected static final Object initMonitor = new Object();
 
 	private boolean initialized;
+	private int fpsCap;
 	private String shaderParentPath;
 	private EPHemeral main;
 
-	public EPHRenderContext(EPHemeral main, String shaderParentPath) {
+	public EPHRenderContext(EPHemeral main, int fpsCap, String shaderParentPath) {
 		this.main = main;
+		this.fpsCap = fpsCap;
 		this.shaderParentPath = shaderParentPath;
 		initialized = false;
 	}
@@ -80,7 +82,7 @@ public class EPHRenderContext {
 		glClearDisplay();
 		glDraw();
 		Display.update();
-		Display.sync(200);
+		Display.sync(fpsCap);
 		main.updateVaos();
 	}
 

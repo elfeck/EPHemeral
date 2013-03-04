@@ -21,24 +21,26 @@ public class EPHemeral {
 	private EPHRunnableContext renderJob, logicJob;
 	private Thread renderThread, logicThread;
 
-	public EPHemeral(int width, int height, String shaderParentPath) {
+	public EPHemeral(int width, int height, int fpsCap, int lpsCap, String shaderParentPath) {
 		this.width = width;
 		this.height = height;
-		renderContext = new EPHRenderContext(this, shaderParentPath);
-		renderThread = new Thread(renderJob = new EPHRenderJob(this, 1));
-		logicThread = new Thread(logicJob = new EPHLogicJob(this, 1));
+		renderContext = new EPHRenderContext(this, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath);
+		renderThread = new Thread(renderJob = new EPHRenderJob(this, Math.max(1, (int) Math.round((1.0 / fpsCap) * 1000 - 5))), "RenderThread");
+		logicThread = new Thread(logicJob = new EPHLogicJob(this, Math.max(1, (int) Math.round((1.0 / lpsCap) * 1000))), "LogicThread");
+		renderThread.setPriority(Thread.MAX_PRIORITY);
+		logicThread.setPriority(Thread.MIN_PRIORITY);
 		surface = null;
 	}
 
 	public EPHemeral(int width, int height) {
-		this(width, height, "shader/");
+		this(width, height, 60, 1000, "shader/");
 	}
 
-	protected void reqLogic(long delta) {
+	protected synchronized void reqLogic(long delta) {
 		if (surface != null) surface.execLogic(delta);
 	}
 
-	protected void reqRender() {
+	protected synchronized void reqRender() {
 		if (surface != null) renderContext.glRender();
 	}
 
@@ -47,30 +49,30 @@ public class EPHemeral {
 		logicThread.start();
 	}
 
-	public void updateVaos() {
+	public synchronized void updateVaos() {
 		surface.updateVaos();
 	}
 
-	public void glDestroyVaos() {
+	public synchronized void glDestroyVaos() {
 		surface.destroyVaos();
 		EPHVertexArrayObject.glDisposeShaderPrograms();
 	}
 
-	public void destroy() {
+	public synchronized void destroy() {
 		renderContext.glDestroy();
 		renderJob.destroy();
 		logicJob.destroy();
 	}
 
-	public List<EPHVertexArrayObject> getVaos() {
+	public synchronized List<EPHVertexArrayObject> getVaos() {
 		return surface.getVaos();
 	}
 
-	public void setSurface(EPHSurface surface) {
+	public synchronized void setSurface(EPHSurface surface) {
 		this.surface = surface;
 	}
 
-	public EPHSurface getSurface() {
+	public synchronized EPHSurface getSurface() {
 		return surface;
 	}
 
@@ -80,6 +82,11 @@ public class EPHemeral {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public void setDebug(int renderPrintDelay, int logicPrintDelay, int renderWarningThreshold, int logicWarningThreshold) {
+		renderJob.setConsoleDebug(renderPrintDelay, renderWarningThreshold);
+		logicJob.setConsoleDebug(logicPrintDelay, logicWarningThreshold);
 	}
 
 }
