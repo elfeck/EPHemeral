@@ -18,14 +18,14 @@ public class EPHModel {
 	private EPHVertexArrayObject vao;
 	private List<EPHVertexAttribute> attributes;
 
-	private List<EPHPolygon> polygons;
+	private List<EPHDrawable> drawables;
 	private EPHSurface surface;
 
 	public EPHModel(EPHSurface surface) {
 		this.surface = surface;
 		vao = null;
 		attributes = new ArrayList<EPHVertexAttribute>();
-		polygons = new ArrayList<EPHPolygon>();
+		drawables = new ArrayList<EPHDrawable>();
 	}
 
 	private void adjustAttributes() {
@@ -49,15 +49,23 @@ public class EPHModel {
 		adjustAttributes();
 	}
 
-	public void addPolygon(EPHPolygon polygon) {
-		polygons.add(polygon);
+	public void addDrawable(EPHDrawable drawable) {
+		drawables.add(drawable);
 	}
 
 	public void create() {
 		vao = new EPHVertexArrayObject(attributes);
-		for (EPHPolygon polygon : polygons) {
-			polygon.addDataToVao(vao);
+		for (EPHDrawable drawable : drawables) {
+			drawable.addDataToVao(vao);
 		}
+	}
+
+	public void removeFromVao(EPHDrawable drawable) {
+		drawable.removeDataFromVao(vao);
+	}
+
+	public void addToVao(EPHDrawable drawable) {
+		drawable.addDataToVao(vao);
 	}
 
 	public void addToSurface() {

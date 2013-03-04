@@ -64,7 +64,7 @@ public class EPHVertexArrayObject {
 		return names;
 	}
 
-	public void glRender() {
+	public synchronized void glRender() {
 		if (handle < 0 || !updated) glInit();
 		if (size > 0) {
 			glBindVertexArray(handle);
@@ -92,9 +92,9 @@ public class EPHVertexArrayObject {
 		glDeleteBuffers(handle);
 	}
 
-	public EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, String programKey) {
-		synchronized (EPHRenderContext.initMonitor) {
-			if (!shaderPoolInitialized) {
+	public synchronized EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, String programKey) {
+		if (!shaderPoolInitialized) {
+			synchronized (EPHRenderContext.initMonitor) {
 				try {
 					EPHRenderContext.initMonitor.wait();
 				} catch (InterruptedException e) {
@@ -112,7 +112,8 @@ public class EPHVertexArrayObject {
 		return entry;
 	}
 
-	public void removeData(EPHVaoEntry entry) {
+	public synchronized void removeData(EPHVaoEntry entry) {
+		System.out.println("Attemting to remove");
 		ibo.removeData(entry.iboLowerBound, entry.iboUpperBound, vbo.removeData(entry.vboLowerBound, entry.vboUpperBound));
 		size -= entry.iboUpperBound - entry.iboLowerBound + 1;
 		int deletedVertexValues = entry.vboUpperBound - entry.vboLowerBound + 1;

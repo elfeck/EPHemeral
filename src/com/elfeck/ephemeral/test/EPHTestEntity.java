@@ -2,7 +2,6 @@ package com.elfeck.ephemeral.test;
 
 import com.elfeck.ephemeral.EPHEntity;
 import com.elfeck.ephemeral.EPHSurface;
-import com.elfeck.ephemeral.geometry.EPHConvexPolygon;
 import com.elfeck.ephemeral.geometry.EPHModel;
 import com.elfeck.ephemeral.geometry.EPHPolygon;
 import com.elfeck.ephemeral.geometry.EPHVertex;
@@ -21,13 +20,15 @@ public class EPHTestEntity implements EPHEntity {
 
 	private boolean dead;
 	private EPHModel model;
-	private EPHVec2f offset;
+	private EPHPolygon polygon1, polygon2;
+	private EPHVec2f offset1, offset2;
 	private EPHMat4f mvpMatrix;
 
 	public EPHTestEntity(EPHSurface surface) {
 		dead = false;
 		model = new EPHModel(surface);
-		offset = new EPHVec2f(-0.5f, -0.5f);
+		offset1 = new EPHVec2f(0.0f, 0.0f);
+		offset2 = new EPHVec2f(0.0f, 0.0f);
 		mvpMatrix = new EPHMat4f(new float[][] {
 												{ 1, 0, 0, 0 },
 												{ 0, 1, 0, 0 },
@@ -37,9 +38,19 @@ public class EPHTestEntity implements EPHEntity {
 		initModel();
 	}
 
+	boolean outward = true;
+
 	@Override
 	public void doLogic(long delta) {
-
+		if (outward) {
+			offset1.addVec2f(0.0001f, 0.000001f);
+			offset2.subVec2f(0.0001f, 0.000001f);
+		} else {
+			offset1.subVec2f(0.0001f, 0.000001f);
+			offset2.addVec2f(0.0001f, 0.000001f);
+		}
+		if (offset2.getX() < -0.75f) outward = false;
+		if (offset1.getX() < 0f) outward = true;
 	}
 
 	@Override
@@ -48,17 +59,29 @@ public class EPHTestEntity implements EPHEntity {
 	}
 
 	private void initModel() {
-		EPHVertex[] vertices = new EPHVertex[4];
-		vertices[0] = new EPHVertex(0, new EPHVecf[] { new EPHVec4f(0, 0, 0, 1), new EPHVec4f(0.7f, 0, 0, 1) });
-		vertices[1] = new EPHVertex(1, new EPHVecf[] { new EPHVec4f(0.9f, 0, 0, 1), new EPHVec4f(0, 0.7f, 0, 1) });
-		vertices[3] = new EPHVertex(2, new EPHVecf[] { new EPHVec4f(0.9f, 0.9f, 0, 1), new EPHVec4f(0.7f, 0.7f, 0, 1) });
-		vertices[2] = new EPHVertex(3, new EPHVecf[] { new EPHVec4f(0, 0.9f, 0, 1), new EPHVec4f(0.7f, 0, 0.7f, 1) });
+		EPHVertex[] vertices1 = new EPHVertex[4];
+		vertices1[0] = new EPHVertex(0, new EPHVecf[] { new EPHVec4f(-0.5f, 0.5f, 0, 1), new EPHVec4f(0.7f, 0, 0, 1) });
+		vertices1[1] = new EPHVertex(1, new EPHVecf[] { new EPHVec4f(0.5f, 0.6f, 0, 1), new EPHVec4f(0, 0.7f, 0, 1) });
+		vertices1[2] = new EPHVertex(2, new EPHVecf[] { new EPHVec4f(0.5f, -0.5f, 0, 1), new EPHVec4f(0.7f, 0.7f, 0, 1) });
+		vertices1[3] = new EPHVertex(3, new EPHVecf[] { new EPHVec4f(-0.5f, -0.6f, 0, 1), new EPHVec4f(0.7f, 0, 0.7f, 1) });
+		EPHVertex[] vertices2 = new EPHVertex[4];
+		vertices2[0] = new EPHVertex(0, new EPHVecf[] { new EPHVec4f(-0.5f, 0.6f, 0, 1), new EPHVec4f(0.7f, 0, 0, 1) });
+		vertices2[1] = new EPHVertex(1, new EPHVecf[] { new EPHVec4f(0.5f, 0.5f, 0, 1), new EPHVec4f(0, 0.7f, 0, 1) });
+		vertices2[2] = new EPHVertex(2, new EPHVecf[] { new EPHVec4f(0.5f, -0.6f, 0, 1), new EPHVec4f(0.7f, 0.7f, 0, 1) });
+		vertices2[3] = new EPHVertex(3, new EPHVecf[] { new EPHVec4f(-0.5f, -0.5f, 0, 1), new EPHVec4f(0.7f, 0, 0.7f, 1) });
 		model.addAttribute(4, "pos_model");
 		model.addAttribute(4, "col_model");
-		EPHPolygon polygon = new EPHConvexPolygon("test", vertices);
-		polygon.addUniformVecf("offset", offset);
-		polygon.addUniformMatf("mvp_matrix", mvpMatrix);
-		model.addPolygon(polygon);
+
+		polygon1 = new EPHPolygon("test", vertices1);
+		polygon1.addUniformVecf("offset", offset1);
+		polygon1.addUniformMatf("mvp_matrix", mvpMatrix);
+		model.addDrawable(polygon1);
+
+		polygon2 = new EPHPolygon("test2", vertices2);
+		polygon2.addUniformVecf("offset", offset2);
+		polygon2.addUniformMatf("mvp_matrix", mvpMatrix);
+		model.addDrawable(polygon2);
+
 		model.create();
 		model.addToSurface();
 	}

@@ -39,4 +39,9 @@ public class EPHVec1f implements EPHVecf {
 		return 1;
 	}
 
+	@Override
+	public EPHVec2f toVec2f() {
+		return new EPHVec2f(x, Float.NaN);
+	}
+
 }

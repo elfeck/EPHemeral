@@ -70,6 +70,11 @@ public class EPHVec4f implements EPHVecf {
 	}
 
 	@Override
+	public EPHVec2f toVec2f() {
+		return stripZW();
+	}
+
+	@Override
 	public int getDimension() {
 		return 4;
 	}

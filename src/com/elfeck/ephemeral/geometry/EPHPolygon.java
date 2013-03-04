@@ -16,16 +16,15 @@ import com.elfeck.ephemeral.math.EPHMatf;
 import com.elfeck.ephemeral.math.EPHVecf;
 
 
-public abstract class EPHPolygon {
+public class EPHPolygon implements EPHDrawable {
 
 	private String programKey;
 	private EPHVaoEntry vaoRef;
 	private Map<String, EPHVecf> vecUniforms;
 	private Map<String, EPHMatf> matUniforms;
 
-	protected int vertexCount;
-	protected EPHVertex[] vertices;
-	protected EPHTriangle[] triangles;
+	private EPHVertex[] vertices;
+	private EPHTriangle[] triangles;
 
 	public EPHPolygon(String programKey, EPHVertex[] vertices) {
 		this.programKey = programKey;
@@ -40,6 +39,14 @@ public abstract class EPHPolygon {
 		this(programKey, vertices);
 		vecUniforms.putAll(vecUniforms);
 		matUniforms.putAll(matUniforms);
+	}
+
+	private void tessellate() {
+		triangles = new EPHTriangle[vertices.length - 2];
+		for (int i = 1; i < vertices.length - 1; i++) {
+			triangles[i - 1] = new EPHTriangle(new EPHVertex[] { vertices[0], vertices[i], vertices[i + 1] });
+
+		}
 	}
 
 	private List<Float> assembleVertexValues() {
@@ -80,7 +87,5 @@ public abstract class EPHPolygon {
 	public void addUniformMatf(String name, EPHMatf uniform) {
 		matUniforms.put(name, uniform);
 	}
-
-	protected abstract void tessellate();
 
 }

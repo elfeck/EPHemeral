@@ -49,6 +49,11 @@ public class EPHVec2f implements EPHVecf {
 	}
 
 	@Override
+	public EPHVec2f toVec2f() {
+		return this;
+	}
+
+	@Override
 	public int getDimension() {
 		return 2;
 	}

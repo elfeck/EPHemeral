@@ -49,11 +49,11 @@ public class EPHemeral {
 		logicThread.start();
 	}
 
-	public synchronized void updateVaos() {
+	public void updateVaos() {
 		surface.updateVaos();
 	}
 
-	public synchronized void glDestroyVaos() {
+	public void glDestroyVaos() {
 		surface.destroyVaos();
 		EPHVertexArrayObject.glDisposeShaderPrograms();
 	}
@@ -64,7 +64,7 @@ public class EPHemeral {
 		logicJob.destroy();
 	}
 
-	public synchronized List<EPHVertexArrayObject> getVaos() {
+	public List<EPHVertexArrayObject> getVaos() {
 		return surface.getVaos();
 	}
 
@@ -72,7 +72,7 @@ public class EPHemeral {
 		this.surface = surface;
 	}
 
-	public synchronized EPHSurface getSurface() {
+	public EPHSurface getSurface() {
 		return surface;
 	}
 

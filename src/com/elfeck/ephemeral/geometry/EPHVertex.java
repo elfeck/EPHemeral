@@ -36,4 +36,8 @@ public class EPHVertex {
 		return index;
 	}
 
+	protected EPHVecf getVec(int index) {
+		return data[index];
+	}
+
 }

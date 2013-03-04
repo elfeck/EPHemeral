@@ -12,5 +12,6 @@ public interface EPHVecf {
 	public void setN(int index, float value);
 
 	public float[] toArray();
+	public EPHVec2f toVec2f();
 
 }
