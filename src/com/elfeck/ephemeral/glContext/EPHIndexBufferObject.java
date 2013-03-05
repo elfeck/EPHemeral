@@ -1,9 +1,9 @@
-package com.elfeck.ephemeral.glContext;
-
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
+
+package com.elfeck.ephemeral.glContext;
 
 import static org.lwjgl.opengl.GL15.*;
 
@@ -51,12 +51,12 @@ public class EPHIndexBufferObject {
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 	}
-	
+
 	protected void removeData(int lowerBound, int upperBound, int offset) {
-		for(int i = upperBound; i >= lowerBound; i--) {
+		for (int i = upperBound; i >= lowerBound; i--) {
 			indices.remove(i);
 		}
-		for(int i = lowerBound; i < indices.size(); i++) {
+		for (int i = lowerBound; i < indices.size(); i++) {
 			indices.add(i, indices.get(i) - offset);
 			indices.remove(i + 1);
 		}

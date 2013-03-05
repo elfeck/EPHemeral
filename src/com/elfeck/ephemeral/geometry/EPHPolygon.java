@@ -1,9 +1,9 @@
-package com.elfeck.ephemeral.geometry;
-
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
+
+package com.elfeck.ephemeral.geometry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,12 +67,7 @@ public class EPHPolygon implements EPHDrawable {
 
 	public void addDataToVao(EPHVertexArrayObject vao) {
 		vaoRef = vao.addData(assembleVertexValues(), assembleIndices(), programKey);
-		for (String key : vecUniforms.keySet()) {
-			vaoRef.registerVecUniformEntry(key, vecUniforms.get(key));
-		}
-		for (String key : matUniforms.keySet()) {
-			vaoRef.registerMatUniformEntry(key, matUniforms.get(key));
-		}
+		updateUniformEntries();
 	}
 
 	public void removeDataFromVao(EPHVertexArrayObject vao) {
@@ -84,8 +79,41 @@ public class EPHPolygon implements EPHDrawable {
 		vecUniforms.put(name, uniform);
 	}
 
+	public void removeUniformVecf(String name) {
+		vecUniforms.remove(name);
+	}
+
+	public void removeUniformMatf(String name) {
+		vecUniforms.remove(name);
+	}
+
 	public void addUniformMatf(String name, EPHMatf uniform) {
 		matUniforms.put(name, uniform);
+	}
+
+	public void updateUniformEntries() {
+		for (String key : vecUniforms.keySet()) {
+			vaoRef.registerVecUniformEntry(key, vecUniforms.get(key));
+		}
+		for (String key : matUniforms.keySet()) {
+			vaoRef.registerMatUniformEntry(key, matUniforms.get(key));
+		}
+	}
+
+	public void switchUniformTemplateBuffer(String futureProgramKey) {
+		vaoRef.switchUniformTemplateBuffer(futureProgramKey);
+	}
+
+	public void switchProgram(String programKey) {
+		vaoRef.switchProgram(programKey);
+	}
+
+	public boolean isVisible() {
+		return vaoRef.isVisible();
+	}
+
+	public void setVisible(boolean visible) {
+		vaoRef.setVisible(visible);
 	}
 
 }

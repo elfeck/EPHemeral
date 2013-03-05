@@ -1,9 +1,9 @@
-package com.elfeck.ephemeral.geometry;
-
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
+
+package com.elfeck.ephemeral.geometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +58,14 @@ public class EPHModel {
 		for (EPHDrawable drawable : drawables) {
 			drawable.addDataToVao(vao);
 		}
+	}
+
+	public void setViewPort(int x, int y, int width, int height) {
+		vao.setViewportRect(x, y, width, height);
+	}
+
+	public void setClippingPane(int x, int y, int width, int height) {
+		vao.setScissorRect(x, y, width, height);
 	}
 
 	public void removeFromVao(EPHDrawable drawable) {

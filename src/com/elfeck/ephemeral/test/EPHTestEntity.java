@@ -1,3 +1,8 @@
+/*
+ * Copyright 2013, Sebastian Kreisel. All rights reserved.
+ * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+ */
+
 package com.elfeck.ephemeral.test;
 
 import com.elfeck.ephemeral.EPHEntity;
@@ -10,11 +15,6 @@ import com.elfeck.ephemeral.math.EPHVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
 import com.elfeck.ephemeral.math.EPHVecf;
 
-
-/*
- * Copyright 2013, Sebastian Kreisel. All rights reserved.
- * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
- */
 
 public class EPHTestEntity implements EPHEntity {
 
@@ -49,8 +49,20 @@ public class EPHTestEntity implements EPHEntity {
 			offset1.subVec2f(0.0001f, 0.000001f);
 			offset2.addVec2f(0.0001f, 0.000001f);
 		}
-		if (offset2.getX() < -0.75f) outward = false;
-		if (offset1.getX() < 0f) outward = true;
+		if (offset2.getX() < -0.75f) {
+			outward = false;
+			polygon2.setVisible(true);
+			polygon1.switchUniformTemplateBuffer("test2");
+			polygon1.updateUniformEntries();
+			polygon1.switchProgram("test2");
+		}
+		if (offset1.getX() < 0f) {
+			outward = true;
+			polygon2.setVisible(false);
+			polygon1.switchUniformTemplateBuffer("test");
+			polygon1.updateUniformEntries();
+			polygon1.switchProgram("test");
+		}
 	}
 
 	@Override
@@ -83,6 +95,7 @@ public class EPHTestEntity implements EPHEntity {
 		model.addDrawable(polygon2);
 
 		model.create();
+		model.setViewPort(EPHTest.WIDTH / 2, EPHTest.HEIGHT / 2, EPHTest.WIDTH / 2, EPHTest.HEIGHT / 2);
 		model.addToSurface();
 	}
 }

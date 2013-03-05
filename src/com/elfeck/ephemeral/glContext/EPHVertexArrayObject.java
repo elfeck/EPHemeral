@@ -1,9 +1,9 @@
-package com.elfeck.ephemeral.glContext;
-
 /*
  * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
+
+package com.elfeck.ephemeral.glContext;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -21,18 +21,20 @@ public class EPHVertexArrayObject {
 	private static boolean shaderPoolInitialized = false;
 
 	private boolean dead, updated;
-
 	private int mode, size, usage, handle, uniformKey;
+	private int[] viewPortRect, scissorRect;
 	private List<EPHVaoEntry> entries;
 	private EPHVertexBufferObject vbo;
 	private EPHIndexBufferObject ibo;
 
-	public EPHVertexArrayObject(int mode, int usage, List<EPHVertexAttribute> vertexAttributes) {
+	public EPHVertexArrayObject(int mode, int usage, int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
 		dead = false;
 		updated = false;
 		this.mode = mode;
 		this.size = 0;
 		this.usage = usage;
+		this.viewPortRect = viewPortRect;
+		this.scissorRect = scissorRect;
 		handle = -1;
 		uniformKey = 0;
 		entries = new ArrayList<EPHVaoEntry>();
@@ -40,8 +42,13 @@ public class EPHVertexArrayObject {
 		ibo = new EPHIndexBufferObject();
 	}
 
+	public EPHVertexArrayObject(int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
+		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, viewPortRect, scissorRect, vertexAttributes);
+	}
+
 	public EPHVertexArrayObject(List<EPHVertexAttribute> vertexAttributes) {
-		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, vertexAttributes);
+		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW,
+				EPHRenderContext.getWindowDimensions(), EPHRenderContext.getWindowDimensions(), vertexAttributes);
 	}
 
 	private void glInit() {
@@ -68,11 +75,14 @@ public class EPHVertexArrayObject {
 		if (handle < 0 || !updated) glInit();
 		if (size > 0) {
 			glBindVertexArray(handle);
+			glViewport(viewPortRect[0], viewPortRect[1], viewPortRect[2], viewPortRect[3]);
+			glScissor(scissorRect[0], scissorRect[1], scissorRect[2], scissorRect[3]);
 			EPHShaderProgram currentProgram = null;
 			EPHVaoEntry current, next;
 			boolean bindRequ = true;
 			for (int i = 0; i < entries.size(); i++) {
 				current = entries.get(i);
+				if (!current.visible) continue;
 				next = i < entries.size() - 1 ? entries.get(i + 1) : null;
 				currentProgram = shaderProgramPool.getShaderProgram(current.programKey);
 				if (!currentProgram.isLinked()) currentProgram.glAttachAndLinkProgram(vertexAttributesToMap(vbo.getVertexAttributes()));
@@ -93,6 +103,12 @@ public class EPHVertexArrayObject {
 	}
 
 	public synchronized EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, String programKey) {
+		EPHVaoEntry entry = new EPHVaoEntry();
+		entry.programKey = programKey;
+		return addData(vertexValues, indices, entry);
+	}
+
+	public synchronized EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, EPHVaoEntry entry) {
 		if (!shaderPoolInitialized) {
 			synchronized (EPHRenderContext.initMonitor) {
 				try {
@@ -102,9 +118,12 @@ public class EPHVertexArrayObject {
 				}
 			}
 		}
-		EPHVaoEntry entry = new EPHVaoEntry(vbo.getCurrentIndex(), vbo.getCurrentIndex() + vertexValues.size() - 1,
-				ibo.getCurrentIndex(), ibo.getCurrentIndex() + indices.size() - 1,
-				uniformKey++, programKey, shaderProgramPool.getShaderProgram(programKey).getUniformTemplateBffer());
+		entry.vboLowerBound = vbo.getCurrentIndex();
+		entry.vboUpperBound = vbo.getCurrentIndex() + vertexValues.size() - 1;
+		entry.iboLowerBound = ibo.getCurrentIndex();
+		entry.iboUpperBound = ibo.getCurrentIndex() + indices.size() - 1;
+		entry.uniformKey = uniformKey++;
+		entry.utb = shaderProgramPool.getShaderProgram(entry.programKey).getUniformTemplateBuffer();
 		ibo.addData(indices, vbo.addData(vertexValues));
 		size += indices.size();
 		entries.add(entry);
@@ -129,6 +148,19 @@ public class EPHVertexArrayObject {
 		updated = false;
 	}
 
+	public synchronized void setViewportRect(int x, int y, int width, int height) {
+		viewPortRect = new int[] { x, y, width, height };
+	}
+
+	public synchronized void setScissorRect(int x, int y, int width, int height) {
+		scissorRect = new int[] { x, y, width, height };
+	}
+
+	public synchronized void resetViewPortAndScissor() {
+		viewPortRect = EPHRenderContext.getWindowDimensions();
+		scissorRect = EPHRenderContext.getWindowDimensions();
+	}
+
 	public boolean isDead() {
 		return dead;
 	}
@@ -141,6 +173,14 @@ public class EPHVertexArrayObject {
 		shaderProgramPool = new EPHShaderProgramPool(parentPath);
 		shaderProgramPool.glInit();
 		shaderPoolInitialized = true;
+	}
+
+	/*
+	 * Not feeling good about this accessibility. Needed for program switching
+	 * in EPHVaoEntry.
+	 */
+	protected static EPHShaderProgramPool getShaderProgramPool() {
+		return shaderProgramPool;
 	}
 
 	public static void glDisposeShaderPrograms() {
