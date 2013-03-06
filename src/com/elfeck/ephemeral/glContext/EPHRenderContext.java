@@ -18,20 +18,22 @@ import com.elfeck.ephemeral.EPHemeral;
 
 public class EPHRenderContext {
 
-	protected static final Object initMonitor = new Object();
+	private static boolean glInitialized = false;
+	private static boolean created = false;
 	private static int[] windowDimensions = new int[4];
+	protected static final Object glInitMonitor = new Object();
 
-	private boolean initialized, resizable, resizableTriggered, resizedTriggered;
+	private boolean resizable, resizableTriggered, resizedTriggered;
 	private int fpsCap;
 	private String shaderParentPath, title;
 	private EPHemeral main;
 
-	public EPHRenderContext(EPHemeral main, int fpsCap, String shaderParentPath, String title) {
+	private EPHRenderContext(EPHemeral main, int fpsCap, String shaderParentPath, String title) {
+		created = true;
 		this.main = main;
 		this.fpsCap = fpsCap;
 		this.shaderParentPath = shaderParentPath;
 		this.title = title;
-		initialized = false;
 		resizable = false;
 		resizableTriggered = false;
 		resizedTriggered = false;
@@ -55,9 +57,9 @@ public class EPHRenderContext {
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_SCISSOR_TEST);
 		EPHVertexArrayObject.glInitShaderProgramPool(shaderParentPath);
-		initialized = true;
-		synchronized (initMonitor) {
-			initMonitor.notify();
+		glInitialized = true;
+		synchronized (glInitMonitor) {
+			glInitMonitor.notifyAll();
 		}
 	}
 
@@ -108,18 +110,18 @@ public class EPHRenderContext {
 		}
 	}
 	public void glRender() {
-		if (!initialized) glInitContext();
+		if (!glInitialized) glInitContext();
 		if (glHandleCloseRequest()) return;
 		glCheckResized();
 		glClearDisplay();
-		glDraw();
+		if (main.getSurface() != null) glDraw();
 		Display.update();
 		Display.sync(fpsCap);
 		main.updateVaos();
 	}
 
 	public void glDestroy() {
-		if (!initialized) return;
+		if (!glInitialized) return;
 		main.glDestroyVaos();
 		Display.destroy();
 	}
@@ -146,7 +148,26 @@ public class EPHRenderContext {
 	}
 
 	protected static int[] getWindowDimensions() {
+		synchronized (glInitMonitor) {
+			if (!glInitialized) {
+				try {
+					glInitMonitor.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return windowDimensions;
+	}
+
+	protected static boolean isInitialized() {
+		return glInitialized;
+	}
+
+	public static EPHRenderContext createRenderContext(EPHemeral main, int fpsCap, String shaderParentPath, String title) {
+		if (!created) return new EPHRenderContext(main, fpsCap, shaderParentPath, title);
+		System.err.println("RenderContext was already created");
+		return null;
 	}
 
 }

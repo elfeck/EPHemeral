@@ -19,14 +19,16 @@ import com.elfeck.ephemeral.math.EPHVecf;
 public class EPHTestEntity implements EPHEntity {
 
 	private boolean dead;
+	private EPHSurface surface;
 	private EPHModel model;
 	private EPHPolygon polygon1, polygon2;
 	private EPHVec2f offset1, offset2;
 	private EPHMat4f mvpMatrix;
 
 	public EPHTestEntity(EPHSurface surface) {
+		this.surface = surface;
 		dead = false;
-		model = new EPHModel(surface);
+		model = new EPHModel();
 		offset1 = new EPHVec2f(0.0f, 0.0f);
 		offset2 = new EPHVec2f(0.0f, 0.0f);
 		mvpMatrix = new EPHMat4f(new float[][] {
@@ -96,6 +98,6 @@ public class EPHTestEntity implements EPHEntity {
 
 		model.create();
 		model.setViewPort(EPHTest.WIDTH / 2, EPHTest.HEIGHT / 2, EPHTest.WIDTH / 2, EPHTest.HEIGHT / 2);
-		model.addToSurface();
+		model.addToSurface(surface);
 	}
 }

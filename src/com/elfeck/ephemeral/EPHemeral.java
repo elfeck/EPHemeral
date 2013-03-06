@@ -24,16 +24,21 @@ public class EPHemeral {
 	public EPHemeral(int width, int height, int fpsCap, int lpsCap, String shaderParentPath, String title) {
 		this.width = width;
 		this.height = height;
-		renderContext = new EPHRenderContext(this, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath, title);
+		renderContext = EPHRenderContext.createRenderContext(this, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath, title);
 		renderThread = new Thread(renderJob = new EPHRenderJob(this, Math.max(1, (int) Math.round((1.0 / fpsCap) * 1000 - 5))), "RenderThread");
 		logicThread = new Thread(logicJob = new EPHLogicJob(this, Math.max(1, (int) Math.round((1.0 / lpsCap) * 1000))), "LogicThread");
 		renderThread.setPriority(Thread.MAX_PRIORITY);
 		logicThread.setPriority(Thread.MIN_PRIORITY);
 		surface = null;
+		start();
 	}
-
 	public EPHemeral(int width, int height, String title) {
 		this(width, height, 60, 1000, "shader/", title);
+	}
+
+	private void start() {
+		renderThread.start();
+		logicThread.start();
 	}
 
 	protected synchronized void reqLogic(long delta) {
@@ -41,16 +46,11 @@ public class EPHemeral {
 	}
 
 	protected synchronized void reqRender() {
-		if (surface != null) renderContext.glRender();
+		renderContext.glRender();
 		if (renderContext.wasResized()) {
 			width = renderContext.getWidth();
 			height = renderContext.getHeight();
 		}
-	}
-
-	public void start() {
-		renderThread.start();
-		logicThread.start();
 	}
 
 	public void updateVaos() {
@@ -72,7 +72,7 @@ public class EPHemeral {
 		return surface.getVaos();
 	}
 
-	public synchronized void setSurface(EPHSurface surface) {
+	public void setSurface(EPHSurface surface) {
 		this.surface = surface;
 	}
 

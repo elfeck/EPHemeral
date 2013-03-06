@@ -65,11 +65,13 @@ public class EPHPolygon implements EPHDrawable {
 		return indices;
 	}
 
+	@Override
 	public void addDataToVao(EPHVertexArrayObject vao) {
 		vaoRef = vao.addData(assembleVertexValues(), assembleIndices(), programKey);
 		updateUniformEntries();
 	}
 
+	@Override
 	public void removeDataFromVao(EPHVertexArrayObject vao) {
 		vaoRef.deleteUniformEntries();
 		vao.removeData(vaoRef);

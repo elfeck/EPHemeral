@@ -19,10 +19,8 @@ public class EPHModel {
 	private List<EPHVertexAttribute> attributes;
 
 	private List<EPHDrawable> drawables;
-	private EPHSurface surface;
 
-	public EPHModel(EPHSurface surface) {
-		this.surface = surface;
+	public EPHModel() {
 		vao = null;
 		attributes = new ArrayList<EPHVertexAttribute>();
 		drawables = new ArrayList<EPHDrawable>();
@@ -76,7 +74,7 @@ public class EPHModel {
 		drawable.addDataToVao(vao);
 	}
 
-	public void addToSurface() {
+	public void addToSurface(EPHSurface surface) {
 		surface.addVao(vao);
 	}
 

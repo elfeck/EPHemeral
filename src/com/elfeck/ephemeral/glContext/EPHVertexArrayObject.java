@@ -18,7 +18,6 @@ import java.util.Map;
 public class EPHVertexArrayObject {
 
 	private static EPHShaderProgramPool shaderProgramPool;
-	private static boolean shaderPoolInitialized = false;
 
 	private boolean dead, updated;
 	private int mode, size, usage, handle, uniformKey;
@@ -109,10 +108,10 @@ public class EPHVertexArrayObject {
 	}
 
 	public synchronized EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, EPHVaoEntry entry) {
-		if (!shaderPoolInitialized) {
-			synchronized (EPHRenderContext.initMonitor) {
+		if (!EPHRenderContext.isInitialized()) {
+			synchronized (EPHRenderContext.glInitMonitor) {
 				try {
-					EPHRenderContext.initMonitor.wait();
+					EPHRenderContext.glInitMonitor.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -132,7 +131,6 @@ public class EPHVertexArrayObject {
 	}
 
 	public synchronized void removeData(EPHVaoEntry entry) {
-		System.out.println("Attemting to remove");
 		ibo.removeData(entry.iboLowerBound, entry.iboUpperBound, vbo.removeData(entry.vboLowerBound, entry.vboUpperBound));
 		size -= entry.iboUpperBound - entry.iboLowerBound + 1;
 		int deletedVertexValues = entry.vboUpperBound - entry.vboLowerBound + 1;
@@ -172,7 +170,6 @@ public class EPHVertexArrayObject {
 	protected static void glInitShaderProgramPool(String parentPath) {
 		shaderProgramPool = new EPHShaderProgramPool(parentPath);
 		shaderProgramPool.glInit();
-		shaderPoolInitialized = true;
 	}
 
 	/*
