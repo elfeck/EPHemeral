@@ -44,4 +44,10 @@ public class EPHVec1f implements EPHVecf {
 		return new EPHVec2f(x, Float.NaN);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EPHVec1f)) return false;
+		return ((EPHVec1f) obj).x == x;
+	}
+
 }

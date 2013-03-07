@@ -146,12 +146,12 @@ public class EPHVertexArrayObject {
 		updated = false;
 	}
 
-	public synchronized void setViewportRect(int x, int y, int width, int height) {
-		viewPortRect = new int[] { x, y, width, height };
+	public synchronized void setViewportRect(int[] bounds) {
+		viewPortRect = bounds;
 	}
 
-	public synchronized void setScissorRect(int x, int y, int width, int height) {
-		scissorRect = new int[] { x, y, width, height };
+	public synchronized void setScissorRect(int[] bounds) {
+		scissorRect = bounds;
 	}
 
 	public synchronized void resetViewPortAndScissor() {

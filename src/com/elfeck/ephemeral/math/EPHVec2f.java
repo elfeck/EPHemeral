@@ -58,6 +58,13 @@ public class EPHVec2f implements EPHVecf {
 		return 2;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EPHVec2f)) return false;
+		EPHVec2f vec = (EPHVec2f) obj;
+		return x == vec.x && y == vec.y;
+	}
+
 	public EPHVec2f addVec2f(EPHVec2f vec) {
 		x += vec.x;
 		y += vec.y;
@@ -145,14 +152,8 @@ public class EPHVec2f implements EPHVecf {
 		return length(x - vx, y - vy);
 	}
 
-	public float distance(EPHVec2f vec1, EPHVec2f vec2) {
-		return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) * (vec2.x / vec2.length()),
-				(vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y / vec2.length()));
-	}
-
-	public float distance(float a1, float a2, float b1, float b2) {
-		return length((a1 - x) - ((a1 - x) * (b1 / length(b1, b2))) * (b1 / length(b1, b2)),
-				(a2 - y) - ((a2 - y) * (b2 / length(b1, b2))) * (b2 / length(b1, b2)));
+	public EPHVec2f getPerpendicular() {
+		return new EPHVec2f(-y, x);
 	}
 
 	public float getX() {

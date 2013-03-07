@@ -3,16 +3,16 @@
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-package com.elfeck.ephemeral.geometry;
+package com.elfeck.ephemeral.drawable;
 
 import java.util.List;
 
 
-public class EPHTriangle {
+public class EPHTessellationTriangle {
 
 	private EPHVertex[] vertices;
 
-	public EPHTriangle(EPHVertex[] vertices) {
+	public EPHTessellationTriangle(EPHVertex[] vertices) {
 		this.vertices = vertices;
 	}
 

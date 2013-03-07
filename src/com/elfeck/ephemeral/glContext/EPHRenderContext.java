@@ -51,7 +51,10 @@ public class EPHRenderContext {
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
-		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(true);
+		glDepthRange(0.0f, 1.0f);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_MULTISAMPLE);
@@ -72,7 +75,7 @@ public class EPHRenderContext {
 	}
 
 	private void glClearDisplay() {
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	private void glDraw() {

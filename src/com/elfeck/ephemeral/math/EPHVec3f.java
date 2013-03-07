@@ -65,6 +65,13 @@ public class EPHVec3f implements EPHVecf {
 		return 3;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EPHVec3f)) return false;
+		EPHVec3f vec = (EPHVec3f) obj;
+		return x == vec.x && y == vec.y && z == vec.z;
+	}
+
 	public EPHVec3f addVec3f(EPHVec3f vec) {
 		x += vec.x;
 		y += vec.y;
@@ -161,17 +168,24 @@ public class EPHVec3f implements EPHVecf {
 		return length(x - vx, y - vy, z - vz);
 	}
 
-	public float distance(EPHVec3f vec1, EPHVec3f vec2) {
-		return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) * (vec2.x / vec2.length()),
-				(vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y / vec2.length()),
-				(vec1.z - z) - ((vec1.z - z) * (vec2.z / vec2.length())) * (vec2.z / vec2.length()));
-	}
-
-	public float distance(float a1, float a2, float a3, float b1, float b2, float b3) {
-		return length((a1 - x) - ((a1 - x) * (b1 / length(b1, b2, b3))) * (b1 / length(b1, b2, b3)),
-				(a2 - y) - ((a2 - y) * (b2 / length(b1, b2, b3))) * (b2 / length(b1, b2, b3)),
-				(a3 - z) - ((a3 - z) * (b3 / length(b1, b2, b3))) * (b3 / length(b1, b2, b3)));
-	}
+	// public float distance(EPHVec3f vec1, EPHVec3f vec2) {
+	// return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) *
+	// (vec2.x / vec2.length()),
+	// (vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y /
+	// vec2.length()),
+	// (vec1.z - z) - ((vec1.z - z) * (vec2.z / vec2.length())) * (vec2.z /
+	// vec2.length()));
+	// }
+	//
+	// public float distance(float a1, float a2, float a3, float b1, float b2,
+	// float b3) {
+	// return length((a1 - x) - ((a1 - x) * (b1 / length(b1, b2, b3))) * (b1 /
+	// length(b1, b2, b3)),
+	// (a2 - y) - ((a2 - y) * (b2 / length(b1, b2, b3))) * (b2 / length(b1, b2,
+	// b3)),
+	// (a3 - z) - ((a3 - z) * (b3 / length(b1, b2, b3))) * (b3 / length(b1, b2,
+	// b3)));
+	// }
 
 	public EPHVec2f stripZ() {
 		return new EPHVec2f(x, y);

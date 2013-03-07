@@ -3,7 +3,7 @@
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-package com.elfeck.ephemeral.geometry;
+package com.elfeck.ephemeral.drawable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,38 +13,60 @@ import java.util.Map;
 import com.elfeck.ephemeral.glContext.EPHVaoEntry;
 import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 import com.elfeck.ephemeral.math.EPHMatf;
+import com.elfeck.ephemeral.math.EPHPolygon2f;
+import com.elfeck.ephemeral.math.EPHVec2f;
 import com.elfeck.ephemeral.math.EPHVecf;
 
 
-public class EPHPolygon implements EPHDrawable {
+public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 
 	private String programKey;
 	private EPHVaoEntry vaoRef;
 	private Map<String, EPHVecf> vecUniforms;
 	private Map<String, EPHMatf> matUniforms;
 
+	private EPHPolygon2f polygon;
 	private EPHVertex[] vertices;
-	private EPHTriangle[] triangles;
+	private EPHTessellationTriangle[] triangles;
 
-	public EPHPolygon(String programKey, EPHVertex[] vertices) {
+	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, int coordinateIndex) {
 		this.programKey = programKey;
 		vaoRef = null;
 		vecUniforms = new HashMap<String, EPHVecf>();
 		matUniforms = new HashMap<String, EPHMatf>();
 		this.vertices = vertices;
+		EPHVec2f[] vertices2f = new EPHVec2f[vertices.length];
+		for (int i = 0; i < vertices.length; i++) {
+			vertices2f[i] = vertices[i].getVec(0).toVec2f();
+		}
+		polygon = new EPHPolygon2f(vertices2f);
 		tessellate();
 	}
 
-	public EPHPolygon(String programKey, EPHVertex[] vertices, Map<String, EPHVecf> vecUniforms, Map<String, EPHMatf> matUniforms) {
+	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices) {
+		this(programKey, vertices, 0);
+	}
+
+	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, Map<String, EPHVecf> vecUniforms, Map<String, EPHMatf> matUniforms) {
 		this(programKey, vertices);
 		vecUniforms.putAll(vecUniforms);
 		matUniforms.putAll(matUniforms);
 	}
 
+	@Override
+	public boolean collidesWith(EPHCollidable other) {
+		return EPHCollisionCalc.optimalCollision(this, other);
+	}
+
+	@Override
+	public EPHPolygon2f getPolygon() {
+		return polygon;
+	}
+
 	private void tessellate() {
-		triangles = new EPHTriangle[vertices.length - 2];
+		triangles = new EPHTessellationTriangle[vertices.length - 2];
 		for (int i = 1; i < vertices.length - 1; i++) {
-			triangles[i - 1] = new EPHTriangle(new EPHVertex[] { vertices[0], vertices[i], vertices[i + 1] });
+			triangles[i - 1] = new EPHTessellationTriangle(new EPHVertex[] { vertices[0], vertices[i], vertices[i + 1] });
 
 		}
 	}
@@ -59,7 +81,7 @@ public class EPHPolygon implements EPHDrawable {
 
 	private List<Integer> assembleIndices() {
 		List<Integer> indices = new ArrayList<Integer>();
-		for (EPHTriangle triangle : triangles) {
+		for (EPHTessellationTriangle triangle : triangles) {
 			triangle.fetchIndexData(indices);
 		}
 		return indices;

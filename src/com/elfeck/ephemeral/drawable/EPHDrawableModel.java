@@ -3,7 +3,7 @@
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-package com.elfeck.ephemeral.geometry;
+package com.elfeck.ephemeral.drawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,14 @@ import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 import com.elfeck.ephemeral.glContext.EPHVertexAttribute;
 
 
-public class EPHModel {
+public class EPHDrawableModel {
 
 	private EPHVertexArrayObject vao;
 	private List<EPHVertexAttribute> attributes;
 
 	private List<EPHDrawable> drawables;
 
-	public EPHModel() {
+	public EPHDrawableModel() {
 		vao = null;
 		attributes = new ArrayList<EPHVertexAttribute>();
 		drawables = new ArrayList<EPHDrawable>();
@@ -58,12 +58,12 @@ public class EPHModel {
 		}
 	}
 
-	public void setViewPort(int x, int y, int width, int height) {
-		vao.setViewportRect(x, y, width, height);
+	public void setViewPort(int[] bounds) {
+		vao.setViewportRect(bounds);
 	}
 
-	public void setClippingPane(int x, int y, int width, int height) {
-		vao.setScissorRect(x, y, width, height);
+	public void setClippingPane(int[] bounds) {
+		vao.setScissorRect(bounds);
 	}
 
 	public void removeFromVao(EPHDrawable drawable) {

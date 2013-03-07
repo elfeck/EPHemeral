@@ -95,6 +95,10 @@ public class EPHemeral {
 		renderContext.resize();
 	}
 
+	public boolean wasResized() {
+		return renderContext.wasResized();
+	}
+
 	public int getWidth() {
 		return width;
 	}

@@ -79,6 +79,13 @@ public class EPHVec4f implements EPHVecf {
 		return 4;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EPHVec4f)) return false;
+		EPHVec4f vec = (EPHVec4f) obj;
+		return x == vec.x && y == vec.y && z == vec.z && w == vec.w;
+	}
+
 	public EPHVec4f addVec4f(EPHVec4f vec) {
 		x += vec.x;
 		y += vec.y;
@@ -184,19 +191,28 @@ public class EPHVec4f implements EPHVecf {
 		return length(x - vx, y - vy, z - vz, w - vw);
 	}
 
-	public float distance(EPHVec4f vec1, EPHVec4f vec2) {
-		return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) * (vec2.x / vec2.length()),
-				(vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y / vec2.length()),
-				(vec1.z - z) - ((vec1.z - z) * (vec2.z / vec2.length())) * (vec2.z / vec2.length()),
-				(vec1.w - w) - ((vec1.w - w) * (vec2.w / vec2.length())) * (vec2.w / vec2.length()));
-	}
-
-	public float distance(float a1, float a2, float a3, float a4, float b1, float b2, float b3, float b4) {
-		return length((a1 - x) - ((a1 - x) * (b1 / length(b1, b2, b3, b4))) * (b1 / length(b1, b2, b3, b4)),
-				(a2 - y) - ((a2 - y) * (b2 / length(b1, b2, b3, b4))) * (b2 / length(b1, b2, b3, b4)),
-				(a3 - z) - ((a3 - z) * (b3 / length(b1, b2, b3, b4))) * (b3 / length(b1, b2, b3, b4)),
-				(a4 - w) - ((a4 - w) * (b4 / length(b1, b2, b3, b4))) * (b4 / length(b1, b2, b3, b4)));
-	}
+	// public float distance(EPHVec4f vec1, EPHVec4f vec2) {
+	// return length((vec1.x - x) - ((vec1.x - x) * (vec2.x / vec2.length())) *
+	// (vec2.x / vec2.length()),
+	// (vec1.y - y) - ((vec1.y - y) * (vec2.y / vec2.length())) * (vec2.y /
+	// vec2.length()),
+	// (vec1.z - z) - ((vec1.z - z) * (vec2.z / vec2.length())) * (vec2.z /
+	// vec2.length()),
+	// (vec1.w - w) - ((vec1.w - w) * (vec2.w / vec2.length())) * (vec2.w /
+	// vec2.length()));
+	// }
+	//
+	// public float distance(float a1, float a2, float a3, float a4, float b1,
+	// float b2, float b3, float b4) {
+	// return length((a1 - x) - ((a1 - x) * (b1 / length(b1, b2, b3, b4))) * (b1
+	// / length(b1, b2, b3, b4)),
+	// (a2 - y) - ((a2 - y) * (b2 / length(b1, b2, b3, b4))) * (b2 / length(b1,
+	// b2, b3, b4)),
+	// (a3 - z) - ((a3 - z) * (b3 / length(b1, b2, b3, b4))) * (b3 / length(b1,
+	// b2, b3, b4)),
+	// (a4 - w) - ((a4 - w) * (b4 / length(b1, b2, b3, b4))) * (b4 / length(b1,
+	// b2, b3, b4)));
+	// }
 
 	public EPHVec3f stripW() {
 		return new EPHVec3f(x, y, z);
