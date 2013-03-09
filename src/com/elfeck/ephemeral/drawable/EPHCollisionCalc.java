@@ -29,43 +29,39 @@ public class EPHCollisionCalc {
 		EPHPolygon2f poly2 = collidable2.getPolygon();
 		EPHVec2f[] axes = new EPHVec2f[poly1.getVertexCount() + poly2.getVertexCount()];
 		for (int i = 0; i < poly1.getVertexCount(); i++) {
-			axes[i] = poly1.getVertices()[i].copy().subVec2f(poly1.getVertices()[(i + 1) % poly1.getVertexCount()]).getPerpendicular();
+			// count1 * 1
+			axes[i] = poly1.getVertices()[i].subVec2f(poly1.getVertices()[(i + 1) % poly1.getVertexCount()]).getPerpendicular();
+			poly1.getVertices()[i].addVec2f(poly1.getVertices()[(i + 1) % poly1.getVertexCount()]);
 		}
 		for (int i = poly1.getVertexCount(); i < axes.length; i++) {
-			axes[i] = poly2.getVertices()[poly1.getVertexCount() + i].copy()
-					.subVec2f(poly2.getVertices()[(i + 1 - poly1.getVertexCount()) % poly2.getVertexCount()]).getPerpendicular();
+			// count2 * 1
+			axes[i] = poly2.getVertices()[i - poly1.getVertexCount()].subVec2f(poly2.getVertices()
+					[(i + 1 - poly1.getVertexCount()) % poly2.getVertexCount()]).getPerpendicular();
+			poly2.getVertices()[i - poly1.getVertexCount()].addVec2f(poly2.getVertices()
+					[(i + 1 - poly1.getVertexCount()) % poly2.getVertexCount()]);
 		}
 		for (int i = 0; i < axes.length; i++) {
+			// (count1 + count2) * 2
 			if (!projectionOverlap(poly1.projectOntoAxis(axes[i]), poly2.projectOntoAxis(axes[i]))) return false;
 		}
+		// (count1 + count2) * 3
 		return true;
 	}
-
 	public static boolean aabbCollision(EPHCollidable collidable1, EPHCollidable collidable2) {
 		EPHPolygon2f poly1 = collidable1.getPolygon();
 		EPHPolygon2f poly2 = collidable2.getPolygon();
-		EPHVec2f projx1 = poly1.getVertices()[0].copy();
-		EPHVec2f projy1 = poly1.getVertices()[0].copy();
-		EPHVec2f projx2 = poly2.getVertices()[0].copy();
-		EPHVec2f projy2 = poly2.getVertices()[0].copy();
-		for (int i = 1; i < poly1.getVertexCount(); i++) {
-			if (poly1.getVertices()[i].getX() < projx1.getX()) projx1.setX(poly1.getVertices()[i].getX());
-			if (poly1.getVertices()[i].getX() > projx1.getY()) projx1.setY(poly1.getVertices()[i].getX());
-			if (poly1.getVertices()[i].getY() < projy1.getX()) projy1.setX(poly1.getVertices()[i].getY());
-			if (poly1.getVertices()[i].getY() > projy1.getY()) projy1.setY(poly1.getVertices()[i].getY());
-		}
-		for (int i = 1; i < poly2.getVertexCount(); i++) {
-			if (poly2.getVertices()[i].getX() < projx2.getX()) projx2.setX(poly1.getVertices()[i].getX());
-			if (poly2.getVertices()[i].getX() > projx2.getY()) projx2.setY(poly1.getVertices()[i].getX());
-			if (poly2.getVertices()[i].getY() < projy2.getX()) projy2.setX(poly1.getVertices()[i].getY());
-			if (poly2.getVertices()[i].getY() > projy2.getY()) projy2.setY(poly1.getVertices()[i].getY());
-		}
+		EPHVec2f axis = new EPHVec2f(1, 0);
+		EPHVec2f projx1 = poly1.projectOntoAxis(axis);
+		EPHVec2f projx2 = poly2.projectOntoAxis(axis);
+		axis = new EPHVec2f(0, 1);
+		EPHVec2f projy1 = poly1.projectOntoAxis(axis);
+		EPHVec2f projy2 = poly2.projectOntoAxis(axis);;
 		return projectionOverlap(projx1, projx2) && projectionOverlap(projy1, projy2);
 
 	}
-
 	private static boolean projectionOverlap(EPHVec2f proj1, EPHVec2f proj2) {
-		return (Math.min(proj1.getX(), proj2.getY()) + Math.max(proj1.getY(), proj2.getY()) < proj1.getY() - proj1.getX() + proj2.getY() - proj2.getY());
+		return (Math.abs(Math.max(proj1.getY(), proj2.getY()) - Math.min(proj1.getX(), proj2.getX()))
+		< Math.abs(proj1.getY() - proj1.getX()) + Math.abs(proj2.getY() - proj2.getX()));
 	}
 
 }

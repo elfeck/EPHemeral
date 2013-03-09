@@ -70,9 +70,20 @@ public class EPHVertexArrayObject {
 		return names;
 	}
 
+	private boolean hasVisibleEntries() {
+		boolean hasVisibleEntries = false;
+		for (EPHVaoEntry entry : entries) {
+			if (entry.isVisible()) {
+				hasVisibleEntries = true;
+				break;
+			}
+		}
+		return hasVisibleEntries;
+	}
+
 	public synchronized void glRender() {
 		if (handle < 0 || !updated) glInit();
-		if (size > 0) {
+		if (size > 0 && hasVisibleEntries()) {
 			glBindVertexArray(handle);
 			glViewport(viewPortRect[0], viewPortRect[1], viewPortRect[2], viewPortRect[3]);
 			glScissor(scissorRect[0], scissorRect[1], scissorRect[2], scissorRect[3]);

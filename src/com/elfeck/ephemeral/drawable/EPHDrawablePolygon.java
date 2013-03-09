@@ -25,16 +25,19 @@ public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 	private Map<String, EPHVecf> vecUniforms;
 	private Map<String, EPHMatf> matUniforms;
 
+	private EPHVec2f oldPolygonOffset, polygonOffset;
 	private EPHPolygon2f polygon;
 	private EPHVertex[] vertices;
 	private EPHTessellationTriangle[] triangles;
 
-	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, int coordinateIndex) {
+	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset, int coordinateIndex) {
 		this.programKey = programKey;
 		vaoRef = null;
 		vecUniforms = new HashMap<String, EPHVecf>();
 		matUniforms = new HashMap<String, EPHMatf>();
 		this.vertices = vertices;
+		this.polygonOffset = polygonOffset;
+		oldPolygonOffset = null;
 		EPHVec2f[] vertices2f = new EPHVec2f[vertices.length];
 		for (int i = 0; i < vertices.length; i++) {
 			vertices2f[i] = vertices[i].getVec(0).toVec2f();
@@ -43,12 +46,13 @@ public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 		tessellate();
 	}
 
-	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices) {
-		this(programKey, vertices, 0);
+	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset) {
+		this(programKey, vertices, polygonOffset, 0);
 	}
 
-	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, Map<String, EPHVecf> vecUniforms, Map<String, EPHMatf> matUniforms) {
-		this(programKey, vertices);
+	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset,
+			Map<String, EPHVecf> vecUniforms, Map<String, EPHMatf> matUniforms) {
+		this(programKey, vertices, polygonOffset);
 		vecUniforms.putAll(vecUniforms);
 		matUniforms.putAll(matUniforms);
 	}
@@ -60,7 +64,20 @@ public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 
 	@Override
 	public EPHPolygon2f getPolygon() {
+		updatePolygonPosition();
 		return polygon;
+	}
+
+	@Override
+	public void addDataToVao(EPHVertexArrayObject vao) {
+		vaoRef = vao.addData(assembleVertexValues(), assembleIndices(), programKey);
+		updateUniformEntries();
+	}
+
+	@Override
+	public void removeDataFromVao(EPHVertexArrayObject vao) {
+		vaoRef.deleteUniformEntries();
+		vao.removeData(vaoRef);
 	}
 
 	private void tessellate() {
@@ -87,16 +104,15 @@ public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 		return indices;
 	}
 
-	@Override
-	public void addDataToVao(EPHVertexArrayObject vao) {
-		vaoRef = vao.addData(assembleVertexValues(), assembleIndices(), programKey);
-		updateUniformEntries();
-	}
-
-	@Override
-	public void removeDataFromVao(EPHVertexArrayObject vao) {
-		vaoRef.deleteUniformEntries();
-		vao.removeData(vaoRef);
+	private void updatePolygonPosition() {
+		for (int i = 0; i < polygon.getVertexCount(); i++) {
+			if (oldPolygonOffset == null) {
+				polygon.getVertices()[i].addVec2f(polygonOffset);
+			} else {
+				polygon.getVertices()[i].subVec2f(oldPolygonOffset).addVec2f(polygonOffset);
+			}
+		}
+		oldPolygonOffset = polygonOffset.copy();
 	}
 
 	public void addUniformVecf(String name, EPHVecf uniform) {
