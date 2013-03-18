@@ -94,6 +94,7 @@ public class EPHRenderContext {
 			windowDimensions[2] = main.getWidth();
 			windowDimensions[3] = main.getHeight();
 			glViewport(0, 0, main.getWidth(), main.getHeight());
+			glScissor(0, 0, main.getWidth(), main.getHeight());
 		}
 		if (resizableTriggered) {
 			Display.setResizable(resizable);
@@ -110,6 +111,7 @@ public class EPHRenderContext {
 			windowDimensions[2] = main.getWidth();
 			windowDimensions[3] = main.getHeight();
 			glViewport(0, 0, main.getWidth(), main.getHeight());
+			glScissor(0, 0, main.getWidth(), main.getHeight());
 		}
 	}
 	public void glRender() {
