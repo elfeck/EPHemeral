@@ -54,7 +54,7 @@ public class EPHemeral {
 	}
 
 	public void updateVaos() {
-		surface.updateVaos();
+		if (surface != null) surface.updateVaos();
 	}
 
 	public void glDestroyVaos() {
