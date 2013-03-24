@@ -15,17 +15,20 @@ import java.util.List;
 public class EPHIndexBufferObject {
 
 	private int handle;
+	private boolean updated;
 	private IntBuffer indexBuffer;
 	private List<Integer> indices;
 
 	protected EPHIndexBufferObject(List<Integer> indices) {
 		handle = -1;
+		updated = false;
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 		this.indices = indices;
 	}
 
 	protected EPHIndexBufferObject() {
 		handle = -1;
+		updated = false;
 		indexBuffer = null;
 		indices = new ArrayList<Integer>();
 	}
@@ -35,6 +38,7 @@ public class EPHIndexBufferObject {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		updated = true;
 	}
 
 	protected void glBind() {
@@ -50,6 +54,7 @@ public class EPHIndexBufferObject {
 			indices.add(newIndices.get(i) + offset);
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
+		updated = false;
 	}
 
 	protected void removeData(int lowerBound, int upperBound, int offset) {
@@ -61,10 +66,15 @@ public class EPHIndexBufferObject {
 			indices.remove(i + 1);
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
+		updated = false;
 	}
 
 	protected int getCurrentIndex() {
 		return indices.size();
+	}
+
+	protected boolean isUpdated() {
+		return updated;
 	}
 
 }

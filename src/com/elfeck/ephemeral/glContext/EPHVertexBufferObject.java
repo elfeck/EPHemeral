@@ -16,12 +16,14 @@ import java.util.List;
 public class EPHVertexBufferObject {
 
 	private int handle;
+	private boolean updated;
 	private FloatBuffer vertexBuffer;
 	private List<Float> vertexValues;
 	private List<EPHVertexAttribute> vertexAttributes;
 
 	protected EPHVertexBufferObject(List<Float> vertexValues, List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
+		updated = false;
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		this.vertexValues = vertexValues;
 		this.vertexAttributes = vertexAttributes;
@@ -29,6 +31,7 @@ public class EPHVertexBufferObject {
 
 	protected EPHVertexBufferObject(List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
+		updated = false;
 		vertexBuffer = null;
 		vertexValues = new ArrayList<Float>();
 		this.vertexAttributes = vertexAttributes;
@@ -47,6 +50,7 @@ public class EPHVertexBufferObject {
 		glBindBuffer(GL_ARRAY_BUFFER, handle);
 		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		updated = true;
 	}
 
 	protected void glBind() {
@@ -65,6 +69,7 @@ public class EPHVertexBufferObject {
 	protected int addData(List<Float> newVertexValues) {
 		vertexValues.addAll(newVertexValues);
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
+		updated = false;
 		return (vertexValues.size() - newVertexValues.size()) / computeStride();
 	}
 
@@ -73,6 +78,7 @@ public class EPHVertexBufferObject {
 			vertexValues.remove(i);
 		}
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
+		updated = false;
 		return (upperBound - lowerBound + 1) / computeStride();
 	}
 
@@ -82,6 +88,10 @@ public class EPHVertexBufferObject {
 
 	protected List<EPHVertexAttribute> getVertexAttributes() {
 		return vertexAttributes;
+	}
+
+	protected boolean isUpdated() {
+		return updated;
 	}
 
 }

@@ -19,7 +19,7 @@ public class EPHVertexArrayObject {
 
 	private static EPHShaderProgramPool shaderProgramPool;
 
-	private boolean dead, updated;
+	private boolean dead;
 	private int mode, size, usage, handle, uniformKey;
 	private int[] viewPortRect, scissorRect;
 	private List<EPHVaoEntry> entries;
@@ -28,7 +28,6 @@ public class EPHVertexArrayObject {
 
 	public EPHVertexArrayObject(int mode, int usage, int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
 		dead = false;
-		updated = false;
 		this.mode = mode;
 		this.size = 0;
 		this.usage = usage;
@@ -52,14 +51,21 @@ public class EPHVertexArrayObject {
 
 	private void glInit() {
 		if (handle < 0) handle = glGenVertexArrays();
-		vbo.glInit(usage);
+		glUpdateVbo();
 		ibo.glInit(usage);
 
 		glBindVertexArray(handle);
 		vbo.glBind();
 		ibo.glBind();
 		glBindVertexArray(0);
-		updated = true;
+	}
+
+	private void glUpdateVbo() {
+		vbo.glInit(usage);
+	}
+
+	private void glUpdateIbo() {
+		ibo.glInit(usage);
 	}
 
 	private Map<Integer, String> vertexAttributesToMap(List<EPHVertexAttribute> vertexAttributes) {
@@ -82,7 +88,9 @@ public class EPHVertexArrayObject {
 	}
 
 	public synchronized void glRender() {
-		if (handle < 0 || !updated) glInit();
+		if (handle < 0) glInit();
+		if (!vbo.isUpdated()) glUpdateVbo();
+		if (!ibo.isUpdated()) glUpdateIbo();
 		if (size > 0 && hasVisibleEntries()) {
 			glBindVertexArray(handle);
 			glViewport(viewPortRect[0], viewPortRect[1], viewPortRect[2], viewPortRect[3]);
@@ -137,7 +145,6 @@ public class EPHVertexArrayObject {
 		ibo.addData(indices, vbo.addData(vertexValues));
 		size += indices.size();
 		entries.add(entry);
-		updated = false;
 		return entry;
 	}
 
@@ -154,7 +161,6 @@ public class EPHVertexArrayObject {
 			currentEntry.iboUpperBound -= deletedIndices;
 		}
 		entries.remove(entry);
-		updated = false;
 	}
 
 	public synchronized void setViewportRect(int[] bounds) {
