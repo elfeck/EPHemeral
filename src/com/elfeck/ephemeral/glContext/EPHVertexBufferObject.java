@@ -56,13 +56,11 @@ public class EPHVertexBufferObject {
 			glBindBuffer(GL_ARRAY_BUFFER, handle);
 			glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			System.out.println("Init VBO");
 		} else {
-			System.out.println("Else :(");
-			// glBindBuffer(GL_ARRAY_BUFFER, handle);
-			// glBufferSubData(GL_ARRAY_BUFFER, updateOffset, updateBuffer);
-			// glBindBuffer(GL_ARRAY_BUFFER, 0);
-			// updateBuffer = null;
+			glBindBuffer(GL_ARRAY_BUFFER, handle);
+			glBufferSubData(GL_ARRAY_BUFFER, updateOffset, updateBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			updateBuffer = null;
 		}
 		updateOffset = -1;
 		updated = true;

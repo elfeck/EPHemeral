@@ -11,30 +11,31 @@ import java.util.List;
 import java.util.Map;
 
 import com.elfeck.ephemeral.glContext.EPHVaoEntry;
-import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 import com.elfeck.ephemeral.math.EPHMatf;
 import com.elfeck.ephemeral.math.EPHPolygon2f;
 import com.elfeck.ephemeral.math.EPHVec2f;
 import com.elfeck.ephemeral.math.EPHVecf;
 
 
-public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
+public class EPHDrawablePolygon implements EPHCollidable {
 
 	private String programKey;
 	private EPHVaoEntry vaoRef;
 	private Map<String, EPHVecf> vecUniforms;
 	private Map<String, EPHMatf> matUniforms;
+	private EPHDrawableModel model;
 
 	private EPHVec2f oldPolygonOffset, polygonOffset;
 	private EPHPolygon2f polygon;
 	private EPHVertex[] vertices;
 	private EPHTessellationTriangle[] triangles;
 
-	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset, int coordinateIndex) {
+	public EPHDrawablePolygon(EPHDrawableModel model, String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset, int coordinateIndex) {
 		this.programKey = programKey;
 		vaoRef = null;
 		vecUniforms = new HashMap<String, EPHVecf>();
 		matUniforms = new HashMap<String, EPHMatf>();
+		this.model = model;
 		this.vertices = vertices;
 		this.polygonOffset = polygonOffset;
 		oldPolygonOffset = null;
@@ -46,13 +47,13 @@ public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 		tessellate();
 	}
 
-	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset) {
-		this(programKey, vertices, polygonOffset, 0);
+	public EPHDrawablePolygon(EPHDrawableModel model, String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset) {
+		this(model, programKey, vertices, polygonOffset, 0);
 	}
 
-	public EPHDrawablePolygon(String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset,
+	public EPHDrawablePolygon(EPHDrawableModel model, String programKey, EPHVertex[] vertices, EPHVec2f polygonOffset,
 			Map<String, EPHVecf> vecUniforms, Map<String, EPHMatf> matUniforms) {
-		this(programKey, vertices, polygonOffset);
+		this(model, programKey, vertices, polygonOffset);
 		vecUniforms.putAll(vecUniforms);
 		matUniforms.putAll(matUniforms);
 	}
@@ -68,16 +69,14 @@ public class EPHDrawablePolygon implements EPHDrawable, EPHCollidable {
 		return polygon;
 	}
 
-	@Override
-	public void addDataToVao(EPHVertexArrayObject vao) {
-		vaoRef = vao.addData(assembleVertexValues(), assembleIndices(), programKey);
+	public void addDataToVao() {
+		vaoRef = model.addToVao(assembleVertexValues(), assembleIndices(), programKey);
 		updateUniformEntries();
 	}
 
-	@Override
-	public void removeDataFromVao(EPHVertexArrayObject vao) {
+	public void removeDataFromVao() {
 		vaoRef.deleteUniformEntries();
-		vao.removeData(vaoRef);
+		model.removeFromVao(vaoRef);
 	}
 
 	private void tessellate() {

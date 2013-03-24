@@ -43,14 +43,11 @@ public class EPHIndexBufferObject {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			System.out.println("Init IBO");
 		} else {
-			System.out.println("Else :(");
-			// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
-			// glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, updateOffset,
-			// updateBuffer);
-			// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			// updateBuffer = null;
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, updateOffset, updateBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			updateBuffer = null;
 		}
 		updateOffset = -1;
 		updated = true;

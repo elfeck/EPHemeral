@@ -88,20 +88,20 @@ public class EPHTestEntity implements EPHEntity {
 		vertices2[3] = new EPHVertex(3, new EPHVecf[] { new EPHVec4f(-0.5f, -0.5f, z2, 1), new EPHVec4f(0.7f, 0, 0.7f, 1) });
 		model.addAttribute(4, "pos_model");
 		model.addAttribute(4, "col_model");
+		model.create();
+		model.addToSurface(surface);
 
-		polygon1 = new EPHDrawablePolygon("test", vertices1, offset1);
+		polygon1 = new EPHDrawablePolygon(model, "test", vertices1, offset1);
 		polygon1.addUniformVecf("offset", offset1);
 		polygon1.addUniformMatf("mvp_matrix", mvpMatrix);
-		model.addDrawable(polygon1);
+		polygon1.addDataToVao();
 
-		polygon2 = new EPHDrawablePolygon("test2", vertices2, offset2);
+		polygon2 = new EPHDrawablePolygon(model, "test2", vertices2, offset2);
 		polygon2.addUniformVecf("offset", offset2);
 		polygon2.addUniformMatf("mvp_matrix", mvpMatrix);
-		model.addDrawable(polygon2);
+		polygon2.addDataToVao();
 
-		model.create();
 		// model.setViewPort(new int[] { EPHTest.WIDTH / 2, EPHTest.HEIGHT / 2,
 		// EPHTest.WIDTH / 2, EPHTest.HEIGHT / 2 });
-		model.addToSurface(surface);
 	}
 }

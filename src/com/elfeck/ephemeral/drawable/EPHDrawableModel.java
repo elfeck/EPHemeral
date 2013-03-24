@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.elfeck.ephemeral.EPHSurface;
+import com.elfeck.ephemeral.glContext.EPHVaoEntry;
 import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 import com.elfeck.ephemeral.glContext.EPHVertexAttribute;
 
@@ -18,12 +19,9 @@ public class EPHDrawableModel {
 	private EPHVertexArrayObject vao;
 	private List<EPHVertexAttribute> attributes;
 
-	private List<EPHDrawable> drawables;
-
 	public EPHDrawableModel() {
 		vao = null;
 		attributes = new ArrayList<EPHVertexAttribute>();
-		drawables = new ArrayList<EPHDrawable>();
 	}
 
 	private void adjustAttributes() {
@@ -42,40 +40,45 @@ public class EPHDrawableModel {
 		}
 	}
 
+	public void addToSurface(EPHSurface surface) {
+		surface.addVao(vao);
+	}
+
 	public void addAttribute(int size, String name) {
 		attributes.add(new EPHVertexAttribute(attributes.size(), size, 0, 0, name));
 		adjustAttributes();
 	}
 
-	public void addDrawable(EPHDrawable drawable) {
-		drawables.add(drawable);
-	}
-
 	public void create() {
 		vao = new EPHVertexArrayObject(attributes);
-		for (EPHDrawable drawable : drawables) {
-			drawable.addDataToVao(vao);
-		}
 	}
 
 	public void setViewPort(int[] bounds) {
 		vao.setViewportRect(bounds);
 	}
 
-	public void setClippingPane(int[] bounds) {
+	public void setScissor(int[] bounds) {
 		vao.setScissorRect(bounds);
 	}
 
-	public void removeFromVao(EPHDrawable drawable) {
-		drawable.removeDataFromVao(vao);
+	public EPHVaoEntry addToVao(List<Float> vertexValues, List<Integer> indices, String programKey) {
+		return vao.addData(vertexValues, indices, programKey);
 	}
 
-	public void addToVao(EPHDrawable drawable) {
-		drawable.addDataToVao(vao);
+	public EPHVaoEntry addToVao(List<Float> vertexValues, List<Integer> indices, EPHVaoEntry entry) {
+		return vao.addData(vertexValues, indices, entry);
 	}
 
-	public void addToSurface(EPHSurface surface) {
-		surface.addVao(vao);
+	public void removeFromVao(EPHVaoEntry entry) {
+		vao.removeData(entry);
+	}
+
+	public void updateToVbo(EPHVaoEntry entry, int subLower, int subUpper, List<Float> vertexValues) {
+		vao.updateVbo(entry, subLower, subUpper, vertexValues);
+	}
+
+	public void updateToIbo(EPHVaoEntry entry, int subLower, int subUpper, List<Integer> indices) {
+		vao.updateIbo(entry, subLower, subUpper, indices);
 	}
 
 }
