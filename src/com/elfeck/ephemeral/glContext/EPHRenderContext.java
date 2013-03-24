@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
@@ -27,10 +28,12 @@ public class EPHRenderContext {
 	private int fpsCap;
 	private String shaderParentPath, title;
 	private EPHemeral main;
+	private EPHInput input;
 
-	private EPHRenderContext(EPHemeral main, int fpsCap, String shaderParentPath, String title) {
+	private EPHRenderContext(EPHemeral main, EPHInput input, int fpsCap, String shaderParentPath, String title) {
 		created = true;
 		this.main = main;
+		this.input = input;
 		this.fpsCap = fpsCap;
 		this.shaderParentPath = shaderParentPath;
 		this.title = title;
@@ -72,6 +75,16 @@ public class EPHRenderContext {
 			return true;
 		}
 		return false;
+	}
+
+	private void glHandleInput() {
+		input.mx = Mouse.getX();
+		input.my = Mouse.getY();
+		input.mdx = Mouse.getDX();
+		input.mdy = Mouse.getDY();
+
+		input.setMleftPressed(Mouse.isButtonDown(0));
+		input.setMrightPressed(Mouse.isButtonDown(1));
 	}
 
 	private void glClearDisplay() {
@@ -121,6 +134,7 @@ public class EPHRenderContext {
 		glClearDisplay();
 		if (main.getSurface() != null) glDraw();
 		Display.update();
+		glHandleInput();
 		Display.sync(fpsCap);
 		main.updateVaos();
 	}
@@ -169,8 +183,8 @@ public class EPHRenderContext {
 		return glInitialized;
 	}
 
-	public static EPHRenderContext createRenderContext(EPHemeral main, int fpsCap, String shaderParentPath, String title) {
-		if (!created) return new EPHRenderContext(main, fpsCap, shaderParentPath, title);
+	public static EPHRenderContext createRenderContext(EPHemeral main, EPHInput input, int fpsCap, String shaderParentPath, String title) {
+		if (!created) return new EPHRenderContext(main, input, fpsCap, shaderParentPath, title);
 		System.err.println("RenderContext was already created");
 		return null;
 	}
