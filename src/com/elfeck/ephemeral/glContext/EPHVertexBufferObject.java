@@ -15,21 +15,28 @@ import java.util.List;
 
 public class EPHVertexBufferObject {
 
-	private int handle;
-	private FloatBuffer vertexBuffer;
+	private int handle, updateOffset;
+	private boolean updated;
+	private FloatBuffer vertexBuffer, updateBuffer;
 	private List<Float> vertexValues;
 	private List<EPHVertexAttribute> vertexAttributes;
 
 	protected EPHVertexBufferObject(List<Float> vertexValues, List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
+		updateOffset = -1;
+		updated = false;
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
+		updateBuffer = null;
 		this.vertexValues = vertexValues;
 		this.vertexAttributes = vertexAttributes;
 	}
 
 	protected EPHVertexBufferObject(List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
+		updateOffset = -1;
+		updated = false;
 		vertexBuffer = null;
+		updateBuffer = null;
 		vertexValues = new ArrayList<Float>();
 		this.vertexAttributes = vertexAttributes;
 	}
@@ -44,9 +51,20 @@ public class EPHVertexBufferObject {
 
 	protected void glInit(int usage) {
 		if (handle < 0) handle = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, handle);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		if (updateOffset < 0) {
+			glBindBuffer(GL_ARRAY_BUFFER, handle);
+			glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			System.out.println("Init VBO");
+		} else {
+			System.out.println("Else :(");
+			// glBindBuffer(GL_ARRAY_BUFFER, handle);
+			// glBufferSubData(GL_ARRAY_BUFFER, updateOffset, updateBuffer);
+			// glBindBuffer(GL_ARRAY_BUFFER, 0);
+			// updateBuffer = null;
+		}
+		updateOffset = -1;
+		updated = true;
 	}
 
 	protected void glBind() {
@@ -65,6 +83,8 @@ public class EPHVertexBufferObject {
 	protected int addData(List<Float> newVertexValues) {
 		vertexValues.addAll(newVertexValues);
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
+		updateOffset = -1;
+		updated = false;
 		return (vertexValues.size() - newVertexValues.size()) / computeStride();
 	}
 
@@ -73,7 +93,18 @@ public class EPHVertexBufferObject {
 			vertexValues.remove(i);
 		}
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
+		updateOffset = -1;
+		updated = false;
 		return (upperBound - lowerBound + 1) / computeStride();
+	}
+
+	protected void updateData(int lowerBound, int upperBound, List<Float> newVertexValues) {
+		for (int i = lowerBound; i <= upperBound; i++) {
+			vertexValues.set(i, newVertexValues.get(i - lowerBound));
+		}
+		updateBuffer = EPHRenderUtils.listToBufferf(newVertexValues);
+		updateOffset = lowerBound * 4;
+		updated = false;
 	}
 
 	protected int getCurrentIndex() {
@@ -82,6 +113,10 @@ public class EPHVertexBufferObject {
 
 	protected List<EPHVertexAttribute> getVertexAttributes() {
 		return vertexAttributes;
+	}
+
+	protected boolean isUpdated() {
+		return updated;
 	}
 
 }

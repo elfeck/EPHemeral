@@ -7,6 +7,7 @@ package com.elfeck.ephemeral;
 
 import java.util.List;
 
+import com.elfeck.ephemeral.glContext.EPHInput;
 import com.elfeck.ephemeral.glContext.EPHRenderContext;
 import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 
@@ -18,13 +19,15 @@ public class EPHemeral {
 	private int width, height;
 	private EPHSurface surface;
 	private EPHRenderContext renderContext;
+	private EPHInput input;
 	private EPHRunnableContext renderJob, logicJob;
 	private Thread renderThread, logicThread;
 
 	public EPHemeral(int width, int height, int fpsCap, int lpsCap, String shaderParentPath, String title) {
 		this.width = width;
 		this.height = height;
-		renderContext = EPHRenderContext.createRenderContext(this, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath, title);
+		input = new EPHInput();
+		renderContext = EPHRenderContext.createRenderContext(this, input, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath, title);
 		renderThread = new Thread(renderJob = new EPHRenderJob(this, Math.max(1, (int) Math.round((1.0 / fpsCap) * 1000 - 5))), "RenderThread");
 		logicThread = new Thread(logicJob = new EPHLogicJob(this, Math.max(1, (int) Math.round((1.0 / lpsCap) * 1000))), "LogicThread");
 		renderThread.setPriority(Thread.MAX_PRIORITY);
@@ -32,6 +35,7 @@ public class EPHemeral {
 		surface = null;
 		start();
 	}
+
 	public EPHemeral(int width, int height, String title) {
 		this(width, height, 60, 1000, "shader/", title);
 	}
@@ -43,6 +47,7 @@ public class EPHemeral {
 
 	protected synchronized void reqLogic(long delta) {
 		if (surface != null) surface.execLogic(delta);
+		input.reset();
 	}
 
 	protected synchronized void reqRender() {
@@ -78,6 +83,10 @@ public class EPHemeral {
 
 	public EPHSurface getSurface() {
 		return surface;
+	}
+
+	public EPHInput getInput() {
+		return input;
 	}
 
 	public void setDebug(int renderPrintDelay, int logicPrintDelay, int renderWarningThreshold, int logicWarningThreshold) {
