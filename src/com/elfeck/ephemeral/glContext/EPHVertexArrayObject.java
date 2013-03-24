@@ -52,8 +52,7 @@ public class EPHVertexArrayObject {
 	private void glInit() {
 		if (handle < 0) handle = glGenVertexArrays();
 		glUpdateVbo();
-		ibo.glInit(usage);
-
+		glUpdateIbo();
 		glBindVertexArray(handle);
 		vbo.glBind();
 		ibo.glBind();
@@ -161,6 +160,18 @@ public class EPHVertexArrayObject {
 			currentEntry.iboUpperBound -= deletedIndices;
 		}
 		entries.remove(entry);
+	}
+
+	public synchronized void updateVbo(EPHVaoEntry entry, int lowerSubBound, int upperSubBound, List<Float> vertexValues) {
+		if (lowerSubBound < 0) lowerSubBound = 0;
+		if (upperSubBound < 0) upperSubBound = entry.vboUpperBound - entry.vboLowerBound + 1;
+		vbo.updateData(entry.vboLowerBound + lowerSubBound, entry.vboLowerBound + upperSubBound, vertexValues);
+	}
+
+	public synchronized void updateIbo(EPHVaoEntry entry, int lowerSubBound, int upperSubBound, List<Integer> indices) {
+		if (lowerSubBound < 0) lowerSubBound = 0;
+		if (upperSubBound < 0) upperSubBound = entry.iboUpperBound - entry.iboLowerBound + 1;
+		ibo.updateData(entry.iboLowerBound + lowerSubBound, entry.iboLowerBound + upperSubBound, indices);
 	}
 
 	public synchronized void setViewportRect(int[] bounds) {
