@@ -29,8 +29,9 @@ public class EPHIndexBufferObject {
 	}
 
 	protected EPHIndexBufferObject() {
-		updated = false;
+		handle = -1;
 		updateOffset = -1;
+		updated = false;
 		indexBuffer = null;
 		updateBuffer = null;
 		indices = new ArrayList<Integer>();
