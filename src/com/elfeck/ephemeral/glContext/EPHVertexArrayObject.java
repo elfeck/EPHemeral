@@ -162,6 +162,17 @@ public class EPHVertexArrayObject {
 		entries.remove(entry);
 	}
 
+	public synchronized void updateVbo(EPHVaoEntry entry, int subLower, int subUpper, List<Float> vertexValues) {
+		if (subLower < 0) subLower = 0;
+		if (subUpper < 0) subUpper = entry.vboUpperBound - entry.vboLowerBound + 1;
+		vbo.updateData(entry.vboLowerBound + subLower, entry.vboLowerBound + subUpper, vertexValues);
+	}
+
+	public synchronized void updateIbo(EPHVaoEntry entry, int subLower, int subUpper, List<Integer> indices) {
+		if (subLower < 0) subLower = 0;
+		if (subUpper < 0) subUpper = entry.iboUpperBound - entry.iboLowerBound + 1;
+		ibo.updateData(entry.vboLowerBound + subLower, entry.vboLowerBound + subUpper, indices);
+	}
 	public synchronized void setViewportRect(int[] bounds) {
 		viewPortRect = bounds;
 	}
