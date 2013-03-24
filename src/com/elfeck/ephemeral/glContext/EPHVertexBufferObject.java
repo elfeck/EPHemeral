@@ -15,24 +15,15 @@ import java.util.List;
 
 public class EPHVertexBufferObject {
 
-<<<<<<< HEAD
-	private int handle;
-	private boolean updated;
-	private FloatBuffer vertexBuffer;
-=======
 	private int handle, updateOffset;
 	private boolean updated;
 	private FloatBuffer vertexBuffer, updateBuffer;
->>>>>>> refs/heads/vao_problem
 	private List<Float> vertexValues;
 	private List<EPHVertexAttribute> vertexAttributes;
 
 	protected EPHVertexBufferObject(List<Float> vertexValues, List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
 		updateBuffer = null;
@@ -42,10 +33,7 @@ public class EPHVertexBufferObject {
 
 	protected EPHVertexBufferObject(List<EPHVertexAttribute> vertexAttributes) {
 		handle = -1;
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 		vertexBuffer = null;
 		updateBuffer = null;
@@ -63,11 +51,7 @@ public class EPHVertexBufferObject {
 
 	protected void glInit(int usage) {
 		if (handle < 0) handle = glGenBuffers();
-<<<<<<< HEAD
-		glBindBuffer(GL_ARRAY_BUFFER, handle);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-=======
+
 		if (updateOffset < 0) {
 			glBindBuffer(GL_ARRAY_BUFFER, handle);
 			glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
@@ -81,7 +65,6 @@ public class EPHVertexBufferObject {
 			// updateBuffer = null;
 		}
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = true;
 	}
 
@@ -101,10 +84,7 @@ public class EPHVertexBufferObject {
 	protected int addData(List<Float> newVertexValues) {
 		vertexValues.addAll(newVertexValues);
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 		return (vertexValues.size() - newVertexValues.size()) / computeStride();
 	}
@@ -114,10 +94,7 @@ public class EPHVertexBufferObject {
 			vertexValues.remove(i);
 		}
 		vertexBuffer = EPHRenderUtils.listToBufferf(vertexValues);
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 		return (upperBound - lowerBound + 1) / computeStride();
 	}

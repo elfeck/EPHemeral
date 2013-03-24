@@ -14,23 +14,14 @@ import java.util.List;
 
 public class EPHIndexBufferObject {
 
-<<<<<<< HEAD
-	private int handle;
-	private boolean updated;
-	private IntBuffer indexBuffer;
-=======
 	private int handle, updateOffset;
 	private boolean updated;
 	private IntBuffer indexBuffer, updateBuffer;
->>>>>>> refs/heads/vao_problem
 	private List<Integer> indices;
 
 	protected EPHIndexBufferObject(List<Integer> indices) {
 		handle = -1;
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 		updateBuffer = null;
@@ -39,10 +30,7 @@ public class EPHIndexBufferObject {
 
 	protected EPHIndexBufferObject() {
 		handle = -1;
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 		indexBuffer = null;
 		updateBuffer = null;
@@ -51,11 +39,6 @@ public class EPHIndexBufferObject {
 
 	protected void glInit(int usage) {
 		if (handle < 0) handle = glGenBuffers();
-<<<<<<< HEAD
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-=======
 		if (updateOffset < 0) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
@@ -70,7 +53,6 @@ public class EPHIndexBufferObject {
 			// updateBuffer = null;
 		}
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = true;
 	}
 
@@ -87,10 +69,7 @@ public class EPHIndexBufferObject {
 			indices.add(newIndices.get(i) + offset);
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 	}
 
@@ -103,8 +82,6 @@ public class EPHIndexBufferObject {
 			indices.remove(i + 1);
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
-<<<<<<< HEAD
-=======
 		updateOffset = -1;
 		updated = false;
 	}
@@ -115,7 +92,6 @@ public class EPHIndexBufferObject {
 		}
 		updateBuffer = EPHRenderUtils.listToBufferi(newIndices);
 		updateOffset = lowerBound * 4;
->>>>>>> refs/heads/vao_problem
 		updated = false;
 	}
 
