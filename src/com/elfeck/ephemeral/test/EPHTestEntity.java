@@ -41,9 +41,11 @@ public class EPHTestEntity implements EPHEntity {
 	}
 
 	boolean outward = true;
+	EPHVertex modVertex1, modVertex2;
 
 	@Override
 	public void doLogic(long delta) {
+		polygon2.setVisible(false);
 		if (outward) {
 			offset1.addVec2f(0.0000f, 0.0001f);
 			offset2.subVec2f(0.0000f, 0.0001f);
@@ -51,19 +53,34 @@ public class EPHTestEntity implements EPHEntity {
 			offset1.subVec2f(0.0000f, 0.0001f);
 			offset2.addVec2f(0.0000f, 0.0001f);
 		}
-		if (offset2.getY() < -0.75f) {
+		if (offset2.getY() < -0.5f) {
 			outward = false;
-			// polygon2.setVisible(true);
 			polygon1.switchUniformTemplateBuffer("test2");
 			polygon1.updateUniformEntries();
 			polygon1.switchProgram("test2");
+
+			((EPHVec4f) modVertex1.getVec(0)).setN(0, 0);
+			modVertex1.setUpdated(true);
+
+			((EPHVec4f) modVertex2.getVec(0)).setN(0, 0.7f);
+			modVertex2.setUpdated(true);
+
+			polygon1.updateVertexData();
 		}
-		if (offset1.getY() < 0.5f) {
+		if (offset1.getY() < 0.0f) {
 			outward = true;
-			// polygon2.setVisible(false);
 			polygon1.switchUniformTemplateBuffer("test");
 			polygon1.updateUniformEntries();
 			polygon1.switchProgram("test");
+
+			((EPHVec4f) modVertex1.getVec(0)).setN(0, -0.5f);
+			((EPHVec4f) modVertex1.getVec(0)).setN(1, -0.3f);
+			modVertex1.setUpdated(true);
+
+			((EPHVec4f) modVertex2.getVec(0)).setN(0, -0.3f);
+			modVertex2.setUpdated(true);
+
+			polygon1.updateVertexData();
 		}
 		polygon1.collidesWith(polygon2);
 	}
@@ -77,9 +94,9 @@ public class EPHTestEntity implements EPHEntity {
 		EPHVertex[] vertices1 = new EPHVertex[4];
 		float z1 = 0.4f;
 		float z2 = 0.5f;
-		vertices1[0] = new EPHVertex(0, new EPHVecf[] { new EPHVec4f(-0.5f, 0.5f, z1, 1), new EPHVec4f(0.7f, 0, 0, 1) });
+		vertices1[0] = modVertex1 = new EPHVertex(0, new EPHVecf[] { new EPHVec4f(-0.5f, 0.5f, z1, 1), new EPHVec4f(0.7f, 0, 0, 1) });
 		vertices1[1] = new EPHVertex(1, new EPHVecf[] { new EPHVec4f(0.5f, 0.7f, z1, 1), new EPHVec4f(0, 0.7f, 0, 1) });
-		vertices1[2] = new EPHVertex(2, new EPHVecf[] { new EPHVec4f(0.5f, -0.5f, z1, 1), new EPHVec4f(0.7f, 0.7f, 0, 1) });
+		vertices1[2] = modVertex2 = new EPHVertex(2, new EPHVecf[] { new EPHVec4f(0.5f, -0.5f, z1, 1), new EPHVec4f(0.7f, 0.7f, 0, 1) });
 		vertices1[3] = new EPHVertex(3, new EPHVecf[] { new EPHVec4f(-0.5f, -0.7f, z1, 1), new EPHVec4f(0.7f, 0, 0.7f, 1) });
 		EPHVertex[] vertices2 = new EPHVertex[4];
 		vertices2[0] = new EPHVertex(0, new EPHVecf[] { new EPHVec4f(-0.5f, 0.7f, z2, 1), new EPHVec4f(0.7f, 0, 0, 1) });

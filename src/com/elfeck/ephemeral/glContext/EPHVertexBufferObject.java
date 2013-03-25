@@ -98,7 +98,8 @@ public class EPHVertexBufferObject {
 	}
 
 	protected void updateData(int lowerBound, int upperBound, List<Float> newVertexValues) {
-		for (int i = lowerBound; i <= upperBound; i++) {
+		System.out.println(newVertexValues.size() + " " + vertexValues.size() + " " + (upperBound - lowerBound));
+		for (int i = lowerBound; i < upperBound; i++) {
 			vertexValues.set(i, newVertexValues.get(i - lowerBound));
 		}
 		updateBuffer = EPHRenderUtils.listToBufferf(newVertexValues);

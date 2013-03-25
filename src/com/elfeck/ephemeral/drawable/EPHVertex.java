@@ -14,6 +14,7 @@ public class EPHVertex {
 
 	private EPHVecf[] data;
 	private int index;
+	private boolean updated;
 
 	public EPHVertex(int index, EPHVecf[] data) {
 		this.data = data;
@@ -36,8 +37,15 @@ public class EPHVertex {
 		return index;
 	}
 
-	protected EPHVecf getVec(int index) {
+	public EPHVecf getVec(int index) {
 		return data[index];
 	}
 
+	public boolean isUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(boolean updated) {
+		this.updated = updated;
+	}
 }

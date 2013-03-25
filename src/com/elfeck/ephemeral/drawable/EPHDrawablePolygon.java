@@ -69,21 +69,10 @@ public class EPHDrawablePolygon implements EPHCollidable {
 		return polygon;
 	}
 
-	public void addDataToVao() {
-		vaoRef = model.addToVao(assembleVertexValues(), assembleIndices(), programKey);
-		updateUniformEntries();
-	}
-
-	public void removeDataFromVao() {
-		vaoRef.deleteUniformEntries();
-		model.removeFromVao(vaoRef);
-	}
-
 	private void tessellate() {
 		triangles = new EPHTessellationTriangle[vertices.length - 2];
 		for (int i = 1; i < vertices.length - 1; i++) {
 			triangles[i - 1] = new EPHTessellationTriangle(new EPHVertex[] { vertices[0], vertices[i], vertices[i + 1] });
-
 		}
 	}
 
@@ -112,6 +101,36 @@ public class EPHDrawablePolygon implements EPHCollidable {
 			}
 		}
 		oldPolygonOffset = polygonOffset.copy();
+	}
+
+	public void addDataToVao() {
+		vaoRef = model.addToVao(assembleVertexValues(), assembleIndices(), programKey);
+		updateUniformEntries();
+	}
+
+	public void removeDataFromVao() {
+		vaoRef.deleteUniformEntries();
+		model.removeFromVao(vaoRef);
+	}
+
+	public void updateVertexData() {
+		List<Float> updatedData = new ArrayList<Float>();
+		int subLower = -1;
+		int subUpper = -1;
+		for (int i = 0; i < vertices.length; i++) {
+			if (vertices[i].isUpdated() && subLower == -1) subLower = i;
+			if (vertices[i].isUpdated()) subUpper = i;
+		}
+		if (subLower == -1) return;
+		for (int i = subLower; i <= subUpper; i++) {
+			vertices[i].fetchFloatData(updatedData);
+			vertices[i].setUpdated(false);
+		}
+		model.updateToVbo(vaoRef, subLower, subUpper, updatedData);
+	}
+
+	public void updateIndexData() {
+		// TODO: Blablabla
 	}
 
 	public void addUniformVecf(String name, EPHVecf uniform) {
