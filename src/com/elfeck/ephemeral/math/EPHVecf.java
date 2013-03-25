@@ -5,11 +5,15 @@
 
 package com.elfeck.ephemeral.math;
 
+import java.util.List;
+
+
 public interface EPHVecf {
 
 	public int getDimension();
 	public float getN(int index);
 	public void setN(int index, float value);
+	public void dataIntoList(List<Float> list);
 
 	public float[] toArray();
 	public EPHVec2f toVec2f();

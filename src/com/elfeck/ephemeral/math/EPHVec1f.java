@@ -5,6 +5,9 @@
 
 package com.elfeck.ephemeral.math;
 
+import java.util.List;
+
+
 public class EPHVec1f implements EPHVecf {
 
 	protected float x;
@@ -27,6 +30,11 @@ public class EPHVec1f implements EPHVecf {
 	public void setN(int index, float value) {
 		if (index == 0) x = value;
 
+	}
+
+	@Override
+	public void dataIntoList(List<Float> list) {
+		list.add(x);
 	}
 
 	@Override

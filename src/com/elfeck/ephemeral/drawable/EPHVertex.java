@@ -21,19 +21,17 @@ public class EPHVertex {
 		this.index = index;
 	}
 
-	protected void fetchFloatData(List<Float> vertexValues) {
+	public void fetchVertexData(List<Float> vertexValues) {
 		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[i].getDimension(); j++) {
-				vertexValues.add(data[i].getN(j));
-			}
+			data[i].dataIntoList(vertexValues);
 		}
 	}
 
-	protected void fetchIndexData(List<Integer> indices) {
+	public void fetchIndexData(List<Integer> indices) {
 		indices.add(index);
 	}
 
-	protected int getIndex() {
+	public int getIndex() {
 		return index;
 	}
 

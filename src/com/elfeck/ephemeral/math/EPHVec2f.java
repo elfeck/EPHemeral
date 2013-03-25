@@ -5,6 +5,9 @@
 
 package com.elfeck.ephemeral.math;
 
+import java.util.List;
+
+
 public class EPHVec2f implements EPHVecf {
 
 	protected float x, y;
@@ -41,6 +44,12 @@ public class EPHVec2f implements EPHVecf {
 				y = value;
 				break;
 		}
+	}
+
+	@Override
+	public void dataIntoList(List<Float> list) {
+		list.add(x);
+		list.add(y);
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class EPHDrawablePolygon implements EPHCollidable {
 	private List<Float> assembleVertexValues() {
 		List<Float> vertexValues = new ArrayList<Float>();
 		for (int i = 0; i < vertices.length; i++) {
-			vertices[i].fetchFloatData(vertexValues);
+			vertices[i].fetchVertexData(vertexValues);
 		}
 		return vertexValues;
 	}
@@ -123,7 +123,7 @@ public class EPHDrawablePolygon implements EPHCollidable {
 		}
 		if (subLower == -1) return;
 		for (int i = subLower; i <= subUpper; i++) {
-			vertices[i].fetchFloatData(updatedData);
+			vertices[i].fetchVertexData(updatedData);
 			vertices[i].setUpdated(false);
 		}
 		model.updateToVbo(vaoRef, subLower, subUpper, updatedData);
