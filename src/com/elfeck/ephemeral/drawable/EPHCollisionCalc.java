@@ -15,10 +15,6 @@ public class EPHCollisionCalc {
 
 	}
 
-	public static boolean pipCollision() {
-		return false;
-	}
-
 	public static boolean satCollision(EPHCollidable collidable1, EPHCollidable collidable2) {
 		EPHPolygon2f poly1 = collidable1.getPolygon();
 		EPHPolygon2f poly2 = collidable2.getPolygon();

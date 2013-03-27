@@ -39,6 +39,10 @@ public class EPHVertex {
 		return data[index];
 	}
 
+	public EPHVecf[] getData() {
+		return data;
+	}
+
 	public int dataSize() {
 		return data.length;
 	}
