@@ -23,7 +23,7 @@ public class EPHVertex {
 
 	public void fetchVertexData(List<Float> vertexValues) {
 		for (int i = 0; i < data.length; i++) {
-			data[i].dataIntoList(vertexValues);
+			data[i].fetchData(vertexValues);
 		}
 	}
 
@@ -37,6 +37,10 @@ public class EPHVertex {
 
 	public EPHVecf getVec(int index) {
 		return data[index];
+	}
+
+	public int dataSize() {
+		return data.length;
 	}
 
 	public boolean isUpdated() {

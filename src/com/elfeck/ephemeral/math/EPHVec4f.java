@@ -35,40 +35,32 @@ public class EPHVec4f implements EPHVecf {
 
 	@Override
 	public float getN(int index) {
-		switch (index) {
-			case 0:
-				return x;
-			case 1:
-				return y;
-			case 2:
-				return z;
-			case 3:
-				return w;
-			default:
-				return Float.NaN;
-		}
+		if (index == 0) return x;
+		if (index == 1) return y;
+		if (index == 2) return z;
+		if (index == 3) return w;
+		return Float.NaN;
+
 	}
 
 	@Override
 	public void setN(int index, float value) {
-		switch (index) {
-			case 0:
-				x = value;
-				break;
-			case 1:
-				y = value;
-				break;
-			case 2:
-				z = value;
-				break;
-			case 3:
-				w = value;
-				break;
-		}
+		if (index == 0) x = value;
+		if (index == 1) y = value;
+		if (index == 2) z = value;
+		if (index == 3) w = value;
 	}
 
 	@Override
-	public void dataIntoList(List<Float> list) {
+	public void addToN(int index, float value) {
+		if (index == 0) x += value;
+		if (index == 1) y += value;
+		if (index == 2) z += value;
+		if (index == 3) w += value;
+	}
+
+	@Override
+	public void fetchData(List<Float> list) {
 		list.add(x);
 		list.add(y);
 		list.add(z);

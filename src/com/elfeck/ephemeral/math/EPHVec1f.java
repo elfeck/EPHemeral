@@ -33,7 +33,12 @@ public class EPHVec1f implements EPHVecf {
 	}
 
 	@Override
-	public void dataIntoList(List<Float> list) {
+	public void addToN(int index, float value) {
+		if (index == 0) x += value;
+	}
+
+	@Override
+	public void fetchData(List<Float> list) {
 		list.add(x);
 	}
 

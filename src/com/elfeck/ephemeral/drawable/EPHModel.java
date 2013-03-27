@@ -14,12 +14,12 @@ import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 import com.elfeck.ephemeral.glContext.EPHVertexAttribute;
 
 
-public class EPHDrawableModel {
+public class EPHModel {
 
 	private EPHVertexArrayObject vao;
 	private List<EPHVertexAttribute> attributes;
 
-	public EPHDrawableModel() {
+	public EPHModel() {
 		vao = null;
 		attributes = new ArrayList<EPHVertexAttribute>();
 	}

@@ -19,11 +19,6 @@ public class EPHCollisionCalc {
 		return false;
 	}
 
-	public static boolean optimalCollision(EPHCollidable collidable1, EPHCollidable collidable2) {
-		if (aabbCollision(collidable1, collidable2)) return satCollision(collidable1, collidable2);
-		return false;
-	}
-
 	public static boolean satCollision(EPHCollidable collidable1, EPHCollidable collidable2) {
 		EPHPolygon2f poly1 = collidable1.getPolygon();
 		EPHPolygon2f poly2 = collidable2.getPolygon();
@@ -47,6 +42,7 @@ public class EPHCollisionCalc {
 		// (count1 + count2) * 3
 		return true;
 	}
+
 	public static boolean aabbCollision(EPHCollidable collidable1, EPHCollidable collidable2) {
 		EPHPolygon2f poly1 = collidable1.getPolygon();
 		EPHPolygon2f poly2 = collidable2.getPolygon();
@@ -59,6 +55,7 @@ public class EPHCollisionCalc {
 		return projectionOverlap(projx1, projx2) && projectionOverlap(projy1, projy2);
 
 	}
+
 	private static boolean projectionOverlap(EPHVec2f proj1, EPHVec2f proj2) {
 		return (Math.abs(Math.max(proj1.getY(), proj2.getY()) - Math.min(proj1.getX(), proj2.getX()))
 		< Math.abs(proj1.getY() - proj1.getX()) + Math.abs(proj2.getY() - proj2.getX()));
