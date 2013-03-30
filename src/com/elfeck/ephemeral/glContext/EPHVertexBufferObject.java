@@ -51,7 +51,7 @@ public class EPHVertexBufferObject {
 
 	protected void glInit(int usage) {
 		if (handle < 0) handle = glGenBuffers();
-
+		if (vertexValues.size() <= 0) return;
 		if (updateOffset < 0) {
 			glBindBuffer(GL_ARRAY_BUFFER, handle);
 			glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);

@@ -14,8 +14,11 @@ import com.elfeck.ephemeral.math.EPHMat4f;
 public class EPHTestEntity implements EPHEntity {
 
 	private boolean dead;
+	@SuppressWarnings("unused")
 	private EPHSurface surface;
+	@SuppressWarnings("unused")
 	private EPHModel model;
+	@SuppressWarnings("unused")
 	private EPHMat4f mvpMatrix;
 
 	public EPHTestEntity(EPHSurface surface) {

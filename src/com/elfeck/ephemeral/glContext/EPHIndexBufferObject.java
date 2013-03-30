@@ -39,6 +39,7 @@ public class EPHIndexBufferObject {
 
 	protected void glInit(int usage) {
 		if (handle < 0) handle = glGenBuffers();
+		if (indices.size() <= 0) return;
 		if (updateOffset < 0) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
