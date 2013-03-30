@@ -48,9 +48,9 @@ public class EPHRenderContext {
 		PixelFormat pixelFormat = new PixelFormat().withSamples(8);
 		try {
 			Display.setDisplayMode(displayMode);
-			Display.create(pixelFormat);
-			Display.setTitle(title + " using EPHemeral v. " + EPHemeral.VERSION);
 			Display.setResizable(resizable);
+			Display.setTitle(title + " using EPHemeral v. " + EPHemeral.VERSION);
+			Display.create(pixelFormat);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
