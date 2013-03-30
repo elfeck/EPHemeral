@@ -12,7 +12,6 @@ import com.elfeck.ephemeral.glContext.EPHRenderContext;
 import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
 
 
-// shit
 public class EPHemeral {
 
 	public static final String VERSION = "0.00.1";
