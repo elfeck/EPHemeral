@@ -18,7 +18,6 @@ public class EPHTest {
 		eph.setDebug(500, 5000, 40, -1);
 		eph.setResizable(true);
 		eph.setSurface(new EPHTestSurface());
-		eph.getSurface().addEntity(new EPHTestEntity(eph.getSurface()));
 	}
 
 }

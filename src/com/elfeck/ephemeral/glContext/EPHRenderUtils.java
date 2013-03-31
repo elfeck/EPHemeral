@@ -28,8 +28,8 @@ public class EPHRenderUtils {
 	public static final int TYPE_SHORT = GL_SHORT;
 
 	public static final int TYPE_TRIANGLES = GL_TRIANGLES;
-	public static final int TYPE_LINE = GL_LINES;
-	public static final int TYPE_POINT = GL_POINTS;
+	public static final int TYPE_LINES = GL_LINES;
+	public static final int TYPE_POINTS = GL_POINTS;
 
 	private EPHRenderUtils() {
 

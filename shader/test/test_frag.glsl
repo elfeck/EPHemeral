@@ -5,8 +5,8 @@
 
 #version 140
 
-in vec4 color;
+in vec4 frag_color;
 
 void main() {
-	gl_FragColor = vec4(color[0], color[1], color[2], color[3]);
+	gl_FragColor = frag_color;
 }

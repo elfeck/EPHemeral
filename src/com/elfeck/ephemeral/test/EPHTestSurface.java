@@ -11,7 +11,7 @@ import com.elfeck.ephemeral.EPHSurface;
 public class EPHTestSurface extends EPHSurface {
 
 	public EPHTestSurface() {
-
+		addEntity(new EPHTestEntity(this));
 	}
 
 }

@@ -44,9 +44,12 @@ public class EPHVertexArrayObject {
 		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, viewPortRect, scissorRect, vertexAttributes);
 	}
 
+	public EPHVertexArrayObject(int mode, List<EPHVertexAttribute> vertexAttributes) {
+		this(mode, EPHRenderUtils.MODE_STATIC_DRAW, EPHRenderContext.getWindowDimensions(), EPHRenderContext.getWindowDimensions(), vertexAttributes);
+	}
+
 	public EPHVertexArrayObject(List<EPHVertexAttribute> vertexAttributes) {
-		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW,
-				EPHRenderContext.getWindowDimensions(), EPHRenderContext.getWindowDimensions(), vertexAttributes);
+		this(EPHRenderUtils.TYPE_TRIANGLES, vertexAttributes);
 	}
 
 	private void glInit() {

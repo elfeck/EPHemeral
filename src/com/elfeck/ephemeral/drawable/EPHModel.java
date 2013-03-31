@@ -53,6 +53,9 @@ public class EPHModel {
 		vao = new EPHVertexArrayObject(attributes);
 	}
 
+	public void create(int mode) {
+		vao = new EPHVertexArrayObject(mode, attributes);
+	}
 	public void setViewPort(int[] bounds) {
 		vao.setViewportRect(bounds);
 	}
