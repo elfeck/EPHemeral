@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 
 import com.elfeck.ephemeral.glContext.EPHRenderUtils;
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformMatf;
 
 
 public class EPHMat4f implements EPHMatf {
@@ -44,6 +45,11 @@ public class EPHMat4f implements EPHMatf {
 								Arrays.copyOf(matrix[2], matrix[2].length),
 								Arrays.copyOf(matrix[3], matrix[3].length)
 		};
+	}
+
+	@Override
+	public EPHUniformMatf asUniformMatf() {
+		return new EPHUniformMatf(this);
 	}
 
 	private boolean valid() {

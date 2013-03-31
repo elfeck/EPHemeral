@@ -8,11 +8,8 @@ package com.elfeck.ephemeral.glContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.elfeck.ephemeral.glContext.uniform.EPHUniformMatf;
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformContent;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformObject;
-import com.elfeck.ephemeral.glContext.uniform.EPHUniformVecf;
-import com.elfeck.ephemeral.math.EPHMatf;
-import com.elfeck.ephemeral.math.EPHVecf;
 
 
 public class EPHUniformTemplateBuffer {
@@ -47,15 +44,9 @@ public class EPHUniformTemplateBuffer {
 		}
 	}
 
-	protected void registerVecUniformEntry(String name, int key, EPHVecf vec) {
+	protected void registerUniformEntry(String name, int key, EPHUniformContent content) {
 		for (EPHUniformObject uo : uniformTemplates) {
-			if (uo.getName().equals(name) && uo instanceof EPHUniformVecf) ((EPHUniformVecf) uo).addEntry(key, vec);
-		}
-	}
-
-	protected void registerMatUniformEntry(String name, int key, EPHMatf mat) {
-		for (EPHUniformObject uo : uniformTemplates) {
-			if (uo.getName().equals(name) && uo instanceof EPHUniformMatf) ((EPHUniformMatf) uo).addEntry(key, mat);
+			if (uo.getName().equals(name)) uo.addEntry(key, content);
 		}
 	}
 

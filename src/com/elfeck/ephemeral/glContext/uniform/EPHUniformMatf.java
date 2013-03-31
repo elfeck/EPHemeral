@@ -7,62 +7,31 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 import static org.lwjgl.opengl.GL20.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.elfeck.ephemeral.math.EPHMatf;
 
 
-public class EPHUniformMatf implements EPHUniformObject {
+public class EPHUniformMatf extends EPHUniformContent {
 
-	private int index;
-	private String name;
-	private Map<Integer, EPHMatf> entries;
+	private EPHMatf matrix;
 
-	public EPHUniformMatf(String name) {
-		index = -1;
-		this.name = name;
-		entries = new HashMap<Integer, EPHMatf>();
+	public EPHUniformMatf(EPHMatf matrix) {
+		this.matrix = matrix;
 	}
 
 	@Override
-	public void glUseUniform(int programHandle, int key) {
-		if (index < 0) index = glGetUniformLocation(programHandle, name);
-		EPHMatf matrix = entries.get(key);
-		if (matrix != null) {
-			switch (matrix.getDimension()) {
-				case 2:
-					glUniformMatrix2(index, false, matrix.toBuffer());
-					break;
-				case 3:
-					glUniformMatrix3(index, false, matrix.toBuffer());
-					break;
-				case 4:
-					glUniformMatrix4(index, false, matrix.toBuffer());
-					break;
-				default:
-					System.err.println("Error in GOPUniformxfm. Size out of valid range");
-			}
+	protected void glUploadUniformContent(int location) {
+		// TODO: other dimensions
+		switch (matrix.getDimension()) {
+			case 4:
+				glUniformMatrix4(location, false, matrix.toBuffer());
+				break;
+			default:
+				System.err.println("Error in EPHUniformMatf. Size out of valid range.");
 		}
 	}
 
-	@Override
-	public void reset() {
-		index = -1;
-	}
-
-	@Override
-	public void removeEntry(int key) {
-		entries.remove(key);
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void addEntry(int key, EPHMatf matrix) {
-		entries.put(key, matrix);
+	public EPHMatf getMatrix() {
+		return matrix;
 	}
 
 }

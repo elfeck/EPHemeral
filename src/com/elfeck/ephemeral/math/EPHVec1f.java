@@ -7,6 +7,8 @@ package com.elfeck.ephemeral.math;
 
 import java.util.List;
 
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformVecf;
+
 
 public class EPHVec1f implements EPHVecf {
 
@@ -61,6 +63,19 @@ public class EPHVec1f implements EPHVecf {
 	public boolean equals(Object obj) {
 		if (!(obj instanceof EPHVec1f)) return false;
 		return ((EPHVec1f) obj).x == x;
+	}
+
+	@Override
+	public EPHUniformVecf asUniformVecf() {
+		return new EPHUniformVecf(this);
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float value) {
+		x = value;
 	}
 
 }

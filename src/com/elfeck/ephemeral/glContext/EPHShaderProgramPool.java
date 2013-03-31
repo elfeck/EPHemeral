@@ -12,8 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.elfeck.ephemeral.glContext.uniform.EPHUniformMatf;
-import com.elfeck.ephemeral.glContext.uniform.EPHUniformVecf;
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformObject;
 
 
 public class EPHShaderProgramPool {
@@ -77,8 +76,8 @@ public class EPHShaderProgramPool {
 		EPHUniformTemplateBuffer utb = new EPHUniformTemplateBuffer();
 		for (String s : uniforms) {
 			String[] cut = s.split("#");
-			if (cut[0].equals("float") || cut[0].startsWith("vec")) utb.addUniformTemplate(new EPHUniformVecf(cut[1]));
-			if (cut[0].startsWith("mat")) utb.addUniformTemplate(new EPHUniformMatf(cut[1]));
+			if (cut[0].equals("float") || cut[0].startsWith("vec")) utb.addUniformTemplate(new EPHUniformObject(cut[1]));
+			if (cut[0].startsWith("mat")) utb.addUniformTemplate(new EPHUniformObject(cut[1]));
 		}
 		return utb;
 	}

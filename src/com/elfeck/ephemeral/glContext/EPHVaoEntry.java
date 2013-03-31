@@ -5,8 +5,7 @@
 
 package com.elfeck.ephemeral.glContext;
 
-import com.elfeck.ephemeral.math.EPHMatf;
-import com.elfeck.ephemeral.math.EPHVecf;
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformContent;
 
 
 public class EPHVaoEntry {
@@ -44,12 +43,8 @@ public class EPHVaoEntry {
 		this.programKey = programKey;
 	}
 
-	public void registerVecUniformEntry(String name, EPHVecf vec) {
-		utb.registerVecUniformEntry(name, uniformKey, vec);
-	}
-
-	public void registerMatUniformEntry(String name, EPHMatf mat) {
-		utb.registerMatUniformEntry(name, uniformKey, mat);
+	public void registerUniformEntry(String name, EPHUniformContent content) {
+		utb.registerUniformEntry(name, uniformKey, content);
 	}
 
 	public void deleteUniformEntries() {

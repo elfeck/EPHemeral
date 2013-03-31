@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 
+import com.elfeck.ephemeral.math.EPHVecf;
+
 
 public class EPHRenderUtils {
 
@@ -75,6 +77,15 @@ public class EPHRenderUtils {
 			for (int l = 0; l < array[c].length; l++) {
 				buffer.put(array[c][l]);
 			}
+		}
+		buffer.flip();
+		return buffer;
+	}
+
+	public static FloatBuffer vecfArrayToBufferf(EPHVecf[] array) {
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(array.length * array[0].getDimension());
+		for (int i = 0; i < array.length; i++) {
+			buffer.put(array[i].toArray());
 		}
 		buffer.flip();
 		return buffer;
