@@ -12,10 +12,7 @@ import java.awt.Shape;
 import java.awt.font.GlyphVector;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.elfeck.ephemeral.math.EPHVec2f;
+import java.util.Arrays;
 
 
 public class EPHTextUtils {
@@ -30,48 +27,53 @@ public class EPHTextUtils {
 	public static final String NAME_LUCIDA_SANS_OBLIQUE = "Lucida Sans Oblique";
 	public static final String NAME_LUCIDA_SANS_BOLD_OBLIQUE = "Lucida Sans Bold Oblique";
 
-	public static final char[] characters = { 'g', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+	public static final char[] characters = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 												'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 												'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '?', '.', ',', '-', '_', '/', '(', ')', '[', ']', '{', '}', '#', '+', '*',
 												'~', '#', '%', '&' };
+
+	static {
+		Arrays.sort(characters);
+	}
 
 	private EPHTextUtils() {
 
 	}
 
-	public static EPHVec2f[] getShape(String name, int style) {
+	public static PathIterator getGlyphOutline(String name, int style, char character) {
 		Font font = new Font(name, style, 1);
 		BufferedImage dummy = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = dummy.createGraphics();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		GlyphVector glyphVector = font.createGlyphVector(g2.getFontRenderContext(), characters);
 		g2.dispose();
-		Shape test = glyphVector.getGlyphOutline(0);
-		PathIterator iter = test.getPathIterator(null);
-		List<EPHVec2f> shape = new ArrayList<EPHVec2f>();
+		Shape shape = glyphVector.getGlyphOutline(Arrays.binarySearch(characters, character));
+		return shape.getPathIterator(null);
+	}
+
+	public static EPHGlyph createGlyph(PathIterator iter) {
+		EPHGlyph glyph = new EPHGlyph();
+		EPHGlyphSegment currentSegment = null;
 		float[] currentCoords = new float[6];
 		while (!iter.isDone()) {
 			switch (iter.currentSegment(currentCoords)) {
 				case PathIterator.SEG_CLOSE:
 					break;
-				case PathIterator.SEG_LINETO:
-					shape.add(new EPHVec2f(currentCoords[0], currentCoords[1]));
-					break;
 				case PathIterator.SEG_MOVETO:
-					shape.add(new EPHVec2f(currentCoords[0], currentCoords[1]));
+					glyph.addSegment(currentSegment = new EPHGlyphSegment(iter.getWindingRule(), currentCoords));
+					break;
+				case PathIterator.SEG_LINETO:
+					currentSegment.addLineSegment(currentCoords);
 					break;
 				case PathIterator.SEG_QUADTO:
-					shape.add(new EPHVec2f(currentCoords[0], currentCoords[1]));
-					shape.add(new EPHVec2f(currentCoords[2], currentCoords[3]));
+					currentSegment.addQuadCurveSegment(currentCoords);
 					break;
 				case PathIterator.SEG_CUBICTO:
-					shape.add(new EPHVec2f(currentCoords[0], currentCoords[1]));
-					shape.add(new EPHVec2f(currentCoords[2], currentCoords[3]));
-					shape.add(new EPHVec2f(currentCoords[4], currentCoords[5]));
+					currentSegment.addCubicCurveSegment(currentCoords);
 					break;
 			}
 			iter.next();
 		}
-		return shape.toArray(new EPHVec2f[shape.size()]);
+		return glyph;
 	}
 }
