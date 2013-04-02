@@ -15,7 +15,7 @@ public class EPHVaoEntry {
 	protected int iboLowerBound, iboUpperBound;
 	protected int uniformKey;
 	protected volatile String programKey;
-	protected volatile EPHUniformTemplateBuffer utb;
+	protected volatile EPHShaderUniformCollection shaderUniforms;
 
 	protected EPHVaoEntry() {
 		visible = true;
@@ -27,7 +27,7 @@ public class EPHVaoEntry {
 		programKey = null;
 	}
 
-	protected EPHVaoEntry(int vboL, int vboU, int iboL, int iboU, int uniform, String program, EPHUniformTemplateBuffer utb) {
+	protected EPHVaoEntry(int vboL, int vboU, int iboL, int iboU, int uniform, String program, EPHShaderUniformCollection shaderUniforms) {
 		visible = true;
 		vboLowerBound = vboL;
 		vboUpperBound = vboU;
@@ -35,7 +35,7 @@ public class EPHVaoEntry {
 		iboUpperBound = iboU;
 		uniformKey = uniform;
 		programKey = program;
-		this.utb = utb;
+		this.shaderUniforms = shaderUniforms;
 	}
 
 	public EPHVaoEntry(String programKey) {
@@ -44,27 +44,24 @@ public class EPHVaoEntry {
 	}
 
 	public void registerUniformEntry(String name, EPHUniformContent content) {
-		utb.registerUniformEntry(name, uniformKey, content);
+		shaderUniforms.registerUniformEntry(name, uniformKey, content);
 	}
 
 	public void deleteUniformEntries() {
-		utb.removeUniformEntry(uniformKey);
+		shaderUniforms.removeUniformEntry(uniformKey);
 	}
 
 	public String getProgramKey() {
 		return programKey;
 	}
 
-	/*
-	 * Not feeling good about this access!
-	 */
-	public void switchUniformTemplateBuffer(String futureProgramKey) {
-		utb = EPHVertexArrayObject.getShaderProgramPool().getShaderProgram(futureProgramKey).getUniformTemplateBuffer();
+	public void switchShaderUniforms(String futureProgramKey) {
+		shaderUniforms = EPHVertexArrayObject.getShaderProgramPool().getShaderProgram(futureProgramKey).getShaderUniforms();
 	}
 
 	public void switchProgram(String programKey) {
 		if (!this.programKey.equals(programKey)) EPHVertexArrayObject.getShaderProgramPool().getShaderProgram(this.programKey).
-				getUniformTemplateBuffer().removeUniformEntry(uniformKey);
+				getShaderUniforms().removeUniformEntry(uniformKey);
 		this.programKey = programKey;
 	}
 

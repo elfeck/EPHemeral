@@ -3,7 +3,7 @@
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-package com.elfeck.ephemeral.drawable.lighting;
+package com.elfeck.ephemeral.drawable;
 
 import com.elfeck.ephemeral.glContext.EPHVaoEntry;
 

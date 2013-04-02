@@ -15,11 +15,13 @@ public class EPHUniformMatf extends EPHUniformContent {
 	private EPHMatf matrix;
 
 	public EPHUniformMatf(EPHMatf matrix) {
+		super();
 		this.matrix = matrix;
 	}
 
 	@Override
-	protected void glUploadUniformContent(int location) {
+	protected void glUploadUniformContent(String name, int programHandle) {
+		if (location < 0) location = glGetUniformLocation(programHandle, name);
 		// TODO: other dimensions
 		switch (matrix.getDimension()) {
 			case 4:

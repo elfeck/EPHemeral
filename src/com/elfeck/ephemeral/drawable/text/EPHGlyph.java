@@ -21,4 +21,8 @@ public class EPHGlyph {
 		segments.add(segment);
 	}
 
+	public List<EPHGlyphSegment> getSegments() {
+		return segments;
+	}
+
 }

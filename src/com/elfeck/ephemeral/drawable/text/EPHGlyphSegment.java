@@ -19,8 +19,8 @@ public class EPHGlyphSegment {
 
 	protected EPHGlyphSegment(int windingRule, float[] currentVertexData) {
 		this.windingRule = windingRule;
-		quadRes = 10;
-		cubicRes = 10;
+		quadRes = 20;
+		cubicRes = 20;
 		currentVertex = new EPHVec2f(currentVertexData[0], currentVertexData[1]);
 		vertices = new ArrayList<EPHVec2f>();
 		vertices.add(currentVertex);

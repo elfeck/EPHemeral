@@ -17,12 +17,12 @@ public class EPHShaderProgram {
 	private int vertexSHandle, fragmentSHandle;
 	private int programHandle;
 	private String vertSrc, fragSrc;
-	private EPHUniformTemplateBuffer utb;
+	private EPHShaderUniformCollection shaderUniforms;
 
-	protected EPHShaderProgram(String vertSrc, String fragSrc, EPHUniformTemplateBuffer utb) {
+	protected EPHShaderProgram(String vertSrc, String fragSrc, EPHShaderUniformCollection shaderUniforms) {
 		this.vertSrc = vertSrc;
 		this.fragSrc = fragSrc;
-		this.utb = utb;
+		this.shaderUniforms = shaderUniforms;
 		isLinked = false;
 		vertexSHandle = -1;
 		fragmentSHandle = -1;
@@ -80,7 +80,7 @@ public class EPHShaderProgram {
 	}
 
 	protected void glUseUniforms(int key) {
-		utb.glUseUniforms(programHandle, key);
+		shaderUniforms.glUseUniforms(programHandle, key);
 	}
 
 	protected void glUnbind() {
@@ -101,8 +101,8 @@ public class EPHShaderProgram {
 		return programHandle;
 	}
 
-	protected EPHUniformTemplateBuffer getUniformTemplateBuffer() {
-		return utb;
+	protected EPHShaderUniformCollection getShaderUniforms() {
+		return shaderUniforms;
 	}
 
 }

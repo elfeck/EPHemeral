@@ -7,6 +7,12 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 public abstract class EPHUniformContent {
 
-	protected abstract void glUploadUniformContent(int location);
+	protected int location;
+
+	public EPHUniformContent() {
+		location = -1;
+	}
+
+	protected abstract void glUploadUniformContent(String name, int programHandle);
 
 }

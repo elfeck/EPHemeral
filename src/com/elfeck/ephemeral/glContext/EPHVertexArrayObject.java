@@ -143,7 +143,7 @@ public class EPHVertexArrayObject {
 		entry.iboLowerBound = ibo.getCurrentIndex();
 		entry.iboUpperBound = ibo.getCurrentIndex() + indices.size() - 1;
 		entry.uniformKey = uniformKey++;
-		entry.utb = shaderProgramPool.getShaderProgram(entry.programKey).getUniformTemplateBuffer();
+		entry.shaderUniforms = shaderProgramPool.getShaderProgram(entry.programKey).getShaderUniforms();
 		ibo.addData(indices, vbo.addData(vertexValues));
 		size += indices.size();
 		entries.add(entry);

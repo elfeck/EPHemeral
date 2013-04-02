@@ -15,11 +15,13 @@ public class EPHUniformVecf extends EPHUniformContent {
 	private EPHVecf vector;
 
 	public EPHUniformVecf(EPHVecf vector) {
+		super();
 		this.vector = vector;
 	}
 
 	@Override
-	protected void glUploadUniformContent(int location) {
+	protected void glUploadUniformContent(String name, int programHandle) {
+		if (location < 0) location = glGetUniformLocation(programHandle, name);
 		switch (vector.getDimension()) {
 			case 1:
 				glUniform1f(location, vector.getN(0));

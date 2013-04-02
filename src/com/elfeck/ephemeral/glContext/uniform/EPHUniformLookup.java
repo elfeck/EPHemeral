@@ -5,27 +5,25 @@
 
 package com.elfeck.ephemeral.glContext.uniform;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class EPHUniformObject {
+public class EPHUniformLookup {
 
-	private int index;
 	private String name;
 	private Map<Integer, EPHUniformContent> entries;
 
-	public EPHUniformObject(String name) {
+	public EPHUniformLookup(String name) {
 		this.name = name;
-		index = -1;
 		entries = new HashMap<Integer, EPHUniformContent>();
 	}
 
+	/*
+	 * should be protected
+	 */
 	public void glUseUniform(int programHandle, int key) {
-		if (index < 0) if (index < 0) index = glGetUniformLocation(programHandle, name);
-		if (entries.containsKey(key)) entries.get(key).glUploadUniformContent(index);
+		if (entries.containsKey(key)) entries.get(key).glUploadUniformContent(name, programHandle);
 	}
 
 	public void addEntry(int key, EPHUniformContent content) {
@@ -34,10 +32,6 @@ public class EPHUniformObject {
 
 	public void removeEntry(int key) {
 		entries.remove(key);
-	}
-
-	public void reset() {
-		index = -1;
 	}
 
 	public String getName() {

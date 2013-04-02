@@ -40,7 +40,7 @@ public class EPHTextUtils {
 
 	}
 
-	public static PathIterator getGlyphOutline(String name, int style, char character) {
+	private static PathIterator getGlyphOutline(String name, int style, char character) {
 		Font font = new Font(name, style, 1);
 		BufferedImage dummy = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = dummy.createGraphics();
@@ -51,7 +51,7 @@ public class EPHTextUtils {
 		return shape.getPathIterator(null);
 	}
 
-	public static EPHGlyph createGlyph(PathIterator iter) {
+	private static EPHGlyph createGlyph(PathIterator iter) {
 		EPHGlyph glyph = new EPHGlyph();
 		EPHGlyphSegment currentSegment = null;
 		float[] currentCoords = new float[6];
@@ -75,5 +75,9 @@ public class EPHTextUtils {
 			iter.next();
 		}
 		return glyph;
+	}
+
+	public static EPHGlyph createGlyph(String name, int style, char character) {
+		return createGlyph(getGlyphOutline(name, style, character));
 	}
 }

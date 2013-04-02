@@ -16,11 +16,13 @@ public class EPHUniformVecfArray extends EPHUniformContent {
 	private EPHVecf[] vectors;
 
 	public EPHUniformVecfArray(EPHVecf[] vectors) {
+		super();
 		this.vectors = vectors;
 	}
 
 	@Override
-	protected void glUploadUniformContent(int location) {
+	protected void glUploadUniformContent(String name, int programHandle) {
+		if (location < 0) location = glGetUniformLocation(programHandle, name);
 		switch (vectors[0].getDimension()) {
 			case 1:
 				glUniform1(location, EPHRenderUtils.vecfArrayToBufferf(vectors));
