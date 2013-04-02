@@ -8,16 +8,16 @@ package com.elfeck.ephemeral.glContext.uniform;
 import java.util.Map;
 
 
-public class EPHUniformStruct extends EPHUniformContent {
+public class EPHUniformStruct implements EPHUniformContent {
 
 	private Map<String, EPHUniformContent> members;
 
-	public EPHUniformStruct(String name) {
-		super();
+	public EPHUniformStruct() {
+
 	}
 
 	@Override
-	protected void glUploadUniformContent(String name, int programHandle) {
+	public void glUploadUniformContent(String name, int programHandle) {
 		for (String key : members.keySet()) {
 			members.get(key).glUploadUniformContent(name + "." + key, programHandle);
 		}

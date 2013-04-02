@@ -11,8 +11,9 @@ import com.elfeck.ephemeral.glContext.EPHRenderUtils;
 import com.elfeck.ephemeral.math.EPHVecf;
 
 
-public class EPHUniformVecfArray extends EPHUniformContent {
+public class EPHUniformVecfArray implements EPHUniformContent {
 
+	private int location;
 	private EPHVecf[] vectors;
 
 	public EPHUniformVecfArray(EPHVecf[] vectors) {
@@ -21,7 +22,7 @@ public class EPHUniformVecfArray extends EPHUniformContent {
 	}
 
 	@Override
-	protected void glUploadUniformContent(String name, int programHandle) {
+	public void glUploadUniformContent(String name, int programHandle) {
 		if (location < 0) location = glGetUniformLocation(programHandle, name);
 		switch (vectors[0].getDimension()) {
 			case 1:

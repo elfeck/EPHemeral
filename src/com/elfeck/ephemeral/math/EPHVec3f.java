@@ -7,8 +7,6 @@ package com.elfeck.ephemeral.math;
 
 import java.util.List;
 
-import com.elfeck.ephemeral.glContext.uniform.EPHUniformVecf;
-
 
 public class EPHVec3f implements EPHVecf {
 
@@ -21,9 +19,7 @@ public class EPHVec3f implements EPHVecf {
 	}
 
 	public EPHVec3f() {
-		x = 0;
-		y = 0;
-		z = 0;
+		this(0, 0, 0);
 	}
 
 	@Override
@@ -76,11 +72,6 @@ public class EPHVec3f implements EPHVecf {
 		if (!(obj instanceof EPHVec3f)) return false;
 		EPHVec3f vec = (EPHVec3f) obj;
 		return x == vec.x && y == vec.y && z == vec.z;
-	}
-
-	@Override
-	public EPHUniformVecf asUniformVecf() {
-		return new EPHUniformVecf(this);
 	}
 
 	public EPHVec3f addVec3f(EPHVec3f vec) {

@@ -5,7 +5,7 @@
 
 package com.elfeck.ephemeral.glContext.uniform;
 
-public class EPHUniformStructArray extends EPHUniformContent {
+public class EPHUniformStructArray implements EPHUniformContent {
 
 	private EPHUniformStruct[] structs;
 
@@ -15,7 +15,7 @@ public class EPHUniformStructArray extends EPHUniformContent {
 	}
 
 	@Override
-	protected void glUploadUniformContent(String name, int programHandle) {
+	public void glUploadUniformContent(String name, int programHandle) {
 		for (int i = 0; i < structs.length; i++) {
 			structs[i].glUploadUniformContent(name + "[" + i + "]", programHandle);
 		}

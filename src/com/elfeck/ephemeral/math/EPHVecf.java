@@ -7,8 +7,6 @@ package com.elfeck.ephemeral.math;
 
 import java.util.List;
 
-import com.elfeck.ephemeral.glContext.uniform.EPHUniformVecf;
-
 
 public interface EPHVecf {
 
@@ -19,6 +17,5 @@ public interface EPHVecf {
 	public void fetchData(List<Float> list);
 	public float[] toArray();
 	public EPHVec2f toVec2f();
-	public EPHUniformVecf asUniformVecf();
 
 }

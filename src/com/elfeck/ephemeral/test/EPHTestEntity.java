@@ -16,8 +16,8 @@ import com.elfeck.ephemeral.drawable.text.EPHGlyphSegment;
 import com.elfeck.ephemeral.drawable.text.EPHTextUtils;
 import com.elfeck.ephemeral.glContext.EPHRenderUtils;
 import com.elfeck.ephemeral.glContext.EPHVaoEntry;
-import com.elfeck.ephemeral.math.EPHMat4f;
-import com.elfeck.ephemeral.math.EPHVec2f;
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformMat4f;
+import com.elfeck.ephemeral.glContext.uniform.EPHUniformVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
 
 
@@ -26,21 +26,21 @@ public class EPHTestEntity implements EPHEntity {
 	private boolean dead;
 	private EPHSurface surface;
 	private EPHModel model;
-	private EPHMat4f mvpMatrix;
-	private EPHVec2f offset;
+	private EPHUniformMat4f mvpMatrix;
+	private EPHUniformVec2f offset;
 	private EPHVaoEntry vaoRef;
 
 	public EPHTestEntity(EPHSurface surface) {
 		this.surface = surface;
 		dead = false;
 		model = new EPHModel();
-		mvpMatrix = new EPHMat4f(new float[][] {
-												{ 1, 0, 0, 0 },
-												{ 0, 1, 0, 0 },
-												{ 0, 0, 1, 0 },
-												{ 0, 0, 0, 1 }
+		mvpMatrix = new EPHUniformMat4f(new float[][] {
+														{ 1, 0, 0, 0 },
+														{ 0, 1, 0, 0 },
+														{ 0, 0, 1, 0 },
+														{ 0, 0, 0, 1 }
 		});
-		offset = new EPHVec2f(0, 0);
+		offset = new EPHUniformVec2f(0, 0);
 		initModel();
 		initShape();
 	}
@@ -84,8 +84,8 @@ public class EPHTestEntity implements EPHEntity {
 			color.subVec4f(0f, 0.3f, 0.3f, 0);
 		}
 		vaoRef = model.addToVao(vertexValues, indices, "test");
-		vaoRef.registerUniformEntry("mvp_matrix", mvpMatrix.asUniformMatf());
-		vaoRef.registerUniformEntry("offset", offset.asUniformVecf());
+		vaoRef.registerUniformEntry("mvp_matrix", mvpMatrix);
+		vaoRef.registerUniformEntry("offset", offset);
 		offset.setX((float) -Math.floor(vertexValues.get(0)));
 	}
 }
