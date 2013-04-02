@@ -5,45 +5,22 @@
 
 package com.elfeck.ephemeral.glContext.uniform;
 
-import static org.lwjgl.opengl.GL20.*;
-
-import com.elfeck.ephemeral.glContext.EPHRenderUtils;
-import com.elfeck.ephemeral.math.EPHVecf;
 
 
 public class EPHUniformVecfArray implements EPHUniformContent {
 
-	private int location;
-	private EPHVecf[] vectors;
+	private EPHUniformVecf[] vectors;
 
-	public EPHUniformVecfArray(EPHVecf[] vectors) {
-		super();
+	public EPHUniformVecfArray(EPHUniformVecf[] vectors) {
 		this.vectors = vectors;
 	}
 
 	@Override
 	public void glUploadUniformContent(String name, int programHandle) {
-		if (location < 0) location = glGetUniformLocation(programHandle, name);
-		switch (vectors[0].getDimension()) {
-			case 1:
-				glUniform1(location, EPHRenderUtils.vecfArrayToBufferf(vectors));
-				break;
-			case 2:
-				glUniform2(location, EPHRenderUtils.vecfArrayToBufferf(vectors));
-				break;
-			case 3:
-				glUniform3(location, EPHRenderUtils.vecfArrayToBufferf(vectors));
-				break;
-			case 4:
-				glUniform4(location, EPHRenderUtils.vecfArrayToBufferf(vectors));
-				break;
-			default:
-				System.err.println("Error in EPHUniformVecfArray");
+		for (int i = 0; i < vectors.length; i++) {
+			vectors[i].glUploadUniformContent(name + "[" + i + "]", programHandle);
 		}
-	}
 
-	public EPHVecf[] getVectors() {
-		return vectors;
 	}
 
 }

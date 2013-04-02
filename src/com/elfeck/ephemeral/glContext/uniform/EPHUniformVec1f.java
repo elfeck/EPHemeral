@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL20.*;
 import com.elfeck.ephemeral.math.EPHVec1f;
 
 
-public class EPHUniformVec1f extends EPHVec1f implements EPHUniformContent {
+public class EPHUniformVec1f extends EPHVec1f implements EPHUniformVecf {
 
 	private boolean modified;
 
