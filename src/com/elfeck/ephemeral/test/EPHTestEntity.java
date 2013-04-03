@@ -71,7 +71,7 @@ public class EPHTestEntity implements EPHEntity {
 		for (EPHGlyphSegment seg : glyph.getSegments()) {
 			for (int i = 0; i < seg.getShape().length; i++) {
 				seg.getShape()[i].fetchData(vertexValues);
-				System.out.println(seg.getShape()[i]);
+				// System.out.println(seg.getShape()[i]);
 				vertexValues.add(1.0f);
 				vertexValues.add(1.0f);
 				color.fetchData(vertexValues);

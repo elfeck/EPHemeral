@@ -15,7 +15,6 @@ import java.util.Map;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformLookup;
 
 
-
 public class EPHShaderProgramPool {
 
 	private Map<String, EPHShaderProgram> programs;
@@ -29,7 +28,7 @@ public class EPHShaderProgramPool {
 		Map<String, String[]> shaderSrcPairs = new HashMap<String, String[]>();
 		loadShaderFiles(new File(parentPath), shaderSrcPairs);
 		for (String key : shaderSrcPairs.keySet()) {
-			programs.put(key, new EPHShaderProgram(shaderSrcPairs.get(key)[0], shaderSrcPairs.get(key)[1], uniformStringToUtb(shaderSrcPairs.get(key)[2])));
+			programs.put(key, new EPHShaderProgram(shaderSrcPairs.get(key)[0], shaderSrcPairs.get(key)[1], uniformStringToShaderUniforms(shaderSrcPairs.get(key)[2])));
 		}
 	}
 
@@ -37,25 +36,28 @@ public class EPHShaderProgramPool {
 		for (File fileEntry : folder.listFiles()) {
 			if (fileEntry.isDirectory()) {
 				loadShaderFiles(fileEntry, shaderSrcPairs);
-			} else {
-				String[] name = fileEntry.getName().split("_");
-				if (name[1].equals("vert.glsl")) {
-					if (shaderSrcPairs.containsKey(name[0])) {
-						shaderSrcPairs.get(name[0])[0] = loadShaderSource(fileEntry);
-					} else {
-						shaderSrcPairs.put(name[0], new String[] { loadShaderSource(fileEntry), null, null });
-					}
-					shaderSrcPairs.get(name[0])[2] = extractUniforms(shaderSrcPairs.get(name[0])[0]);
-				} else {
-					if (name[1].equals("frag.glsl")) {
-						if (shaderSrcPairs.containsKey(name[0])) {
-							shaderSrcPairs.get(name[0])[1] = loadShaderSource(fileEntry);
+			} else
+				if (fileEntry.getName().contains("_frag.glsl") || fileEntry.getName().contains("_vert.glsl")) {
+					String type = fileEntry.getName().substring(fileEntry.getName().length() - 9, fileEntry.getName().length());
+					String name = fileEntry.getName().substring(0, fileEntry.getName().length() - 10);
+					System.out.println(type + " " + name);
+					if (type.equals("vert.glsl")) {
+						if (shaderSrcPairs.containsKey(name)) {
+							shaderSrcPairs.get(name)[0] = loadShaderSource(fileEntry);
 						} else {
-							shaderSrcPairs.put(name[0], new String[] { null, loadShaderSource(fileEntry), null });
+							shaderSrcPairs.put(name, new String[] { loadShaderSource(fileEntry), null, null });
+						}
+						shaderSrcPairs.get(name)[2] = extractUniforms(shaderSrcPairs.get(name)[0]);
+					} else {
+						if (type.equals("frag.glsl")) {
+							if (shaderSrcPairs.containsKey(name)) {
+								shaderSrcPairs.get(name)[1] = loadShaderSource(fileEntry);
+							} else {
+								shaderSrcPairs.put(name, new String[] { null, loadShaderSource(fileEntry), null });
+							}
 						}
 					}
 				}
-			}
 		}
 	}
 
@@ -72,15 +74,14 @@ public class EPHShaderProgramPool {
 		return result;
 	}
 
-	private EPHShaderUniformCollection uniformStringToUtb(String uniformString) {
+	private EPHShaderUniformCollection uniformStringToShaderUniforms(String uniformString) {
 		String[] uniforms = uniformString.split("%");
-		EPHShaderUniformCollection utb = new EPHShaderUniformCollection();
+		EPHShaderUniformCollection shaderUniforms = new EPHShaderUniformCollection();
 		for (String s : uniforms) {
 			String[] cut = s.split("#");
-			if (cut[0].equals("float") || cut[0].startsWith("vec")) utb.addUniformLookup(new EPHUniformLookup(cut[1]));
-			if (cut[0].startsWith("mat")) utb.addUniformLookup(new EPHUniformLookup(cut[1]));
+			shaderUniforms.addUniformLookup(new EPHUniformLookup(cut[1]));
 		}
-		return utb;
+		return shaderUniforms;
 	}
 
 	private String loadShaderSource(File file) {
@@ -89,7 +90,13 @@ public class EPHShaderProgramPool {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				source.append(line).append('\n');
+				if (line.contains("//@insert")) {
+					String nested = loadShaderSource(new File(file.getParent() + "/" + (line = line.replaceAll("//@insert", "").replaceAll(" ", ""))));
+					System.out.println(nested);
+					source.append(nested).append('\n');
+				} else {
+					source.append(line).append('\n');
+				}
 			}
 			br.close();
 		} catch (IOException e) {

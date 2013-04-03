@@ -12,8 +12,8 @@ public class EPHUniformStruct implements EPHUniformContent {
 
 	private Map<String, EPHUniformContent> members;
 
-	public EPHUniformStruct() {
-
+	public EPHUniformStruct(Map<String, EPHUniformContent> members) {
+		this.members = members;
 	}
 
 	@Override
@@ -21,14 +21,6 @@ public class EPHUniformStruct implements EPHUniformContent {
 		for (String key : members.keySet()) {
 			members.get(key).glUploadUniformContent(name + "." + key, programHandle);
 		}
-	}
-
-	public void addMember(String subname, EPHUniformContent member) {
-		members.put(subname, member);
-	}
-
-	public void removeMember(String subname) {
-		members.remove(subname);
 	}
 
 }

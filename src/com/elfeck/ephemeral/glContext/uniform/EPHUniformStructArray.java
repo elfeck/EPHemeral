@@ -5,20 +5,31 @@
 
 package com.elfeck.ephemeral.glContext.uniform;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class EPHUniformStructArray implements EPHUniformContent {
 
-	private EPHUniformStruct[] structs;
+	private List<EPHUniformStruct> structs;
 
-	public EPHUniformStructArray(EPHUniformStruct[] structs) {
-		super();
-		this.structs = structs;
+	public EPHUniformStructArray() {
+		structs = new ArrayList<EPHUniformStruct>();
 	}
 
 	@Override
 	public void glUploadUniformContent(String name, int programHandle) {
-		for (int i = 0; i < structs.length; i++) {
-			structs[i].glUploadUniformContent(name + "[" + i + "]", programHandle);
+		for (int i = 0; i < structs.size(); i++) {
+			structs.get(i).glUploadUniformContent(name + "[" + i + "]", programHandle);
 		}
+	}
+
+	public void addStruct(EPHUniformStruct struct) {
+		structs.add(struct);
+	}
+
+	public void removeStruct(EPHUniformStruct struct) {
+		structs.remove(struct);
 	}
 
 }
