@@ -26,11 +26,12 @@ public class EPHRenderContext {
 
 	private boolean resizable, resizableTriggered, resizedTriggered;
 	private int fpsCap;
-	private String shaderParentPath, title;
+	@SuppressWarnings("unused")
+	private String shaderParentPath, iconPath, title;
 	private EPHemeral main;
 	private EPHInput input;
 
-	private EPHRenderContext(EPHemeral main, EPHInput input, int fpsCap, String shaderParentPath, String title) {
+	private EPHRenderContext(EPHemeral main, EPHInput input, int fpsCap, String shaderParentPath, String iconPath, String title) {
 		created = true;
 		this.main = main;
 		this.input = input;
@@ -127,6 +128,7 @@ public class EPHRenderContext {
 			glScissor(0, 0, main.getWidth(), main.getHeight());
 		}
 	}
+
 	public void glRender() {
 		if (!glInitialized) glInitContext();
 		if (glHandleCloseRequest()) return;
@@ -183,8 +185,8 @@ public class EPHRenderContext {
 		return glInitialized;
 	}
 
-	public static EPHRenderContext createRenderContext(EPHemeral main, EPHInput input, int fpsCap, String shaderParentPath, String title) {
-		if (!created) return new EPHRenderContext(main, input, fpsCap, shaderParentPath, title);
+	public static EPHRenderContext createRenderContext(EPHemeral main, EPHInput input, int fpsCap, String shaderParentPath, String iconPath, String title) {
+		if (!created) return new EPHRenderContext(main, input, fpsCap, shaderParentPath, iconPath, title);
 		System.err.println("RenderContext was already created");
 		return null;
 	}

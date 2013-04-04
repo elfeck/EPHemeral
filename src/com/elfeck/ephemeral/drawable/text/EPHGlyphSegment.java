@@ -13,6 +13,7 @@ import com.elfeck.ephemeral.math.EPHVec2f;
 
 public class EPHGlyphSegment {
 
+	@SuppressWarnings("unused")
 	private int windingRule, quadRes, cubicRes;
 	private EPHVec2f currentVertex;
 	private List<EPHVec2f> vertices;

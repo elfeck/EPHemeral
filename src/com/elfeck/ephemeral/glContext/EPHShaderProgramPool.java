@@ -40,7 +40,6 @@ public class EPHShaderProgramPool {
 				if (fileEntry.getName().contains("_frag.glsl") || fileEntry.getName().contains("_vert.glsl")) {
 					String type = fileEntry.getName().substring(fileEntry.getName().length() - 9, fileEntry.getName().length());
 					String name = fileEntry.getName().substring(0, fileEntry.getName().length() - 10);
-					System.out.println(type + " " + name);
 					if (type.equals("vert.glsl")) {
 						if (shaderSrcPairs.containsKey(name)) {
 							shaderSrcPairs.get(name)[0] = loadShaderSource(fileEntry);
@@ -91,14 +90,34 @@ public class EPHShaderProgramPool {
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				if (line.contains("//@insert")) {
-					String nested = loadShaderSource(new File(file.getParent() + "/" + (line = line.replaceAll("//@insert", "").replaceAll(" ", ""))));
-					System.out.println(nested);
-					source.append(nested).append('\n');
+					source.append(loadNestedFile(line, file.getParent()));
 				} else {
 					source.append(line).append('\n');
 				}
 			}
 			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return source.toString();
+	}
+
+	private String loadNestedFile(String insert, String parentPath) {
+		StringBuilder source = new StringBuilder();
+		insert = insert.replaceAll("//@insert", "").replaceAll(" ", "");
+		String type = insert.substring(insert.indexOf(".") + 1);
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(parentPath + "/" + insert.substring(0, insert.indexOf(".")) + ".glsl"));
+			String line = null;
+			boolean found = false;
+			while ((line = br.readLine()) != null) {
+				if (line.contains("//@section " + type)) {
+					found = true;
+					continue;
+				}
+				if (found && line.contains("//@section")) found = false;
+				if (found) source.append(line).append('\n');
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

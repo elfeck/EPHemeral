@@ -1,0 +1,7 @@
+GLSL meta:
+
+@//insert [filename.section]
+@//section [section_name]
+
+file must be in the same folder
+filename must be without leading "/" or "\" and must be without the ending ".glsl". Just the file name!

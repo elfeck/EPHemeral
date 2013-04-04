@@ -23,11 +23,11 @@ public class EPHemeral {
 	private EPHRunnableContext renderJob, logicJob;
 	private Thread renderThread, logicThread;
 
-	public EPHemeral(int width, int height, int fpsCap, int lpsCap, String shaderParentPath, String title) {
+	public EPHemeral(int width, int height, int fpsCap, int lpsCap, String shaderParentPath, String iconPath, String title) {
 		this.width = width;
 		this.height = height;
 		input = new EPHInput();
-		renderContext = EPHRenderContext.createRenderContext(this, input, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath, title);
+		renderContext = EPHRenderContext.createRenderContext(this, input, Math.min(1000, Math.max(1, fpsCap)), shaderParentPath, iconPath, title);
 		renderThread = new Thread(renderJob = new EPHRenderJob(this, Math.max(1, (int) Math.round((1.0 / fpsCap) * 1000 - 5))), "RenderThread");
 		logicThread = new Thread(logicJob = new EPHLogicJob(this, Math.max(1, (int) Math.round((1.0 / lpsCap) * 1000))), "LogicThread");
 		renderThread.setPriority(Thread.MAX_PRIORITY);
@@ -37,7 +37,7 @@ public class EPHemeral {
 	}
 
 	public EPHemeral(int width, int height, String title) {
-		this(width, height, 60, 1000, "shader/", title);
+		this(width, height, 60, 1000, "shader/", "res/logo.png", title);
 	}
 
 	private void start() {
