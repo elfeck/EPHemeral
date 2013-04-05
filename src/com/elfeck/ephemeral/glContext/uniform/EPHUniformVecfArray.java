@@ -18,11 +18,25 @@ public class EPHUniformVecfArray implements EPHUniformContent {
 	}
 
 	@Override
-	public void glUploadUniformContent(String name, int programHandle) {
+	public void glUploadUniformContent(int uniformKey, String name, int programHandle) {
 		for (int i = 0; i < vectors.size(); i++) {
-			vectors.get(i).glUploadUniformContent(name + "[" + i + "]", programHandle);
+			vectors.get(i).glUploadUniformContent(uniformKey, name + "[" + i + "]", programHandle);
 		}
 
+	}
+	
+	@Override
+	public void addUniformEntry(int uniformKey) {
+		for(EPHUniformVecf uvecf : vectors) {
+			uvecf.addUniformEntry(uniformKey);
+		}
+	}
+	
+	@Override
+	public void removeUniformEntry(int uniformKey) {
+		for(EPHUniformVecf uvecf : vectors) {
+			uvecf.removeUniformEntry(uniformKey);
+		}
 	}
 
 	public void addVector(EPHUniformVecf vector) {

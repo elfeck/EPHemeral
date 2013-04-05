@@ -7,6 +7,8 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 public interface EPHUniformContent {
 
-	public void glUploadUniformContent(String name, int programHandle);
+	public void glUploadUniformContent(int uniformKey, String name, int programHandle);
+	public void addUniformEntry(int uniformKey);
+	public void removeUniformEntry(int uniformKey);
 
 }

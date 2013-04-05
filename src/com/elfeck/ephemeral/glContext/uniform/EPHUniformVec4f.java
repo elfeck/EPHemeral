@@ -7,16 +7,19 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 import static org.lwjgl.opengl.GL20.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.elfeck.ephemeral.math.EPHVec4f;
 
 
 public class EPHUniformVec4f extends EPHVec4f implements EPHUniformVecf {
 
-	private boolean modified;
+	private Map<Integer, Boolean> modMap;
 
 	public EPHUniformVec4f(float x, float y, float z, float w) {
 		super(x, y, z, w);
-		modified = true;
+		modMap = new HashMap<Integer, Boolean>();
 	}
 
 	public EPHUniformVec4f() {
@@ -24,111 +27,130 @@ public class EPHUniformVec4f extends EPHVec4f implements EPHUniformVecf {
 	}
 
 	@Override
-	public void glUploadUniformContent(String name, int programHandle) {
-		if (modified) glUniform4f(glGetUniformLocation(programHandle, name), x, y, z, w);
-		modified = false;
+	public void glUploadUniformContent(int uniformKey, String name, int programHandle) {
+		boolean modified = modMap.get(uniformKey);
+		if (modified) {
+			glUniform4f(glGetUniformLocation(programHandle, name), x, y, z, w);
+			modMap.put(uniformKey, false);
+		}
+	}
+
+	@Override
+	public void addUniformEntry(int uniformKey) {
+		modMap.put(uniformKey, true);
+	}
+
+	@Override
+	public void removeUniformEntry(int uniformKey) {
+		modMap.remove(uniformKey);
 	}
 
 	@Override
 	public void setN(int index, float value) {
-		modified = true;
+		setModified();
 		super.setN(index, value);
 	}
 
 	@Override
 	public void addToN(int index, float value) {
-		modified = true;
+		setModified();
 		super.addToN(index, value);
 	}
 
 	@Override
 	public EPHVec4f addVec4f(EPHVec4f vec) {
-		modified = true;
+		setModified();
 		return super.addVec4f(vec);
 	}
 
 	@Override
 	public EPHVec4f addVec4f(float vx, float vy, float vz, float vw) {
-		modified = true;
+		setModified();
 		return super.addVec4f(vx, vy, vz, vw);
 	}
 
 	@Override
 	public EPHVec4f subVec4f(EPHVec4f vec) {
-		modified = true;
+		setModified();
 		return super.subVec4f(vec);
 	}
 
 	@Override
 	public EPHVec4f subVec4f(float vx, float vy, float vz, float vw) {
-		modified = true;
+		setModified();
 		return super.subVec4f(vx, vy, vz, vw);
 	}
 
 	@Override
 	public EPHVec4f mulVec4f(EPHVec4f vec) {
-		modified = true;
+		setModified();
 		return super.mulVec4f(vec);
 	}
 
 	@Override
 	public EPHVec4f mulVec4f(float vx, float vy, float vz, float vw) {
-		modified = true;
+		setModified();
 		return super.mulVec4f(vx, vy, vz, vw);
 	}
 
 	@Override
 	public EPHVec4f mulScalar(float scalar) {
-		modified = true;
+		setModified();
 		return super.mulScalar(scalar);
 	}
 
 	@Override
 	public EPHVec4f normalize() {
-		modified = true;
+		setModified();
 		return super.normalize();
 	}
 
 	@Override
 	public EPHVec4f negate() {
-		modified = true;
+		setModified();
 		return super.negate();
 	}
 
 	@Override
 	public EPHVec4f toLength(float newLength) {
-		modified = true;
+		setModified();
 		return super.toLength(newLength);
 	}
 
 	@Override
 	public EPHVec4f setX(float x) {
-		modified = true;
+		setModified();
 		return super.setX(x);
 	}
 
 	@Override
 	public EPHVec4f setY(float y) {
-		modified = true;
+		setModified();
 		return super.setY(y);
 	}
 
 	@Override
 	public EPHVec4f setZ(float z) {
-		modified = true;
+		setModified();
 		return super.setZ(z);
 	}
 
 	@Override
 	public EPHVec4f setW(float w) {
-		modified = true;
+		setModified();
 		return super.setW(w);
 	}
 
 	@Override
 	public EPHVec4f setXYZW(float x, float y, float z, float w) {
-		modified = true;
+		setModified();
 		return super.setXYZW(x, y, z, w);
+	}
+
+	private void setModified() {
+		for (Integer key : modMap.keySet()) {
+			modMap.put(key, true);
+		}
 	}
 
 }

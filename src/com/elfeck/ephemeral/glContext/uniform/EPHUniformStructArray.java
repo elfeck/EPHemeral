@@ -18,9 +18,24 @@ public class EPHUniformStructArray implements EPHUniformContent {
 	}
 
 	@Override
-	public void glUploadUniformContent(String name, int programHandle) {
+	public void glUploadUniformContent(int programKey, String name, int programHandle) {
 		for (int i = 0; i < structs.size(); i++) {
-			structs.get(i).glUploadUniformContent(name + "[" + i + "]", programHandle);
+			structs.get(i).glUploadUniformContent(programKey, name + "[" + i + "]", programHandle);
+		}
+	}
+
+	@Override
+	public void addUniformEntry(int uniformKey) {
+		for (int i = 0; i < structs.size(); i++) {
+			structs.get(i).addUniformEntry(uniformKey);
+		}
+
+	}
+
+	@Override
+	public void removeUniformEntry(int uniformKey) {
+		for (int i = 0; i < structs.size(); i++) {
+			structs.get(i).removeUniformEntry(uniformKey);
 		}
 	}
 

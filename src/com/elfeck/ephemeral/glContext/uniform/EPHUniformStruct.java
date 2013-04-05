@@ -17,9 +17,23 @@ public class EPHUniformStruct implements EPHUniformContent {
 	}
 
 	@Override
-	public void glUploadUniformContent(String name, int programHandle) {
+	public void glUploadUniformContent(int programKey, String name, int programHandle) {
 		for (String key : members.keySet()) {
-			members.get(key).glUploadUniformContent(name + "." + key, programHandle);
+			members.get(key).glUploadUniformContent(programKey, name + "." + key, programHandle);
+		}
+	}
+
+	@Override
+	public void addUniformEntry(int uniformKey) {
+		for (String s : members.keySet()) {
+			members.get(s).addUniformEntry(uniformKey);
+		}
+	}
+
+	@Override
+	public void removeUniformEntry(int uniformKey) {
+		for (String s : members.keySet()) {
+			members.get(s).removeUniformEntry(uniformKey);
 		}
 	}
 

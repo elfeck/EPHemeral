@@ -7,16 +7,19 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 import static org.lwjgl.opengl.GL20.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.elfeck.ephemeral.math.EPHVec1f;
 
 
 public class EPHUniformVec1f extends EPHVec1f implements EPHUniformVecf {
 
-	private boolean modified;
+	private Map<Integer, Boolean> modMap;
 
 	public EPHUniformVec1f(float x) {
 		super(x);
-		modified = true;
+		modMap = new HashMap<Integer, Boolean>();
 	}
 
 	public EPHUniformVec1f() {
@@ -24,27 +27,46 @@ public class EPHUniformVec1f extends EPHVec1f implements EPHUniformVecf {
 	}
 
 	@Override
-	public void glUploadUniformContent(String name, int programHandle) {
-		if (modified) glUniform1f(glGetUniformLocation(programHandle, name), x);
-		modified = false;
+	public void glUploadUniformContent(int uniformKey, String name, int programHandle) {
+		boolean modified = modMap.get(uniformKey);
+		if (modified) {
+			glUniform1f(glGetUniformLocation(programHandle, name), x);
+			modMap.put(uniformKey, false);
+		}
+	}
+
+	@Override
+	public void addUniformEntry(int uniformKey) {
+		modMap.put(uniformKey, true);
+	}
+
+	@Override
+	public void removeUniformEntry(int uniformKey) {
+		modMap.remove(uniformKey);
 	}
 
 	@Override
 	public void setN(int index, float value) {
-		modified = true;
+		setModified();
 		super.setN(index, value);
 	}
 
 	@Override
 	public void addToN(int index, float value) {
-		modified = true;
+		setModified();
 		super.addToN(index, value);
 	}
 
 	@Override
 	public void setX(float value) {
-		modified = true;
+		setModified();
 		super.setX(value);
+	}
+
+	private void setModified() {
+		for (Integer key : modMap.keySet()) {
+			modMap.put(key, true);
+		}
 	}
 
 }

@@ -19,18 +19,18 @@ public class EPHUniformLookup {
 		entries = new HashMap<Integer, EPHUniformContent>();
 	}
 
-	/*
-	 * should be protected
-	 */
+	/* should be protected */
 	public void glUseUniform(int programHandle, int key) {
-		if (entries.containsKey(key)) entries.get(key).glUploadUniformContent(name, programHandle);
+		if (entries.containsKey(key)) entries.get(key).glUploadUniformContent(key, name, programHandle);
 	}
 
 	public void addEntry(int key, EPHUniformContent content) {
 		entries.put(key, content);
+		content.addUniformEntry(key);
 	}
 
 	public void removeEntry(int key) {
+		entries.get(key).removeUniformEntry(key);
 		entries.remove(key);
 	}
 

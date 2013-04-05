@@ -7,112 +7,133 @@ package com.elfeck.ephemeral.glContext.uniform;
 
 import static org.lwjgl.opengl.GL20.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.elfeck.ephemeral.math.EPHMat4f;
 import com.elfeck.ephemeral.math.EPHVec4f;
 
 
 public class EPHUniformMat4f extends EPHMat4f implements EPHUniformContent {
 
-	private boolean modified;
+	private Map<Integer, Boolean> modMap;
 
 	public EPHUniformMat4f(float[][] matrix) {
 		super(matrix);
-		modified = true;
+		modMap = new HashMap<Integer, Boolean>();
 	}
 
 	public EPHUniformMat4f() {
-		super();
-		modified = true;
+		modMap = new HashMap<Integer, Boolean>();
 	}
 
 	@Override
-	public void glUploadUniformContent(String name, int programHandle) {
-		if (modified) glUniformMatrix4(glGetUniformLocation(programHandle, name), false, toBuffer());
-		modified = false;
+	public void glUploadUniformContent(int uniformKey, String name, int programHandle) {
+		boolean modified = modMap.get(uniformKey);
+		if (modified) {
+			glUniformMatrix4(glGetUniformLocation(programHandle, name), false, toBuffer());
+			modMap.put(uniformKey, false);
+		}
+	}
+
+	@Override
+	public void addUniformEntry(int uniformKey) {
+		modMap.put(uniformKey, true);
+	}
+
+	@Override
+	public void removeUniformEntry(int uniformKey) {
+		modMap.remove(uniformKey);
 	}
 
 	@Override
 	public EPHMat4f addMat4f(EPHMat4f mat) {
-		modified = true;
+		setModified();
 		return super.addMat4f(mat);
 	}
 
 	@Override
 	public EPHMat4f subMat4f(EPHMat4f mat) {
-		modified = true;
+		setModified();
 		return super.subMat4f(mat);
 	}
 
 	@Override
 	public EPHMat4f mulScalar(float scalar) {
-		modified = true;
+		setModified();
 		return super.mulScalar(scalar);
 	}
 
 	@Override
 	public EPHMat4f mulMat4(EPHMat4f mat) {
-		modified = true;
+		setModified();
 		return super.mulMat4(mat);
 	}
 
 	@Override
 	public EPHVec4f mulVec4(EPHVec4f vec) {
-		modified = true;
+		setModified();
 		return super.mulVec4(vec);
 	}
 
 	@Override
 	public EPHMat4f negate() {
-		modified = true;
+		setModified();
 		return super.negate();
 	}
 
 	@Override
 	public float[] getC(int c) {
-		modified = true;
+		setModified();
 		return super.getC(c);
 	}
 
 	@Override
 	public float[][] getMatrix() {
-		modified = true;
+		setModified();
 		return super.getMatrix();
 	}
 
 	@Override
 	public EPHMat4f setMatrix(float[][] matrix) {
-		modified = true;
+		setModified();
 		return super.setMatrix(matrix);
 	}
 
 	@Override
 	public EPHMat4f setColumn(int c, float[] values) {
-		modified = true;
+		setModified();
 		return super.setColumn(c, values);
 	}
 
 	@Override
 	public EPHMat4f copyToCL(int c, int l, float value) {
-		modified = true;
+		setModified();
 		return super.copyToCL(c, l, value);
 	}
 
 	@Override
 	public EPHMat4f copyToColumn(int c, float[] values) {
-		modified = true;
+		setModified();
 		return super.copyToColumn(c, values);
 	}
 
 	@Override
 	public EPHMat4f copyToLine(int l, float[] values) {
-		modified = true;
+		setModified();
 		return super.copyToLine(l, values);
 	}
 
 	@Override
 	public EPHMat4f copyToMatrix(float[][] values) {
-		modified = true;
+		setModified();
 		return super.copyToMatrix(values);
+	}
+
+	private void setModified() {
+		for (Integer key : modMap.keySet()) {
+			modMap.put(key, true);
+		}
 	}
 
 }
