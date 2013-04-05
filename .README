@@ -1,0 +1,4 @@
+This is the github.com repository for the EPHemeral rendering system based on OpenGL and the LWJGL library.
+The rendering System is based on OpenGL 3.1+ and uses GLSL for shaders. 
+
+If you want to use (parts of) this engine please contact me by email: kreisel.sebastian@gmail.com.

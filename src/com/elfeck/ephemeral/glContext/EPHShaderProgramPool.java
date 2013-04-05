@@ -74,6 +74,7 @@ public class EPHShaderProgramPool {
 	}
 
 	private EPHShaderUniformCollection uniformStringToShaderUniforms(String uniformString) {
+		if (uniformString.equals("")) return null;
 		String[] uniforms = uniformString.split("%");
 		EPHShaderUniformCollection shaderUniforms = new EPHShaderUniformCollection();
 		for (String s : uniforms) {

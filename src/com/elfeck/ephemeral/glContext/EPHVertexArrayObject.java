@@ -108,11 +108,14 @@ public class EPHVertexArrayObject {
 				if (!currentProgram.isLinked()) currentProgram.glAttachAndLinkProgram(vertexAttributesToMap(vbo.getVertexAttributes()));
 				if (bindRequ) currentProgram.glBind();
 				currentProgram.glUseUniforms(current.uniformKey);
+				// System.out.println("Drawing: [count: " + (current.iboUpperBound - current.iboLowerBound + 1) + "]  [offset: " + (current.iboLowerBound * 4)
+				// + "]  [program: " + currentProgram.getProgramHandle() + " @bindRequ" + bindRequ + "]" + "[unif key: " + current.uniformKey + "]");
 				glDrawElements(mode, current.iboUpperBound - current.iboLowerBound + 1, GL_UNSIGNED_INT, current.iboLowerBound * 4);
 				bindRequ = next == null ? true : current.programKey.equals(next.programKey) ? false : true;
 				if (bindRequ) currentProgram.glUnbind();
 			}
 			glBindVertexArray(0);
+			// System.out.println("----------------------------");
 		}
 	}
 
@@ -202,10 +205,7 @@ public class EPHVertexArrayObject {
 		shaderProgramPool.glInit();
 	}
 
-	/*
-	 * Not feeling good about this accessibility. Needed for program switching
-	 * in EPHVaoEntry.
-	 */
+	/* Not feeling good about this accessibility. Needed for program switching in EPHVaoEntry. */
 	protected static EPHShaderProgramPool getShaderProgramPool() {
 		return shaderProgramPool;
 	}

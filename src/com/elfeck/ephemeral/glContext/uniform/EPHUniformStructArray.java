@@ -32,4 +32,8 @@ public class EPHUniformStructArray implements EPHUniformContent {
 		structs.remove(struct);
 	}
 
+	public List<EPHUniformStruct> getStructs() {
+		return structs;
+	}
+
 }

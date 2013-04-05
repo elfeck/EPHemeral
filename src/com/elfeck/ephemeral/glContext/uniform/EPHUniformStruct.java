@@ -23,4 +23,8 @@ public class EPHUniformStruct implements EPHUniformContent {
 		}
 	}
 
+	public Map<String, EPHUniformContent> getMembers() {
+		return members;
+	}
+
 }

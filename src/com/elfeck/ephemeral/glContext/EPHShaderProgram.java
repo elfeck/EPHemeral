@@ -80,7 +80,7 @@ public class EPHShaderProgram {
 	}
 
 	protected void glUseUniforms(int key) {
-		shaderUniforms.glUseUniforms(programHandle, key);
+		if (shaderUniforms != null) shaderUniforms.glUseUniforms(programHandle, key);
 	}
 
 	protected void glUnbind() {
