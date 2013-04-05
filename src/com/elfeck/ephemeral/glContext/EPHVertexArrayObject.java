@@ -18,9 +18,10 @@ import java.util.Map;
 public class EPHVertexArrayObject {
 
 	private static EPHShaderProgramPool shaderProgramPool;
+	private static int uniformKey = 0;
 
 	private boolean dead;
-	private int mode, size, usage, handle, uniformKey;
+	private int mode, size, usage, handle;
 	private int[] viewPortRect, scissorRect;
 	private List<EPHVaoEntry> entries;
 	private EPHVertexBufferObject vbo;
@@ -34,7 +35,6 @@ public class EPHVertexArrayObject {
 		this.viewPortRect = viewPortRect;
 		this.scissorRect = scissorRect;
 		handle = -1;
-		uniformKey = 0;
 		entries = new ArrayList<EPHVaoEntry>();
 		vbo = new EPHVertexBufferObject(vertexAttributes);
 		ibo = new EPHIndexBufferObject();
