@@ -28,7 +28,10 @@ public class EPHShaderProgramPool {
 		Map<String, String[]> shaderSrcPairs = new HashMap<String, String[]>();
 		loadShaderFiles(new File(parentPath), shaderSrcPairs);
 		for (String key : shaderSrcPairs.keySet()) {
-			programs.put(key, new EPHShaderProgram(shaderSrcPairs.get(key)[0], shaderSrcPairs.get(key)[1], uniformStringToShaderUniforms(shaderSrcPairs.get(key)[2])));
+			programs.put(
+					key,
+					new EPHShaderProgram(shaderSrcPairs.get(key)[0], shaderSrcPairs.get(key)[1], uniformStringToShaderUniforms(shaderSrcPairs.get(key)[2],
+							shaderSrcPairs.get(key)[3])));
 		}
 	}
 
@@ -44,7 +47,7 @@ public class EPHShaderProgramPool {
 						if (shaderSrcPairs.containsKey(name)) {
 							shaderSrcPairs.get(name)[0] = loadShaderSource(fileEntry);
 						} else {
-							shaderSrcPairs.put(name, new String[] { loadShaderSource(fileEntry), null, null });
+							shaderSrcPairs.put(name, new String[] { loadShaderSource(fileEntry), null, null, null });
 						}
 						shaderSrcPairs.get(name)[2] = extractUniforms(shaderSrcPairs.get(name)[0]);
 					} else {
@@ -52,9 +55,10 @@ public class EPHShaderProgramPool {
 							if (shaderSrcPairs.containsKey(name)) {
 								shaderSrcPairs.get(name)[1] = loadShaderSource(fileEntry);
 							} else {
-								shaderSrcPairs.put(name, new String[] { null, loadShaderSource(fileEntry), null });
+								shaderSrcPairs.put(name, new String[] { null, loadShaderSource(fileEntry), null, null });
 							}
 						}
+						shaderSrcPairs.get(name)[3] = extractUniforms(shaderSrcPairs.get(name)[1]);
 					}
 				}
 		}
@@ -73,13 +77,23 @@ public class EPHShaderProgramPool {
 		return result;
 	}
 
-	private EPHShaderUniformCollection uniformStringToShaderUniforms(String uniformString) {
-		if (uniformString.equals("")) return null;
-		String[] uniforms = uniformString.split("%");
+	private EPHShaderUniformCollection uniformStringToShaderUniforms(String vertString, String fragString) {
 		EPHShaderUniformCollection shaderUniforms = new EPHShaderUniformCollection();
-		for (String s : uniforms) {
-			String[] cut = s.split("#");
-			shaderUniforms.addUniformLookup(new EPHUniformLookup(cut[1]));
+		String[] uniforms;
+		if (!vertString.equals("")) {
+			uniforms = vertString.split("%");
+			for (String s : uniforms) {
+				String[] cut = s.split("#");
+				shaderUniforms.addUniformLookup(new EPHUniformLookup(cut[1]));
+			}
+		}
+		if (!fragString.equals("")) {
+			uniforms = fragString.split("%");
+			for (String s : uniforms) {
+				System.out.println(s);
+				String[] cut = s.split("#");
+				shaderUniforms.addUniformLookup(new EPHUniformLookup(cut[1]));
+			}
 		}
 		return shaderUniforms;
 	}
