@@ -12,9 +12,11 @@ import java.util.List;
 public class EPHUniformVecfArray implements EPHUniformContent {
 
 	private List<EPHUniformVecf> vectors;
+	private List<Integer> registeredUniformKeys;
 
 	public EPHUniformVecfArray() {
 		vectors = new ArrayList<EPHUniformVecf>();
+		registeredUniformKeys = new ArrayList<Integer>();
 	}
 
 	@Override
@@ -24,26 +26,34 @@ public class EPHUniformVecfArray implements EPHUniformContent {
 		}
 
 	}
-	
+
 	@Override
 	public void addUniformEntry(int uniformKey) {
-		for(EPHUniformVecf uvecf : vectors) {
+		registeredUniformKeys.add(uniformKey);
+		for (EPHUniformVecf uvecf : vectors) {
 			uvecf.addUniformEntry(uniformKey);
 		}
 	}
-	
+
 	@Override
 	public void removeUniformEntry(int uniformKey) {
-		for(EPHUniformVecf uvecf : vectors) {
+		registeredUniformKeys.remove((Integer) uniformKey);
+		for (EPHUniformVecf uvecf : vectors) {
 			uvecf.removeUniformEntry(uniformKey);
 		}
 	}
 
 	public void addVector(EPHUniformVecf vector) {
+		for (Integer uniformKey : registeredUniformKeys) {
+			vector.addUniformEntry(uniformKey);
+		}
 		vectors.add(vector);
 	}
 
 	public void removeVector(EPHUniformVecf vector) {
+		for (Integer uniformKey : registeredUniformKeys) {
+			vector.removeUniformEntry(uniformKey);
+		}
 		vectors.remove(vector);
 	}
 

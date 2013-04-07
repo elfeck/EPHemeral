@@ -12,9 +12,11 @@ import java.util.List;
 public class EPHUniformStructArray implements EPHUniformContent {
 
 	private List<EPHUniformStruct> structs;
+	private List<Integer> registeredUniformKeys;
 
 	public EPHUniformStructArray() {
 		structs = new ArrayList<EPHUniformStruct>();
+		registeredUniformKeys = new ArrayList<Integer>();
 	}
 
 	@Override
@@ -26,6 +28,7 @@ public class EPHUniformStructArray implements EPHUniformContent {
 
 	@Override
 	public void addUniformEntry(int uniformKey) {
+		registeredUniformKeys.add(uniformKey);
 		for (int i = 0; i < structs.size(); i++) {
 			structs.get(i).addUniformEntry(uniformKey);
 		}
@@ -34,16 +37,23 @@ public class EPHUniformStructArray implements EPHUniformContent {
 
 	@Override
 	public void removeUniformEntry(int uniformKey) {
+		registeredUniformKeys.remove((Integer) uniformKey);
 		for (int i = 0; i < structs.size(); i++) {
 			structs.get(i).removeUniformEntry(uniformKey);
 		}
 	}
 
 	public void addStruct(EPHUniformStruct struct) {
+		for (Integer uniformKey : registeredUniformKeys) {
+			struct.addUniformEntry(uniformKey);
+		}
 		structs.add(struct);
 	}
 
 	public void removeStruct(EPHUniformStruct struct) {
+		for (Integer uniformKey : registeredUniformKeys) {
+			struct.removeUniformEntry(uniformKey);
+		}
 		structs.remove(struct);
 	}
 

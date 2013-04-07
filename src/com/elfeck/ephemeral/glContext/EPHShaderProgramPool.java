@@ -1,5 +1,4 @@
 /*
- * Copyright 2013, Sebastian Kreisel. All rights reserved.
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
@@ -90,7 +89,6 @@ public class EPHShaderProgramPool {
 		if (!fragString.equals("")) {
 			uniforms = fragString.split("%");
 			for (String s : uniforms) {
-				System.out.println(s);
 				String[] cut = s.split("#");
 				shaderUniforms.addUniformLookup(new EPHUniformLookup(cut[1]));
 			}
