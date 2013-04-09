@@ -117,7 +117,7 @@ public class EPHShaderProgramPool {
 
 	private String loadNestedFile(String insert, String parentPath) {
 		StringBuilder source = new StringBuilder();
-		insert = insert.replaceAll("//@insert", "").replaceAll(" ", "");
+		insert = insert.replaceAll("//@insert", "").replaceAll(" ", "").replaceAll("\t", "");
 		String type = insert.substring(insert.indexOf(".") + 1);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(parentPath + "/" + insert.substring(0, insert.indexOf(".")) + ".glsl"));
