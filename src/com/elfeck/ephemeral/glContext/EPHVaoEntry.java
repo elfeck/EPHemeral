@@ -5,29 +5,26 @@
 
 package com.elfeck.ephemeral.glContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformContent;
 
 
 public class EPHVaoEntry {
 
-	protected volatile boolean visible;
+	private final EPHVertexArrayObject vao;
+	private List<EPHVaoEntryDataSet> dataSets;
+	protected boolean visible;
 	protected int vboLowerBound, vboUpperBound;
 	protected int iboLowerBound, iboUpperBound;
 	protected int uniformKey;
-	protected volatile String programKey;
-	protected volatile EPHShaderUniformCollection shaderUniforms;
+	protected String programKey;
+	protected EPHShaderUniformCollection shaderUniforms;
 
-	protected EPHVaoEntry() {
-		visible = true;
-		vboLowerBound = -1;
-		vboUpperBound = -1;
-		iboLowerBound = -1;
-		iboUpperBound = -1;
-		uniformKey = -1;
-		programKey = null;
-	}
-
-	protected EPHVaoEntry(int vboL, int vboU, int iboL, int iboU, int uniform, String program, EPHShaderUniformCollection shaderUniforms) {
+	protected EPHVaoEntry(EPHVertexArrayObject vao, int vboL, int vboU, int iboL, int iboU, int uniform, String program, EPHShaderUniformCollection shaderUniforms) {
+		this.vao = vao;
+		dataSets = new ArrayList<EPHVaoEntryDataSet>();
 		visible = true;
 		vboLowerBound = vboL;
 		vboUpperBound = vboU;
@@ -38,17 +35,40 @@ public class EPHVaoEntry {
 		this.shaderUniforms = shaderUniforms;
 	}
 
-	public EPHVaoEntry(String programKey) {
-		this();
-		this.programKey = programKey;
+	protected EPHVaoEntry(EPHVertexArrayObject vao) {
+		this(vao, -1, -1, -1, -1, -1, null, null);
+	}
+
+	public EPHVaoEntryDataSet addData(List<Float> newVertexValues, List<Integer> newIndices) {
+		EPHVaoEntryDataSet dataSet;
+		dataSets.add(dataSet = vao.addData(this, newVertexValues, newIndices));
+		return dataSet;
+	}
+
+	public void removeData(EPHVaoEntryDataSet dataSet) {
+		int deletedVertexValues = dataSet.vboSubUpper - dataSet.vboSubLower + 1;
+		int deletedIndices = dataSet.iboSubUpper - dataSet.iboSubLower + 1;
+		for (EPHVaoEntryDataSet other : dataSets) {
+			if (other.iboSubLower > dataSet.iboSubLower) {
+				other.iboSubLower -= deletedIndices;
+				other.iboSubUpper -= deletedIndices;
+			}
+			if (other.vboSubLower > dataSet.vboSubLower) {
+				other.vboSubLower -= deletedVertexValues;
+				other.vboSubUpper -= deletedVertexValues;
+			}
+		}
+		dataSets.remove(dataSet);
+		vao.removeData(this, vboLowerBound + dataSet.vboSubLower, vboLowerBound + dataSet.vboSubUpper, iboLowerBound + dataSet.iboSubLower, iboLowerBound
+				+ dataSet.iboSubUpper);
+	}
+
+	public void updateVboData(EPHVaoEntryDataSet dataSet, List<Float> vertexValues) {
+		vao.updateVboData(vboLowerBound + dataSet.vboSubLower, vboLowerBound + dataSet.vboSubUpper, vertexValues);
 	}
 
 	public void registerUniformEntry(String name, EPHUniformContent content) {
 		shaderUniforms.registerUniformEntry(name, uniformKey, content);
-	}
-
-	public void deleteUniformEntries() {
-		shaderUniforms.removeUniformEntry(uniformKey);
 	}
 
 	public String getProgramKey() {
@@ -56,13 +76,12 @@ public class EPHVaoEntry {
 	}
 
 	public void switchShaderUniforms(String futureProgramKey) {
-		shaderUniforms = EPHVertexArrayObject.getShaderProgramPool().getShaderProgram(futureProgramKey).getShaderUniforms();
+		shaderUniforms = EPHVertexArrayObject.shaderProgramPool.getShaderProgram(futureProgramKey).getShaderUniforms();
 	}
 
-	public void switchProgram(String programKey) {
-		if (!this.programKey.equals(programKey)) EPHVertexArrayObject.getShaderProgramPool().getShaderProgram(this.programKey).
-				getShaderUniforms().removeUniformEntry(uniformKey);
-		this.programKey = programKey;
+	public void switchProgram(String futureProgramKey) {
+		if (!programKey.equals(futureProgramKey)) EPHVertexArrayObject.shaderProgramPool.getShaderProgram(programKey).getShaderUniforms().removeUniformEntry(uniformKey);
+		this.programKey = futureProgramKey;
 	}
 
 	public boolean isVisible() {

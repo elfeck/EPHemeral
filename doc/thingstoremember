@@ -5,3 +5,8 @@ GLSL meta:
 
 file must be in the same folder
 filename must be without leading "/" or "\" and must be without the ending ".glsl". Just the file name!
+
+VAO:
+
+lowerBound inclusive
+upperBound inclusive

@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class EPHVertexArrayObject {
 
-	private static EPHShaderProgramPool shaderProgramPool;
+	protected static EPHShaderProgramPool shaderProgramPool;
 	private static int uniformKey = 0;
 
 	private boolean dead;
@@ -89,6 +89,76 @@ public class EPHVertexArrayObject {
 		return hasVisibleEntries;
 	}
 
+	private synchronized void checkGlInit() {
+		if (!EPHRenderContext.isInitialized()) {
+			synchronized (EPHRenderContext.glInitMonitor) {
+				try {
+					EPHRenderContext.glInitMonitor.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	protected synchronized EPHVaoEntryDataSet addData(EPHVaoEntry entry, List<Float> newVertexValues, List<Integer> newIndices) {
+		checkGlInit();
+		if (entry.iboLowerBound < 0) {
+			entry.iboLowerBound = ibo.getCurrentIndex();
+			entry.iboUpperBound = ibo.getCurrentIndex() - 1;
+			entry.vboLowerBound = vbo.getCurrentIndex();
+			entry.vboUpperBound = vbo.getCurrentIndex() - 1;
+		}
+		vbo.addData(newVertexValues, entry.vboUpperBound + 1);
+		ibo.addData(newIndices, entry.iboUpperBound + 1, (entry.vboUpperBound + 1) / vbo.getStride(), newVertexValues.size() / vbo.getStride());
+		for (EPHVaoEntry other : entries) {
+			if (other.vboLowerBound > entry.vboLowerBound) {
+				other.vboLowerBound += newVertexValues.size();
+				other.vboUpperBound += newVertexValues.size();
+			}
+			if (other.iboLowerBound > entry.iboLowerBound) {
+				other.iboLowerBound += newIndices.size();
+				other.iboUpperBound += newIndices.size();
+			}
+		}
+		EPHVaoEntryDataSet dataSet = new EPHVaoEntryDataSet(entry.vboUpperBound - entry.vboLowerBound + 1, entry.vboUpperBound - entry.vboLowerBound
+				+ newVertexValues.size(), entry.iboUpperBound - entry.iboLowerBound + 1, entry.iboUpperBound - entry.iboLowerBound + newIndices.size());
+		entry.vboUpperBound += newVertexValues.size();
+		entry.iboUpperBound += newIndices.size();
+		size += newIndices.size();
+		return dataSet;
+	}
+
+	protected synchronized void removeData(EPHVaoEntry entry, int vboLower, int vboUpper, int iboLower, int iboUpper) {
+		checkGlInit();
+		int deletedVertexValues = vboUpper - vboLower + 1;
+		int deletedIndices = iboUpper - iboLower + 1;
+		vbo.removeData(vboLower, vboUpper);
+		ibo.removeData(iboLower, iboUpper, deletedVertexValues / vbo.getStride());
+		entry.vboUpperBound -= deletedVertexValues;
+		entry.iboUpperBound -= deletedIndices;
+		if (entry.iboUpperBound < 0) {
+			entry.iboLowerBound = -1;
+			entry.vboLowerBound = -1;
+		}
+		for (EPHVaoEntry other : entries) {
+			if (other.vboLowerBound > entry.vboLowerBound) {
+				other.vboLowerBound -= deletedVertexValues;
+				other.vboUpperBound -= deletedVertexValues;
+			}
+			if (other.iboLowerBound > entry.iboLowerBound) {
+				other.iboLowerBound -= deletedIndices;
+				other.iboUpperBound -= deletedIndices;
+			}
+		}
+		size -= deletedIndices;
+	}
+
+	protected synchronized void updateVboData(int vboLower, int vboUpper, List<Float> vertexValues) {
+		checkGlInit();
+		vbo.updateData(vboLower, vboUpper, vertexValues);
+	}
+
 	public synchronized void glRender() {
 		if (handle < 0) glInit();
 		if (!vbo.isUpdated()) glUpdateVbo();
@@ -102,21 +172,34 @@ public class EPHVertexArrayObject {
 			boolean bindRequ = true;
 			for (int i = 0; i < entries.size(); i++) {
 				current = entries.get(i);
-				if (!current.visible) continue;
+				if (!current.visible || current.iboLowerBound < 0) continue;
 				next = i < entries.size() - 1 ? entries.get(i + 1) : null;
 				currentProgram = shaderProgramPool.getShaderProgram(current.programKey);
 				if (!currentProgram.isLinked()) currentProgram.glAttachAndLinkProgram(vertexAttributesToMap(vbo.getVertexAttributes()));
 				if (bindRequ) currentProgram.glBind();
 				currentProgram.glUseUniforms(current.uniformKey);
-				// System.out.println("Drawing: [count: " + (current.iboUpperBound - current.iboLowerBound + 1) + "]  [offset: " + (current.iboLowerBound * 4)
-				// + "]  [program: " + currentProgram.getProgramHandle() + " @bindRequ" + bindRequ + "]" + "[unif key: " + current.uniformKey + "]");
 				glDrawElements(mode, current.iboUpperBound - current.iboLowerBound + 1, GL_UNSIGNED_INT, current.iboLowerBound * 4);
 				bindRequ = next == null ? true : current.programKey.equals(next.programKey) ? false : true;
 				if (bindRequ) currentProgram.glUnbind();
 			}
 			glBindVertexArray(0);
-			// System.out.println("----------------------------");
 		}
+	}
+
+	public synchronized EPHVaoEntry addEntry(String programKey) {
+		checkGlInit();
+		EPHVaoEntry entry = new EPHVaoEntry(this);
+		entry.programKey = programKey;
+		entry.uniformKey = uniformKey++;
+		entry.shaderUniforms = shaderProgramPool.getShaderProgram(programKey).getShaderUniforms();
+		entries.add(entry);
+		return entry;
+	}
+
+	public synchronized void removeEntry(EPHVaoEntry entry) {
+		checkGlInit();
+		removeData(entry, 0, entry.vboUpperBound - entry.vboLowerBound, 0, entry.iboUpperBound - entry.iboLowerBound);
+		entries.remove(entry);
 	}
 
 	public void glDispose() {
@@ -125,60 +208,6 @@ public class EPHVertexArrayObject {
 		glDeleteBuffers(handle);
 	}
 
-	public synchronized EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, String programKey) {
-		EPHVaoEntry entry = new EPHVaoEntry();
-		entry.programKey = programKey;
-		return addData(vertexValues, indices, entry);
-	}
-
-	public synchronized EPHVaoEntry addData(List<Float> vertexValues, List<Integer> indices, EPHVaoEntry entry) {
-		if (!EPHRenderContext.isInitialized()) {
-			synchronized (EPHRenderContext.glInitMonitor) {
-				try {
-					EPHRenderContext.glInitMonitor.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		entry.vboLowerBound = vbo.getCurrentIndex();
-		entry.vboUpperBound = vbo.getCurrentIndex() + vertexValues.size() - 1;
-		entry.iboLowerBound = ibo.getCurrentIndex();
-		entry.iboUpperBound = ibo.getCurrentIndex() + indices.size() - 1;
-		entry.uniformKey = uniformKey++;
-		entry.shaderUniforms = shaderProgramPool.getShaderProgram(entry.programKey).getShaderUniforms();
-		ibo.addData(indices, vbo.addData(vertexValues));
-		size += indices.size();
-		entries.add(entry);
-		return entry;
-	}
-
-	public synchronized void removeData(EPHVaoEntry entry) {
-		ibo.removeData(entry.iboLowerBound, entry.iboUpperBound, vbo.removeData(entry.vboLowerBound, entry.vboUpperBound));
-		size -= entry.iboUpperBound - entry.iboLowerBound + 1;
-		int deletedVertexValues = entry.vboUpperBound - entry.vboLowerBound + 1;
-		int deletedIndices = entry.iboUpperBound - entry.iboLowerBound + 1;
-		for (int i = entries.indexOf(entry) + 1; i < entries.size(); i++) {
-			EPHVaoEntry currentEntry = entries.get(i);
-			currentEntry.vboLowerBound -= deletedVertexValues;
-			currentEntry.vboUpperBound -= deletedVertexValues;
-			currentEntry.iboLowerBound -= deletedIndices;
-			currentEntry.iboUpperBound -= deletedIndices;
-		}
-		entries.remove(entry);
-	}
-
-	public synchronized void updateVbo(EPHVaoEntry entry, int subLower, int subUpper, List<Float> vertexValues) {
-		if (subLower < 0) subLower = 0;
-		if (subUpper < 0) subUpper = entry.vboUpperBound - entry.vboLowerBound + 1;
-		vbo.updateData(entry.vboLowerBound + subLower, entry.vboLowerBound + subUpper, vertexValues);
-	}
-
-	public synchronized void updateIbo(EPHVaoEntry entry, int subLower, int subUpper, List<Integer> indices) {
-		if (subLower < 0) subLower = 0;
-		if (subUpper < 0) subUpper = entry.iboUpperBound - entry.iboLowerBound + 1;
-		ibo.updateData(entry.vboLowerBound + subLower, entry.vboLowerBound + subUpper, indices);
-	}
 	public synchronized void setViewportRect(int[] bounds) {
 		viewPortRect = bounds;
 	}
@@ -203,11 +232,6 @@ public class EPHVertexArrayObject {
 	protected static void glInitShaderProgramPool(String parentPath) {
 		shaderProgramPool = new EPHShaderProgramPool(parentPath);
 		shaderProgramPool.glInit();
-	}
-
-	/* Not feeling good about this accessibility. Needed for program switching in EPHVaoEntry. */
-	protected static EPHShaderProgramPool getShaderProgramPool() {
-		return shaderProgramPool;
 	}
 
 	public static void glDisposeShaderPrograms() {

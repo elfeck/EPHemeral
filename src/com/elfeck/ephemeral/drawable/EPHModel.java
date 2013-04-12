@@ -64,24 +64,12 @@ public class EPHModel {
 		vao.setScissorRect(bounds);
 	}
 
-	public EPHVaoEntry addToVao(List<Float> vertexValues, List<Integer> indices, String programKey) {
-		return vao.addData(vertexValues, indices, programKey);
+	public EPHVaoEntry addEntry(String programKey) {
+		return vao.addEntry(programKey);
 	}
 
-	public EPHVaoEntry addToVao(List<Float> vertexValues, List<Integer> indices, EPHVaoEntry entry) {
-		return vao.addData(vertexValues, indices, entry);
-	}
-
-	public void removeFromVao(EPHVaoEntry entry) {
-		vao.removeData(entry);
-	}
-
-	public void updateToVbo(EPHVaoEntry entry, int subLower, int subUpper, List<Float> vertexValues) {
-		vao.updateVbo(entry, subLower, subUpper, vertexValues);
-	}
-
-	public void updateToIbo(EPHVaoEntry entry, int subLower, int subUpper, List<Integer> indices) {
-		vao.updateIbo(entry, subLower, subUpper, indices);
+	public void removeEntry(EPHVaoEntry entry) {
+		vao.removeEntry(entry);
 	}
 
 }

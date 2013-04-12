@@ -11,11 +11,8 @@ import java.util.List;
 import com.elfeck.ephemeral.EPHEntity;
 import com.elfeck.ephemeral.EPHSurface;
 import com.elfeck.ephemeral.drawable.EPHModel;
-import com.elfeck.ephemeral.drawable.text.EPHGlyph;
-import com.elfeck.ephemeral.drawable.text.EPHGlyphSegment;
-import com.elfeck.ephemeral.drawable.text.EPHTextUtils;
-import com.elfeck.ephemeral.glContext.EPHRenderUtils;
 import com.elfeck.ephemeral.glContext.EPHVaoEntry;
+import com.elfeck.ephemeral.glContext.EPHVaoEntryDataSet;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformMat4f;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
@@ -23,69 +20,82 @@ import com.elfeck.ephemeral.math.EPHVec4f;
 
 public class EPHTestEntity implements EPHEntity {
 
-	private boolean dead;
 	private EPHSurface surface;
-	private EPHModel model;
 	private EPHUniformMat4f mvpMatrix;
 	private EPHUniformVec2f offset;
-	private EPHVaoEntry vaoRef;
+	private EPHVec4f color;
+	private EPHModel model;
 
 	public EPHTestEntity(EPHSurface surface) {
 		this.surface = surface;
-		dead = false;
-		model = new EPHModel();
-		mvpMatrix = new EPHUniformMat4f(new float[][] {
-														{ 1, 0, 0, 0 },
-														{ 0, 1, 0, 0 },
-														{ 0, 0, 1, 0 },
-														{ 0, 0, 0, 1 }
-		});
+		mvpMatrix = new EPHUniformMat4f(new float[][] { { 2.0f / EPHTest.WIDTH, 0, 0, 0 }, { 0, 2.0f / EPHTest.HEIGHT, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
 		offset = new EPHUniformVec2f(0, 0);
-		initModel();
-		initShape();
+		color = new EPHVec4f(0.8f, 0.4f, 0.1f, 1f);
+		model = new EPHModel();
+		init();
 	}
+
+	private void init() {
+		model.addAttribute(4, "vertex_position");
+		model.addAttribute(4, "vertex_color");
+		model.create();
+		model.addToSurface(surface);
+	}
+
+	@SuppressWarnings("unused")
+	private EPHVaoEntry createEntry() {
+		EPHVaoEntry entry = model.addEntry("test");
+		entry.registerUniformEntry("mvp_matrix", mvpMatrix);
+		entry.registerUniformEntry("offset", offset);
+		return entry;
+	}
+
+	@SuppressWarnings("unused")
+	private EPHVaoEntryDataSet addQuad(float x, float y, EPHVaoEntry entry) {
+		int size = 10;
+		TestQuad quad = new TestQuad(x, y, size, size, 0.2f, color);
+		List<Float> vertexValues = new ArrayList<Float>();
+		List<Integer> indices = new ArrayList<Integer>();
+		quad.fetchVertexData(vertexValues);
+		TestQuad.fetchIndices(0, indices);
+		return entry.addData(vertexValues, indices);
+	}
+
+	@SuppressWarnings("unused")
+	private void updateQuad(float x, float y, EPHVaoEntry entry, EPHVaoEntryDataSet dataSet) {
+		int size = 10;
+		TestQuad quad = new TestQuad(x, y, size, size, 0.2f, color);
+		List<Float> vertexValues = new ArrayList<Float>();
+		quad.fetchVertexData(vertexValues);
+		entry.updateVboData(dataSet, vertexValues);
+	}
+
+	EPHVaoEntry first, second;
+	EPHVaoEntryDataSet first1Set, first2Set, first3Set, second1Set;
+
+	private void tick(int tick) {
+		System.out.println("Tick: " + tick);
+		switch (tick) {
+
+		}
+	}
+
+	int tick = 0;
+	int timePassed = 0;
 
 	@Override
 	public void doLogic(long delta) {
-
+		if (timePassed > 500) {
+			tick(tick++);
+			timePassed = 0;
+		} else {
+			timePassed += delta / 1e6;
+		}
 	}
 
 	@Override
 	public boolean isDead() {
-		return dead;
+		return false;
 	}
 
-	private void initModel() {
-		model.addAttribute(4, "vertex_position");
-		model.addAttribute(4, "vertex_color");
-		model.create(EPHRenderUtils.TYPE_LINES);
-		model.addToSurface(surface);
-	}
-
-	private void initShape() {
-		EPHVec4f color = new EPHVec4f(1f, 1f, 1f, 1f);
-		List<Float> vertexValues = new ArrayList<Float>();
-		List<Integer> indices = new ArrayList<Integer>();
-		EPHGlyph glyph = EPHTextUtils.createGlyph(EPHTextUtils.NAME_LUCIDA_SANS_REGULAR, EPHTextUtils.STYLE_PLAIN, 'B');
-		int indexOffs = 0;
-		for (EPHGlyphSegment seg : glyph.getSegments()) {
-			for (int i = 0; i < seg.getShape().length; i++) {
-				seg.getShape()[i].fetchData(vertexValues);
-				// System.out.println(seg.getShape()[i]);
-				vertexValues.add(1.0f);
-				vertexValues.add(1.0f);
-				color.fetchData(vertexValues);
-			}
-			for (int i = 1; i < vertexValues.size(); i++) {
-				indices.add(i - 1 + indexOffs);
-				indices.add(i + indexOffs);
-			}
-			indexOffs = indices.size();
-			color.subVec4f(0f, 0.3f, 0.3f, 0);
-		}
-		vaoRef = model.addToVao(vertexValues, indices, "test");
-		vaoRef.registerUniformEntry("mvp_matrix", mvpMatrix);
-		vaoRef.registerUniformEntry("offset", offset);
-		offset.setX((float) -Math.floor(vertexValues.get(0)));
-	}
 }

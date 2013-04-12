@@ -62,9 +62,12 @@ public class EPHIndexBufferObject {
 		glDeleteBuffers(handle);
 	}
 
-	protected void addData(List<Integer> newIndices, int offset) {
+	protected void addData(List<Integer> newIndices, int jumpIn, int offset, int vertexCount) {
 		for (int i = 0; i < newIndices.size(); i++) {
-			indices.add(newIndices.get(i) + offset);
+			indices.add(i + jumpIn, newIndices.get(i) + offset);
+		}
+		for (int i = jumpIn + newIndices.size(); i < indices.size(); i++) {
+			indices.set(i, indices.get(i) + vertexCount);
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 		updateOffset = -1;
@@ -76,22 +79,30 @@ public class EPHIndexBufferObject {
 			indices.remove(i);
 		}
 		for (int i = lowerBound; i < indices.size(); i++) {
-			indices.add(i, indices.get(i) - offset);
-			indices.remove(i + 1);
+			indices.set(i, indices.get(i) - offset);
 		}
 		indexBuffer = EPHRenderUtils.listToBufferi(indices);
 		updateOffset = -1;
 		updated = false;
 	}
 
-	protected void updateData(int lowerBound, int upperBound, List<Integer> newIndices) {
+	/* protected void updateData(int lowerBound, int upperBound, List<Integer> newIndices) {
+		// workaround to find the index offset
+		// Problem will occur if the smallest possible index (within the area to replace) doesn't occur. Then the offset is to high.
+		int offset = Integer.MAX_VALUE;
+		for (int i = lowerBound; i <= upperBound; i++) {
+			offset = Math.min(offset, indices.get(i));
+		}
+		for (int i = 0; i < newIndices.size(); i++) {
+			newIndices.set(i, newIndices.get(i) + offset);
+		}
 		for (int i = lowerBound; i <= upperBound; i++) {
 			indices.set(i, newIndices.get(i - lowerBound));
 		}
 		updateBuffer = EPHRenderUtils.listToBufferi(newIndices);
 		updateOffset = lowerBound * 4;
 		updated = false;
-	}
+	} */
 
 	protected int getCurrentIndex() {
 		return indices.size();
