@@ -53,18 +53,18 @@ public class EPHTestEntity implements EPHEntity {
 	@SuppressWarnings("unused")
 	private EPHVaoEntryDataSet addQuad(float x, float y, EPHVaoEntry entry) {
 		int size = 10;
-		TestQuad quad = new TestQuad(x, y, size, size, 0.2f, color);
+		EPHTestQuad quad = new EPHTestQuad(x, y, size, size, 0.2f, color);
 		List<Float> vertexValues = new ArrayList<Float>();
 		List<Integer> indices = new ArrayList<Integer>();
 		quad.fetchVertexData(vertexValues);
-		TestQuad.fetchIndices(0, indices);
+		EPHTestQuad.fetchIndices(0, indices);
 		return entry.addData(vertexValues, indices);
 	}
 
 	@SuppressWarnings("unused")
 	private void updateQuad(float x, float y, EPHVaoEntry entry, EPHVaoEntryDataSet dataSet) {
 		int size = 10;
-		TestQuad quad = new TestQuad(x, y, size, size, 0.2f, color);
+		EPHTestQuad quad = new EPHTestQuad(x, y, size, size, 0.2f, color);
 		List<Float> vertexValues = new ArrayList<Float>();
 		quad.fetchVertexData(vertexValues);
 		entry.updateVboData(dataSet, vertexValues);

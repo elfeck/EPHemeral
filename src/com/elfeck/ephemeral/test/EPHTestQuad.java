@@ -12,14 +12,14 @@ import com.elfeck.ephemeral.math.EPHVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
 
 
-public class TestQuad implements EPHDisplayable {
+public class EPHTestQuad implements EPHDisplayable {
 
 	protected float layer;
 	protected int width, height;
 	protected EPHVec2f position;
 	protected EPHVec4f color;
 
-	public TestQuad(float x, float y, int width, int height, float layer, EPHVec4f color) {
+	public EPHTestQuad(float x, float y, int width, int height, float layer, EPHVec4f color) {
 		this.width = width;
 		this.height = height;
 		position = new EPHVec2f(x, y);
