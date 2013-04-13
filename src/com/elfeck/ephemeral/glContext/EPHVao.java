@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class EPHVertexArrayObject {
+public class EPHVao {
 
 	protected static EPHShaderProgramPool shaderProgramPool;
 	private static int uniformKey = 0;
@@ -24,10 +24,10 @@ public class EPHVertexArrayObject {
 	private int mode, size, usage, handle;
 	private int[] viewPortRect, scissorRect;
 	private List<EPHVaoEntry> entries;
-	private EPHVertexBufferObject vbo;
-	private EPHIndexBufferObject ibo;
+	private EPHVbo vbo;
+	private EPHIbo ibo;
 
-	public EPHVertexArrayObject(int mode, int usage, int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
+	public EPHVao(int mode, int usage, int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
 		dead = false;
 		this.mode = mode;
 		this.size = 0;
@@ -36,20 +36,20 @@ public class EPHVertexArrayObject {
 		this.scissorRect = scissorRect;
 		handle = -1;
 		entries = new ArrayList<EPHVaoEntry>();
-		vbo = new EPHVertexBufferObject(vertexAttributes);
-		ibo = new EPHIndexBufferObject();
+		vbo = new EPHVbo(vertexAttributes);
+		ibo = new EPHIbo();
 	}
 
-	public EPHVertexArrayObject(int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
-		this(EPHRenderUtils.TYPE_TRIANGLES, EPHRenderUtils.MODE_STATIC_DRAW, viewPortRect, scissorRect, vertexAttributes);
+	public EPHVao(int[] viewPortRect, int[] scissorRect, List<EPHVertexAttribute> vertexAttributes) {
+		this(EPHRenderUtils.MODE_TRIANGLES, EPHRenderUtils.USAGE_STATIC_DRAW, viewPortRect, scissorRect, vertexAttributes);
 	}
 
-	public EPHVertexArrayObject(int mode, List<EPHVertexAttribute> vertexAttributes) {
-		this(mode, EPHRenderUtils.MODE_STATIC_DRAW, EPHRenderContext.getWindowDimensions(), EPHRenderContext.getWindowDimensions(), vertexAttributes);
+	public EPHVao(int mode, int usage, List<EPHVertexAttribute> vertexAttributes) {
+		this(mode, usage, EPHRenderContext.getWindowDimensions(), EPHRenderContext.getWindowDimensions(), vertexAttributes);
 	}
 
-	public EPHVertexArrayObject(List<EPHVertexAttribute> vertexAttributes) {
-		this(EPHRenderUtils.TYPE_TRIANGLES, vertexAttributes);
+	public EPHVao(List<EPHVertexAttribute> vertexAttributes) {
+		this(EPHRenderUtils.MODE_TRIANGLES, EPHRenderUtils.USAGE_STATIC_DRAW, vertexAttributes);
 	}
 
 	private void glInit() {

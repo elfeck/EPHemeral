@@ -63,7 +63,7 @@ public class EPHRenderContext {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_SCISSOR_TEST);
-		EPHVertexArrayObject.glInitShaderProgramPool(shaderParentPath);
+		EPHVao.glInitShaderProgramPool(shaderParentPath);
 		glInitialized = true;
 		synchronized (glInitMonitor) {
 			glInitMonitor.notifyAll();
@@ -94,7 +94,7 @@ public class EPHRenderContext {
 
 	private void glDraw() {
 		for (int i = 0; i < main.getVaos().size(); i++) {
-			EPHVertexArrayObject currentVao = main.getVaos().get(i);
+			EPHVao currentVao = main.getVaos().get(i);
 			if (currentVao.isDead()) {
 				main.getVaos().remove(i--);
 				continue;

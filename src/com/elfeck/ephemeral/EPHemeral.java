@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.elfeck.ephemeral.glContext.EPHInput;
 import com.elfeck.ephemeral.glContext.EPHRenderContext;
-import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
+import com.elfeck.ephemeral.glContext.EPHVao;
 
 
 public class EPHemeral {
@@ -64,7 +64,7 @@ public class EPHemeral {
 
 	public void glDestroyVaos() {
 		surface.destroyVaos();
-		EPHVertexArrayObject.glDisposeShaderPrograms();
+		EPHVao.glDisposeShaderPrograms();
 	}
 
 	public synchronized void destroy() {
@@ -73,7 +73,7 @@ public class EPHemeral {
 		logicJob.destroy();
 	}
 
-	public List<EPHVertexArrayObject> getVaos() {
+	public List<EPHVao> getVaos() {
 		return surface.getVaos();
 	}
 

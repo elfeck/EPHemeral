@@ -10,9 +10,10 @@ import java.util.List;
 
 import com.elfeck.ephemeral.EPHEntity;
 import com.elfeck.ephemeral.EPHSurface;
-import com.elfeck.ephemeral.drawable.EPHModel;
+import com.elfeck.ephemeral.glContext.EPHVaoBuilder;
 import com.elfeck.ephemeral.glContext.EPHVaoEntry;
 import com.elfeck.ephemeral.glContext.EPHVaoEntryDataSet;
+import com.elfeck.ephemeral.glContext.EPHVao;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformMat4f;
 import com.elfeck.ephemeral.glContext.uniform.EPHUniformVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
@@ -24,27 +25,28 @@ public class EPHTestEntity implements EPHEntity {
 	private EPHUniformMat4f mvpMatrix;
 	private EPHUniformVec2f offset;
 	private EPHVec4f color;
-	private EPHModel model;
+	private EPHVao vao;
 
 	public EPHTestEntity(EPHSurface surface) {
 		this.surface = surface;
 		mvpMatrix = new EPHUniformMat4f(new float[][] { { 2.0f / EPHTest.WIDTH, 0, 0, 0 }, { 0, 2.0f / EPHTest.HEIGHT, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
 		offset = new EPHUniformVec2f(0, 0);
 		color = new EPHVec4f(0.8f, 0.4f, 0.1f, 1f);
-		model = new EPHModel();
+		vao = null;
 		init();
 	}
 
 	private void init() {
-		model.addAttribute(4, "vertex_position");
-		model.addAttribute(4, "vertex_color");
-		model.create();
-		model.addToSurface(surface);
+		EPHVaoBuilder builder = new EPHVaoBuilder();
+		builder.addAttribute(4, "vertex_position");
+		builder.addAttribute(4, "vertex_color");
+		vao = builder.create();
+		surface.addVao(vao);
 	}
 
 	@SuppressWarnings("unused")
 	private EPHVaoEntry createEntry() {
-		EPHVaoEntry entry = model.addEntry("test");
+		EPHVaoEntry entry = vao.addEntry("test");
 		entry.registerUniformEntry("mvp_matrix", mvpMatrix);
 		entry.registerUniformEntry("offset", offset);
 		return entry;

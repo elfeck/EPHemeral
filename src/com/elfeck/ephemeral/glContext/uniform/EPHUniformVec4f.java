@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL20.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.elfeck.ephemeral.math.EPHVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
 
 
@@ -20,6 +21,10 @@ public class EPHUniformVec4f extends EPHVec4f implements EPHUniformVecf {
 	public EPHUniformVec4f(float x, float y, float z, float w) {
 		super(x, y, z, w);
 		modMap = new HashMap<Integer, Boolean>();
+	}
+
+	public EPHUniformVec4f(EPHVec2f vec, float z, float w) {
+		this(vec.getX(), vec.getY(), z, w);
 	}
 
 	public EPHUniformVec4f() {

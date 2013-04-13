@@ -8,19 +8,19 @@ package com.elfeck.ephemeral;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.elfeck.ephemeral.glContext.EPHVertexArrayObject;
+import com.elfeck.ephemeral.glContext.EPHVao;
 
 
 public abstract class EPHSurface {
 
 	private List<EPHEntity> entities, newEntities;
-	private List<EPHVertexArrayObject> allVaos, newVaos;
+	private List<EPHVao> allVaos, newVaos;
 
 	public EPHSurface() {
 		entities = new ArrayList<EPHEntity>();
 		newEntities = new ArrayList<EPHEntity>();
-		allVaos = new ArrayList<EPHVertexArrayObject>();
-		newVaos = new ArrayList<EPHVertexArrayObject>();
+		allVaos = new ArrayList<EPHVao>();
+		newVaos = new ArrayList<EPHVao>();
 	}
 
 	public void execLogic(long delta) {
@@ -44,7 +44,7 @@ public abstract class EPHSurface {
 		newEntities.add(index, entity);
 	}
 
-	public void addVao(EPHVertexArrayObject vao) {
+	public void addVao(EPHVao vao) {
 		newVaos.add(vao);
 	}
 
@@ -53,13 +53,13 @@ public abstract class EPHSurface {
 		newVaos.clear();
 	}
 
-	protected List<EPHVertexArrayObject> getVaos() {
+	protected List<EPHVao> getVaos() {
 		return allVaos;
 	}
 
 	protected void destroyVaos() {
 		updateVaos();
-		for (EPHVertexArrayObject vao : allVaos) {
+		for (EPHVao vao : allVaos) {
 			vao.glDispose();
 		}
 	}

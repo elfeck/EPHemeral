@@ -22,11 +22,9 @@ public class EPHVec4f implements EPHVecf {
 	public EPHVec4f() {
 		this(0, 0, 0, 0);
 	}
-	public EPHVec4f(EPHVec2f vec, int z, int w) {
-		x = vec.x;
-		y = vec.y;
-		this.z = z;
-		this.w = w;
+
+	public EPHVec4f(EPHVec2f vec, float z, float w) {
+		this(vec.x, vec.y, z, w);
 	}
 
 	@Override

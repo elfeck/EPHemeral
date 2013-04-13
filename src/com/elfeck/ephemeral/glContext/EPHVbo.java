@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EPHVertexBufferObject {
+public class EPHVbo {
 
 	private int handle, stride, updateOffset;
 	private boolean updated;
@@ -21,7 +21,7 @@ public class EPHVertexBufferObject {
 	private List<Float> vertexValues;
 	private List<EPHVertexAttribute> vertexAttributes;
 
-	protected EPHVertexBufferObject(List<Float> vertexValues, List<EPHVertexAttribute> vertexAttributes) {
+	protected EPHVbo(List<Float> vertexValues, List<EPHVertexAttribute> vertexAttributes) {
 		this.vertexValues = vertexValues;
 		this.vertexAttributes = vertexAttributes;
 		handle = -1;
@@ -32,7 +32,7 @@ public class EPHVertexBufferObject {
 		updateBuffer = null;
 	}
 
-	protected EPHVertexBufferObject(List<EPHVertexAttribute> vertexAttributes) {
+	protected EPHVbo(List<EPHVertexAttribute> vertexAttributes) {
 		this.vertexAttributes = vertexAttributes;
 		handle = -1;
 		stride = computeStride();

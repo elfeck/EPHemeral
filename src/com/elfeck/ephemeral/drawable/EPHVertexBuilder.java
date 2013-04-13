@@ -8,24 +8,24 @@ package com.elfeck.ephemeral.drawable;
 import com.elfeck.ephemeral.math.EPHVecf;
 
 
-public class EPHVertexFactory {
+public class EPHVertexBuilder {
 
-	private static EPHVertex vertex;
+	private EPHVertex vertex;
 
-	private EPHVertexFactory() {
-
-	}
-
-	public static void create(int index, int attribCount) {
+	public EPHVertexBuilder(int index, int attribCount) {
 		vertex = new EPHVertex(index, new EPHVecf[attribCount]);
 	}
 
-	public static void attachData(int index, EPHVecf data) {
+	public void attachData(int index, EPHVecf data) {
 		vertex.getData()[index] = data;
 	}
 
-	public static EPHVertex produce() {
+	public EPHVertex create() {
 		return vertex;
+	}
+
+	public void reset(int index, int attribCount) {
+		vertex = new EPHVertex(index, new EPHVecf[attribCount]);
 	}
 
 }

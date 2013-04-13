@@ -19,17 +19,17 @@ import com.elfeck.ephemeral.math.EPHVecf;
 
 public class EPHRenderUtils {
 
-	public static final int MODE_STATIC_DRAW = GL_STATIC_DRAW;
-	public static final int MODE_DYNAMIC_DRAW = GL_DYNAMIC_DRAW;
-	public static final int MODE_STREAM_DRAW = GL_STREAM_DRAW;
+	public static final int USAGE_STATIC_DRAW = GL_STATIC_DRAW;
+	public static final int USAGE_DYNAMIC_DRAW = GL_DYNAMIC_DRAW;
+	public static final int USAGE_STREAM_DRAW = GL_STREAM_DRAW;
 
 	public static final int TYPE_FLOAT = GL_FLOAT;
 	public static final int TYPE_INT = GL_INT;
 	public static final int TYPE_SHORT = GL_SHORT;
 
-	public static final int TYPE_TRIANGLES = GL_TRIANGLES;
-	public static final int TYPE_LINES = GL_LINES;
-	public static final int TYPE_POINTS = GL_POINTS;
+	public static final int MODE_TRIANGLES = GL_TRIANGLES;
+	public static final int MODE_LINES = GL_LINES;
+	public static final int MODE_POINTS = GL_POINTS;
 
 	private EPHRenderUtils() {
 

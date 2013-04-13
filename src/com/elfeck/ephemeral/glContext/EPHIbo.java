@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EPHIndexBufferObject {
+public class EPHIbo {
 
 	private int handle, updateOffset;
 	private boolean updated;
 	private IntBuffer indexBuffer, updateBuffer;
 	private List<Integer> indices;
 
-	protected EPHIndexBufferObject(List<Integer> indices) {
+	protected EPHIbo(List<Integer> indices) {
 		handle = -1;
 		updateOffset = -1;
 		updated = false;
@@ -28,7 +28,7 @@ public class EPHIndexBufferObject {
 		this.indices = indices;
 	}
 
-	protected EPHIndexBufferObject() {
+	protected EPHIbo() {
 		handle = -1;
 		updateOffset = -1;
 		updated = false;

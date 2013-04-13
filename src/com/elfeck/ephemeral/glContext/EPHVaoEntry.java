@@ -13,7 +13,7 @@ import com.elfeck.ephemeral.glContext.uniform.EPHUniformContent;
 
 public class EPHVaoEntry {
 
-	private final EPHVertexArrayObject vao;
+	private final EPHVao vao;
 	private List<EPHVaoEntryDataSet> dataSets;
 	protected boolean visible;
 	protected int vboLowerBound, vboUpperBound;
@@ -22,7 +22,7 @@ public class EPHVaoEntry {
 	protected String programKey;
 	protected EPHShaderUniformCollection shaderUniforms;
 
-	protected EPHVaoEntry(EPHVertexArrayObject vao, int vboL, int vboU, int iboL, int iboU, int uniform, String program, EPHShaderUniformCollection shaderUniforms) {
+	protected EPHVaoEntry(EPHVao vao, int vboL, int vboU, int iboL, int iboU, int uniform, String program, EPHShaderUniformCollection shaderUniforms) {
 		this.vao = vao;
 		dataSets = new ArrayList<EPHVaoEntryDataSet>();
 		visible = true;
@@ -35,7 +35,7 @@ public class EPHVaoEntry {
 		this.shaderUniforms = shaderUniforms;
 	}
 
-	protected EPHVaoEntry(EPHVertexArrayObject vao) {
+	protected EPHVaoEntry(EPHVao vao) {
 		this(vao, -1, -1, -1, -1, -1, null, null);
 	}
 
@@ -76,11 +76,11 @@ public class EPHVaoEntry {
 	}
 
 	public void switchShaderUniforms(String futureProgramKey) {
-		shaderUniforms = EPHVertexArrayObject.shaderProgramPool.getShaderProgram(futureProgramKey).getShaderUniforms();
+		shaderUniforms = EPHVao.shaderProgramPool.getShaderProgram(futureProgramKey).getShaderUniforms();
 	}
 
 	public void switchProgram(String futureProgramKey) {
-		if (!programKey.equals(futureProgramKey)) EPHVertexArrayObject.shaderProgramPool.getShaderProgram(programKey).getShaderUniforms().removeUniformEntry(uniformKey);
+		if (!programKey.equals(futureProgramKey)) EPHVao.shaderProgramPool.getShaderProgram(programKey).getShaderUniforms().removeUniformEntry(uniformKey);
 		this.programKey = futureProgramKey;
 	}
 
