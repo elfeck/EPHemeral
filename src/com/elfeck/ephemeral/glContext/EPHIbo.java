@@ -7,51 +7,32 @@ package com.elfeck.ephemeral.glContext;
 
 import static org.lwjgl.opengl.GL15.*;
 
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class EPHIbo {
 
-	private int handle, updateOffset;
-	private boolean updated;
-	private IntBuffer indexBuffer, updateBuffer;
+	private boolean bufferSizeChanged;
+	private int handle;
 	private List<Integer> indices;
 
 	protected EPHIbo(List<Integer> indices) {
 		handle = -1;
-		updateOffset = -1;
-		updated = false;
-		indexBuffer = EPHRenderUtils.listToBufferi(indices);
-		updateBuffer = null;
+		bufferSizeChanged = true;
 		this.indices = indices;
 	}
 
 	protected EPHIbo() {
-		handle = -1;
-		updateOffset = -1;
-		updated = false;
-		indexBuffer = null;
-		updateBuffer = null;
-		indices = new ArrayList<Integer>();
+		this(new ArrayList<Integer>());
 	}
 
 	protected void glInit(int usage) {
 		if (handle < 0) handle = glGenBuffers();
-		if (indices.size() <= 0) return;
-		if (updateOffset < 0) {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		} else {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, updateOffset, updateBuffer);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			updateBuffer = null;
-		}
-		updateOffset = -1;
-		updated = true;
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, EPHRenderUtils.listToBufferi(indices), usage);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		bufferSizeChanged = false;
 	}
 
 	protected void glBind() {
@@ -69,9 +50,7 @@ public class EPHIbo {
 		for (int i = jumpIn + newIndices.size(); i < indices.size(); i++) {
 			indices.set(i, indices.get(i) + vertexCount);
 		}
-		indexBuffer = EPHRenderUtils.listToBufferi(indices);
-		updateOffset = -1;
-		updated = false;
+		bufferSizeChanged = true;
 	}
 
 	protected void removeData(int lowerBound, int upperBound, int offset) {
@@ -81,35 +60,15 @@ public class EPHIbo {
 		for (int i = lowerBound; i < indices.size(); i++) {
 			indices.set(i, indices.get(i) - offset);
 		}
-		indexBuffer = EPHRenderUtils.listToBufferi(indices);
-		updateOffset = -1;
-		updated = false;
+		bufferSizeChanged = true;
 	}
-
-	/* protected void updateData(int lowerBound, int upperBound, List<Integer> newIndices) {
-		// workaround to find the index offset
-		// Problem will occur if the smallest possible index (within the area to replace) doesn't occur. Then the offset is to high.
-		int offset = Integer.MAX_VALUE;
-		for (int i = lowerBound; i <= upperBound; i++) {
-			offset = Math.min(offset, indices.get(i));
-		}
-		for (int i = 0; i < newIndices.size(); i++) {
-			newIndices.set(i, newIndices.get(i) + offset);
-		}
-		for (int i = lowerBound; i <= upperBound; i++) {
-			indices.set(i, newIndices.get(i - lowerBound));
-		}
-		updateBuffer = EPHRenderUtils.listToBufferi(newIndices);
-		updateOffset = lowerBound * 4;
-		updated = false;
-	} */
 
 	protected int getCurrentIndex() {
 		return indices.size();
 	}
 
 	protected boolean isUpdated() {
-		return updated;
+		return !bufferSizeChanged;
 	}
 
 }
