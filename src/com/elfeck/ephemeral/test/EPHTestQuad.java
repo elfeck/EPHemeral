@@ -7,12 +7,11 @@ package com.elfeck.ephemeral.test;
 
 import java.util.List;
 
-import com.elfeck.ephemeral.drawable.EPHDisplayable;
 import com.elfeck.ephemeral.math.EPHVec2f;
 import com.elfeck.ephemeral.math.EPHVec4f;
 
 
-public class EPHTestQuad implements EPHDisplayable {
+public class EPHTestQuad {
 
 	protected float layer;
 	protected int width, height;
@@ -25,11 +24,6 @@ public class EPHTestQuad implements EPHDisplayable {
 		position = new EPHVec2f(x, y);
 		this.layer = layer;
 		this.color = color;
-	}
-
-	@Override
-	public float getLayer() {
-		return layer;
 	}
 
 	public void fetchVertexData(List<Float> vertexValues) {

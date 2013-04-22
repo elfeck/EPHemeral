@@ -3,24 +3,23 @@
 * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
 */
 
-package com.elfeck.ephemeral.math;
+package com.elfeck.ephemeral.math.geom;
 
-import java.util.Arrays;
+import com.elfeck.ephemeral.math.EPHVec2f;
 
+public class EPHRect2i {
 
-public class EPHRect2f {
+	private int[] bounds;
 
-	private float[] bounds;
-
-	public EPHRect2f(float x, float y, float width, float height) {
-		bounds = new float[] { x, y, width, height };
+	public EPHRect2i(int x, int y, int width, int height) {
+		bounds = new int[] { x, y, width, height };
 	}
 
-	public EPHRect2f() {
+	public EPHRect2i() {
 		this(0, 0, 0, 0);
 	}
 
-	public boolean withinBounds(float x, float y) {
+	public boolean withinBounds(int x, int y) {
 		return x >= bounds[0] && x < bounds[0] + bounds[2] && y >= bounds[1] && y < bounds[1] + bounds[3];
 	}
 
@@ -28,9 +27,9 @@ public class EPHRect2f {
 		return new EPHVec2f(bounds[0] + bounds[2] / 2.0f, bounds[1] + bounds[3] / 2.0f);
 	}
 
-	public void setCenter(float x, float y) {
-		bounds[0] = x - bounds[2] / 2.0f;
-		bounds[1] = y - bounds[3] / 2.0f;
+	public void setCenter(int x, int y) {
+		bounds[0] = x - bounds[2] / 2;
+		bounds[1] = y - bounds[3] / 2;
 	}
 
 	public EPHVec2f[] getCornerPoints() {
@@ -42,51 +41,51 @@ public class EPHRect2f {
 		};
 	}
 
-	public float[] asFloatArray() {
-		return bounds;
+	public float[] toFloatArray() {
+		return new float[] { bounds[0], bounds[1], bounds[2], bounds[3] };
 	}
 
-	public float[] toFloatArray() {
-		return Arrays.copyOf(bounds, bounds.length);
+	public int[] asIntArray() {
+		return bounds;
 	}
 
 	public int[] toIntArray() {
 		return new int[] { (int) bounds[0], (int) bounds[1], (int) bounds[2], (int) bounds[3] };
 	}
 
-	public float getX() {
+	public int getX() {
 		return bounds[0];
 	}
 
-	public void setX(float x) {
+	public void setX(int x) {
 		bounds[0] = x;
 	}
 
-	public float getY() {
+	public int getY() {
 		return bounds[1];
 	}
 
-	public void setY(float y) {
+	public void setY(int y) {
 		bounds[1] = y;
 	}
 
-	public float getWidth() {
+	public int getWidth() {
 		return bounds[2];
 	}
 
-	public void setWidth(float width) {
+	public void setWidth(int width) {
 		bounds[2] = width;
 	}
 
-	public float getHeight() {
+	public int getHeight() {
 		return bounds[3];
 	}
 
-	public void setHeight(float height) {
+	public void setHeight(int height) {
 		bounds[3] = height;
 	}
 
-	public void setRect(float[] rect) {
+	public void setRect(int[] rect) {
 		bounds = rect;
 	}
 

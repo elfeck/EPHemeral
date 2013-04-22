@@ -1,7 +1,7 @@
 /*
- * Copyright 2013, Sebastian Kreisel. All rights reserved.
- * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
- */
+* Copyright 2013, Sebastian Kreisel. All rights reserved.
+* If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
+*/
 
 package com.elfeck.ephemeral.math;
 
@@ -11,19 +11,18 @@ import java.util.Arrays;
 import com.elfeck.ephemeral.glContext.EPHRenderUtils;
 
 
-public class EPHMat4f implements EPHMatf {
+public class EPHMat2f implements EPHMatf {
 
 	protected int dimension;
 	protected float[][] matrix;
 
-	public EPHMat4f(float[][] matrix) {
-		dimension = 4;
+	public EPHMat2f(float[][] matrix) {
+		dimension = 2;
 		this.matrix = matrix;
 	}
 
-	public EPHMat4f() {
-		dimension = 4;
-		matrix = new float[dimension][dimension];
+	public EPHMat2f() {
+		this(new float[2][2]);
 	}
 
 	@Override
@@ -41,12 +40,10 @@ public class EPHMat4f implements EPHMatf {
 		return new float[][] {
 								Arrays.copyOf(matrix[0], matrix[0].length),
 								Arrays.copyOf(matrix[1], matrix[1].length),
-								Arrays.copyOf(matrix[2], matrix[2].length),
-								Arrays.copyOf(matrix[3], matrix[3].length)
 		};
 	}
 
-	public EPHMat4f addMat4f(EPHMat4f mat) {
+	public EPHMat2f addMat2f(EPHMat2f mat) {
 		for (int c = 0; c < dimension; c++) {
 			for (int l = 0; l < dimension; l++) {
 				matrix[c][l] += mat.matrix[c][l];
@@ -55,7 +52,7 @@ public class EPHMat4f implements EPHMatf {
 		return this;
 	}
 
-	public EPHMat4f subMat4f(EPHMat4f mat) {
+	public EPHMat2f subMat2f(EPHMat2f mat) {
 		for (int c = 0; c < dimension; c++) {
 			for (int l = 0; l < dimension; l++) {
 				matrix[c][l] -= mat.matrix[c][l];
@@ -64,7 +61,7 @@ public class EPHMat4f implements EPHMatf {
 		return this;
 	}
 
-	public EPHMat4f mulScalar(float scalar) {
+	public EPHMat2f mulScalar(float scalar) {
 		for (int c = 0; c < dimension; c++) {
 			for (int l = 0; l < dimension; l++) {
 				matrix[c][l] *= scalar;
@@ -73,7 +70,7 @@ public class EPHMat4f implements EPHMatf {
 		return this;
 	}
 
-	public EPHMat4f mulMat4f(EPHMat4f mat) {
+	public EPHMat2f mulMat2f(EPHMat2f mat) {
 		float[] currentLine = new float[4];
 		for (int l = 0; l < dimension; l++) {
 			for (int c = 0; c < dimension; c++) {
@@ -87,8 +84,8 @@ public class EPHMat4f implements EPHMatf {
 		return this;
 	}
 
-	public EPHVec4f mulVec4f(EPHVec4f vec) {
-		EPHVec4f vector = new EPHVec4f();
+	public EPHVec2f mulVec2f(EPHVec2f vec) {
+		EPHVec2f vector = new EPHVec2f();
 		for (int l = 0; l < dimension; l++) {
 			for (int c = 0; c < dimension; c++) {
 				vector.setN(l, vector.getN(l) + matrix[c][l] * vec.getN(c));
@@ -97,7 +94,7 @@ public class EPHMat4f implements EPHMatf {
 		return vector;
 	}
 
-	public EPHMat4f negate() {
+	public EPHMat2f negate() {
 		for (int c = 0; c < dimension; c++) {
 			for (int l = 0; l < dimension; l++) {
 				matrix[c][l] = -matrix[c][l];
@@ -122,36 +119,36 @@ public class EPHMat4f implements EPHMatf {
 		return matrix;
 	}
 
-	public EPHMat4f setMatrix(float[][] matrix) {
+	public EPHMat2f setMatrix(float[][] matrix) {
 		this.matrix = matrix;
 		return this;
 	}
 
-	public EPHMat4f setColumn(int c, float[] values) {
+	public EPHMat2f setColumn(int c, float[] values) {
 		matrix[c] = values;
 		return this;
 	}
 
-	public EPHMat4f copyToCL(int c, int l, float value) {
+	public EPHMat2f copyToCL(int c, int l, float value) {
 		matrix[c][l] = value;
 		return this;
 	}
 
-	public EPHMat4f copyToColumn(int c, float[] values) {
+	public EPHMat2f copyToColumn(int c, float[] values) {
 		for (int l = 0; l < dimension; l++) {
 			matrix[c][l] = values[l];
 		}
 		return this;
 	}
 
-	public EPHMat4f copyToLine(int l, float[] values) {
+	public EPHMat2f copyToLine(int l, float[] values) {
 		for (int c = 0; c < dimension; c++) {
 			matrix[c][l] = values[c];
 		}
 		return this;
 	}
 
-	public EPHMat4f copyToMatrix(float[][] values) {
+	public EPHMat2f copyToMatrix(float[][] values) {
 		for (int c = 0; c < dimension; c++) {
 			for (int l = 0; l < dimension; l++) {
 				matrix[c][l] = values[c][l];
@@ -160,13 +157,13 @@ public class EPHMat4f implements EPHMatf {
 		return this;
 	}
 
-	public EPHMat4f copy() {
-		return new EPHMat4f().copyToMatrix(matrix);
+	public EPHMat2f copy() {
+		return new EPHMat2f().copyToMatrix(matrix);
 	}
 
 	public String toString() {
 		String result = "";
-		result += "Matrix (2x2) is valid: \n";
+		result += "Matrix (2x2): \n";
 		for (int c = 0; c < matrix.length; c++) {
 			for (int l = 0; l < matrix[c].length; l++) {
 				result += matrix[l][c] + "  ";

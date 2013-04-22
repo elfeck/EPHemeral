@@ -111,6 +111,13 @@ public class EPHVec2f implements EPHVecf {
 		return this;
 	}
 
+	public EPHVec2f mulMat2f(EPHMat2f mat) {
+		float oldX = x;
+		x = mat.getCL(0, 0) * x + mat.getCL(1, 0) * y;
+		y = mat.getCL(0, 1) * oldX + mat.getCL(1, 1) * y;
+		return this;
+	}
+
 	public float dot(EPHVec2f vec) {
 		return x * vec.x + y * vec.y;
 	}
@@ -133,6 +140,26 @@ public class EPHVec2f implements EPHVecf {
 	public EPHVec2f negate() {
 		x = -x;
 		y = -y;
+		return this;
+	}
+
+	public EPHVec2f toMaximum(EPHVec2f vec) {
+		return toMaximum(vec.x, vec.y);
+	}
+
+	public EPHVec2f toMaximum(float vx, float vy) {
+		x = Math.max(x, vx);
+		y = Math.max(y, vy);
+		return this;
+	}
+
+	public EPHVec2f toMinimum(EPHVec2f vec) {
+		return toMinimum(vec.x, vec.y);
+	}
+
+	public EPHVec2f toMinimum(float vx, float vy) {
+		x = Math.min(x, vx);
+		y = Math.min(y, vy);
 		return this;
 	}
 

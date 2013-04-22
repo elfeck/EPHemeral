@@ -3,7 +3,9 @@
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-package com.elfeck.ephemeral.math;
+package com.elfeck.ephemeral.math.geom;
+
+import com.elfeck.ephemeral.math.EPHVec2f;
 
 public class EPHPolygon2f {
 

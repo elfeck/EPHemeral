@@ -3,7 +3,10 @@
  * If you intend to use, modify or redistribute this file contact kreisel.sebastian@gmail.com
  */
 
-package com.elfeck.ephemeral.math;
+package com.elfeck.ephemeral.math.geom;
+
+import com.elfeck.ephemeral.math.EPHVec2f;
+
 
 public class EPHLine2f {
 
@@ -15,8 +18,8 @@ public class EPHLine2f {
 	}
 
 	public float distanceToPoint(EPHVec2f point) {
-		return new EPHVec2f((base.x - point.x) + ((base.x - point.x) * base.x) * base.x,
-				(base.y - point.y) + ((base.y - point.y) * base.y) * base.y).length();
+		return new EPHVec2f((base.getX() - point.getX()) + ((base.getX() - point.getX()) * base.getX()) * base.getX(),
+				(base.getY() - point.getY()) + ((base.getY() - point.getY()) * base.getY()) * base.getY()).length();
 	}
 
 	public float distanceToLine(EPHLine2f line) {
@@ -26,8 +29,8 @@ public class EPHLine2f {
 
 	public EPHVec2f getIntersectionPoint(EPHLine2f line) {
 		if (distanceToLine(line) >= 0) return null;
-		float lambda = ((line.base.y - base.y) * direction.x - (line.base.x - base.x) * direction.y) /
-				(line.direction.x * direction.y - line.direction.y * direction.x);
+		float lambda = ((line.base.getY() - base.getY()) * direction.getX() - (line.base.getX() - base.getX()) * direction.getY()) /
+				(line.direction.getX() * direction.getY() - line.direction.getY() * direction.getX());
 		return line.direction.copy().mulScalar(lambda).addVec2f(line.base);
 	}
 

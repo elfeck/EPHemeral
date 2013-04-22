@@ -65,15 +65,15 @@ public class EPHUniformMat4f extends EPHMat4f implements EPHUniformContent {
 	}
 
 	@Override
-	public EPHMat4f mulMat4(EPHMat4f mat) {
+	public EPHMat4f mulMat4f(EPHMat4f mat) {
 		setModified();
-		return super.mulMat4(mat);
+		return super.mulMat4f(mat);
 	}
 
 	@Override
-	public EPHVec4f mulVec4(EPHVec4f vec) {
+	public EPHVec4f mulVec4f(EPHVec4f vec) {
 		setModified();
-		return super.mulVec4(vec);
+		return super.mulVec4f(vec);
 	}
 
 	@Override

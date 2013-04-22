@@ -5,7 +5,7 @@
 
 package com.elfeck.ephemeral.drawable;
 
-import com.elfeck.ephemeral.math.EPHPolygon2f;
+import com.elfeck.ephemeral.math.geom.EPHPolygon2f;
 
 
 public interface EPHCollidable {
